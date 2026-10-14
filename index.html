@@ -2,129 +2,174 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIRTI FLIX</title>
+<title>MIRTI TV</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0d14;color:#fff;font-family:Arial;display:flex;height:100vh;overflow:hidden}
-#sidebar{width:300px;background:#0f1520;border-right:1px solid #1e293b;display:flex;flex-direction:column}
-#sidebar h1{color:#e50914;padding:14px;text-align:center;letter-spacing:2px;font-size:20px;border-bottom:1px solid #1e293b}
-.box{margin:8px;padding:10px;background:#141c2e;border-radius:10px;border:1px solid #1e293b}
-.box label{cursor:pointer;color:#e50914;font-weight:bold;display:block;text-align:center}
-.box input[type=text]{width:100%;padding:9px;border-radius:6px;border:none;background:#0f1520;color:#fff;margin-top:6px}
-.btn{width:100%;margin-top:6px;padding:9px;background:#e50914;border:none;border-radius:6px;color:#fff;font-weight:bold;cursor:pointer}
-.btn2{background:#1e293b;color:#e50914;border:1px dashed #e50914}
-#cats{padding:8px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #1e293b}
-.cat{padding:10px;background:#141c2e;border-radius:8px;cursor:pointer;border:1px solid #1e293b;font-size:14px;display:flex;justify-content:space-between}
-.cat.active{background:#e50914;border-color:#e50914}
-#list{flex:1;overflow-y:auto;padding:8px}
-#grid{flex:1;overflow-y:auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;background:#0a0d14}
-.card{background:#141c2e;border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid #1e293b}
-.card:hover{border-color:#e50914;transform:scale(1.03)}
-.poster{width:100%;aspect-ratio:2/3;object-fit:cover;background:#0f1520}
-.ctitle{padding:6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#main{flex:1;display:flex;flex-direction:column;background:#000}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#060a14;color:#fff;font-family:Arial;display:flex;height:100vh;overflow:hidden}
+#sidebar{width:310px;background:#0c1220;border-right:1px solid #1a2744;display:flex;flex-direction:column;z-index:10}
+#logoBox{padding:16px;text-align:center;border-bottom:1px solid #1a2744;background:#080d1a}
+#logoBox img{width:140px}
+#logoBox h1{color:#ff0a16;font-size:22px;letter-spacing:2px;margin-top:6px}
+.box{margin:8px;padding:10px;background:#111a2e;border-radius:10px;border:1px solid #1a2744}
+.btn{width:100%;padding:10px;background:#ff0a16;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:6px}
+.btn:hover{background:#ff1a26}.btn2{background:#1a2744;color:#ccc;border:1px dashed #ff0a16}
+input[type=text]{width:100%;padding:10px;border-radius:6px;border:none;background:#060a14;color:#fff;margin-top:6px;outline:none}
+#lists{padding:8px;max-height:140px;overflow-y:auto;border-bottom:1px solid #1a2744}
+.list-item{padding:8px;background:#111a2e;margin:4px 0;border-radius:6px;cursor:pointer;font-size:13px;display:flex;justify-content:space-between;border:1px solid #1a2744}
+.list-item.active{background:#ff0a16;border-color:#ff0a16}
+#cats{display:flex;gap:6px;padding:8px;overflow-x:auto}
+.cat{padding:6px 12px;background:#111a2e;border-radius:20px;cursor:pointer;font-size:12px;border:1px solid #1a2744;white-space:nowrap}
+.cat.active{background:#ff0a16}
+#main{flex:1;display:flex;flex-direction:column;background:#060a14;position:relative}
+#grid{flex:1;overflow-y:auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;align-content:start}
+.card{background:#111a2e;border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid #1a2744;transition:.15s}
+.card:hover{transform:scale(1.05);border-color:#ff0a16}
+.poster{width:100%;aspect-ratio:3/4;object-fit:cover;background:#080d1a}
+.ctitle{padding:6px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+#playerWrap{position:absolute;inset:0;background:#000;display:none;z-index:100;flex-direction:column}
+#playerWrap.show{display:flex}
 #player{flex:1;width:100%;background:#000}
-#bar{padding:8px;background:#0f1520;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+#playerBar{padding:10px;background:#0c1220;display:flex;justify-content:space-between;align-items:center}
+#empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:.3}
+#empty img{width:200px}
 input[type=file]{display:none}
 </style>
 </head>
 <body>
 <div id="sidebar">
-<h1>MIRTI FLIX</h1>
-<div class="box">
-<label for="fileInput">📁 DOSYA SEÇ</label><input type="file" id="fileInput" accept=".m3u,.m3u8,.txt">
+<div id="logoBox">
+<img src="logo.png" onerror="this.style.display='none'">
+<h1>MIRTI TV</h1>
 </div>
 <div class="box">
-<input type="text" id="urlInput" placeholder="m3u linki yapıştır">
+<label for="fileInput" style="cursor:pointer;color:#ff0a16;font-weight:bold;text-align:center;display:block">📁 DOSYA SEÇ</label>
+<input type="file" id="fileInput" accept=".m3u,.m3u8,.txt">
+<input type="text" id="urlInput" placeholder="https://...m3u linki">
 <button class="btn" onclick="loadFromUrl()">🔗 URL'DEN SEÇ</button>
-<button class="btn btn2" onclick="clearList()">🗑 Listeyi Sil</button>
+<input type="text" id="listName" placeholder="Liste adı: Örn: Benim Listem">
+<button class="btn btn2" onclick="saveCurrentList()">💾 LİSTEYİ KAYDET</button>
 </div>
+<div id="lists"></div>
 <div id="cats">
-<div class="cat active" data-cat="Tümü" onclick="setCat('Tümü')">Tümü <span id="c-all">0</span></div>
-<div class="cat" data-cat="Canlı TV" onclick="setCat('Canlı TV')">📺 Canlı TV <span id="c-tv">0</span></div>
-<div class="cat" data-cat="Film" onclick="setCat('Film')">🎬 Film <span id="c-film">0</span></div>
-<div class="cat" data-cat="Dizi" onclick="setCat('Dizi')">🎞️ Dizi <span id="c-dizi">0</span></div>
+<div class="cat active" onclick="setCat('Tümü')">Tümü</div>
+<div class="cat" onclick="setCat('Canlı')">Canlı TV</div>
+<div class="cat" onclick="setCat('Film')">Film</div>
+<div class="cat" onclick="setCat('Dizi')">Dizi</div>
 </div>
-<input type="text" id="search" placeholder="Ara..." style="margin:8px;padding:9px;border-radius:6px;border:none;background:#141c2e;color:#fff;">
-<div style="padding:0 8px;font-size:11px;color:#7a869a" id="info">Liste yükle</div>
+<input type="text" id="search" placeholder="🔍 Kanal / Film Ara..." style="margin:8px;width:94%">
+<div id="count" style="padding:0 12px;font-size:11px;color:#5a6a8a">0 içerik</div>
 </div>
 
 <div id="main">
+<div id="empty"><img src="logo.png"><p style="margin-top:20px;font-size:14px;letter-spacing:2px">MIRTI TV - Liste yükle ve izle</p></div>
 <div id="grid"></div>
-<div id="bar"><span id="now">Hazır</span><span style="color:#7a869a">MIRTI</span></div>
-<video id="player" controls autoplay style="position:fixed;right:16px;bottom:60px;width:360px;height:200px;border-radius:12px;border:2px solid #e50914;display:none;z-index:50;background:#000"></video>
+<div id="playerWrap">
+<div id="playerBar"><span id="now">Oynatılıyor</span><button class="btn" style="width:auto;padding:6px 16px" onclick="closePlayer()">KAPAT ✕</button></div>
+<video id="player" controls autoplay playsinline></video>
+</div>
 </div>
 
 <script>
-let all=JSON.parse(localStorage.getItem('mirti_list')||'[]');
-let hls=null; let activeCat='Tümü';
+let all=[]; let hls=null; let activeCat='Tümü';
+let savedLists=JSON.parse(localStorage.getItem('mirti_multi_lists')||'{}');
+let currentListName='';
 const video=document.getElementById('player'); const grid=document.getElementById('grid');
-function save(){ localStorage.setItem('mirti_list',JSON.stringify(all)); }
-function categorize(group,name){
-const g=(group+' '+name).toLowerCase();
-if(g.includes('film')||g.includes('movie')||g.includes('sinema')) return 'Film';
-if(g.includes('dizi')||g.includes('series')||g.includes('sezon')||g.includes('bölüm')) return 'Dizi';
-return 'Canlı TV';
+const playerWrap=document.getElementById('playerWrap');
+
+function categorize(name,group){
+const s=(name+' '+group).toLowerCase();
+if(s.includes('film')||s.includes('movie'))return 'Film';
+if(s.includes('dizi')||s.includes('series')||s.includes('sezon'))return 'Dizi';
+return 'Canlı';
 }
 function parseM3U(text){
 const lines=text.split('\n'); const out=[];
 for(let i=0;i<lines.length;i++){
-let l=lines[i].trim(); if(l.startsWith('#EXTINF')){
-let logo=(l.match(/tvg-logo="([^"]+)"/)||[])[1]||''; let group=(l.match(/group-title="([^"]+)"/)||[])[1]||'';
-let name=l.split(',').pop().trim(); let url='';
-for(let j=i+1;j<lines.length;j++){ let n=lines[j].trim(); if(n &&!n.startsWith('#')){url=n; i=j; break;} }
-if(url){ out.push({name,logo,group,cat:categorize(group,name),url}); }
+let l=lines[i].trim();
+if(l.startsWith('#EXTINF')){
+let logo=(l.match(/tvg-logo="([^"]+)"/)||[])[1]||'';
+let group=(l.match(/group-title="([^"]+)"/)||[])[1]||'';
+let name=l.split(',').pop().trim()||'Kanal';
+let url='';
+for(let j=i+1;j<lines.length;j++){
+let n=lines[j].trim(); if(n &&!n.startsWith('#')){url=n; i=j; break;}
 }
-} return out;
+if(url && (url.startsWith('http')||url.startsWith('/'))){
+out.push({name,logo,group,cat:categorize(name,group),url});
 }
-function updateCounts(){
-document.getElementById('c-all').textContent=all.length;
-document.getElementById('c-tv').textContent=all.filter(c=>c.cat==='Canlı TV').length;
-document.getElementById('c-film').textContent=all.filter(c=>c.cat==='Film').length;
-document.getElementById('c-dizi').textContent=all.filter(c=>c.cat==='Dizi').length;
-document.getElementById('info').textContent=all.length+' içerik kayıtlı';
+}
+}
+return out;
+}
+function renderLists(){
+const box=document.getElementById('lists'); box.innerHTML='<div style=\"font-size:11px;color:#5a6a8a;padding:4px\">KAYITLI LİSTELERİM</div>';
+Object.keys(savedLists).forEach(k=>{
+const d=document.createElement('div'); d.className='list-item'+(k===currentListName?' active':'');
+d.innerHTML=`<span>${k} (${savedLists[k].length})</span><span onclick=\"deleteList('${k}');event.stopPropagation()\" style=\"color:#ff0a16\">✕</span>`;
+d.onclick=()=>{ all=savedLists[k]; currentListName=k; document.getElementById('empty').style.display='none'; render(); renderLists(); };
+box.appendChild(d);
+});
 }
 function render(){
 const q=document.getElementById('search').value.toLowerCase();
 const filtered=all.filter(c=>(activeCat==='Tümü'||c.cat===activeCat)&&c.name.toLowerCase().includes(q));
+document.getElementById('count').textContent=filtered.length+' içerik gösteriliyor';
+document.getElementById('empty').style.display=all.length?'none':'flex';
 grid.innerHTML='';
 filtered.forEach(c=>{
 const card=document.createElement('div'); card.className='card';
-const img=c.logo||`https://via.placeholder.com/300x450/141c2e/e50914?text=${encodeURIComponent(c.name.slice(0,20))}`;
-card.innerHTML=`<img class="poster" src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Poster'"><div class="ctitle">${c.name}</div>`;
-card.onclick=()=>play(c); grid.appendChild(card);
+const img=c.logo||`https://via.placeholder.com/300x400/111a2e/ff0a16?text=${encodeURIComponent(c.name.substring(0,15))}`;
+card.innerHTML=`<img class="poster" src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x400?text=TV'"><div class="ctitle">${c.name}</div>`;
+card.onclick=()=>play(c);
+grid.appendChild(card);
 });
 }
 function play(c){
-if(hls){ try{hls.destroy();}catch(e){} hls=null; }
-video.style.display='block'; video.pause(); video.removeAttribute('src'); video.load();
-document.getElementById('now').textContent='Oynatılıyor: '+c.name;
+if(hls){ try{hls.destroy()}catch(e){} hls=null; }
+playerWrap.classList.add('show');
+document.getElementById('now').textContent=c.name;
+video.pause(); video.removeAttribute('src'); video.load();
+// Deneme 1: hls.js
 if(Hls.isSupported()){
-hls=new Hls({enableWorker:true, lowLatencyMode:false});
+hls=new Hls({maxBufferLength:10, enableWorker:true});
 hls.loadSource(c.url); hls.attachMedia(video);
-hls.on(Hls.Events.MANIFEST_PARSED,()=>{ video.play().catch(()=>{}); });
-hls.on(Hls.Events.ERROR,(ev,data)=>{ if(data.fatal){ console.log('HLS fatal',data); }});
-}else if(video.canPlayType('application/vnd.apple.mpegurl')){
+hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+hls.on(Hls.Events.ERROR,(e,d)=>{
+if(d.fatal){
+console.log('HLS failed, trying native');
+video.src=c.url; video.play().catch(()=>{document.getElementById('now').textContent='Bu kanal açılmadı: '+c.name});
+}
+});
+}else{
+// Deneme 2: Native
 video.src=c.url; video.play().catch(()=>{});
 }
 }
-function setCat(cat){
-activeCat=cat; document.querySelectorAll('.cat').forEach(el=>el.classList.toggle('active',el.dataset.cat===cat)); render();
+function closePlayer(){ playerWrap.classList.remove('show'); video.pause(); if(hls){try{hls.destroy()}catch(e){}} }
+function setCat(cat){ activeCat=cat; document.querySelectorAll('.cat').forEach(b=>b.classList.toggle('active',b.textContent.includes(cat))); render(); }
+function saveCurrentList(){
+const name=document.getElementById('listName').value.trim()||'Liste '+(Object.keys(savedLists).length+1);
+if(!all.length){alert('Önce bir liste yükle abi');return;}
+savedLists[name]=all; localStorage.setItem('mirti_multi_lists',JSON.stringify(savedLists)); currentListName=name; renderLists(); alert(name+' kaydedildi, artık silinmeyecek');
 }
+function deleteList(k){ if(confirm(k+' silinsin mi?')){ delete savedLists[k]; localStorage.setItem('mirti_multi_lists',JSON.stringify(savedLists)); renderLists(); } }
 document.getElementById('fileInput').addEventListener('change',e=>{
 const f=e.target.files[0]; if(!f)return; const r=new FileReader();
-r.onload=ev=>{ const parsed=parseM3U(ev.target.result); if(parsed.length){ all=parsed; save(); updateCounts(); render(); alert(parsed.length+' içerik yüklendi ve kaydedildi'); } };
+r.onload=ev=>{ const p=parseM3U(ev.target.result); if(p.length){ all=p; render(); document.getElementById('listName').value=f.name.replace('.m3u',''); } else alert('Liste boş veya hatalı format'); };
 r.readAsText(f);
 });
 function loadFromUrl(){
 const url=document.getElementById('urlInput').value.trim(); if(!url)return alert('URL gir');
-fetch(url).then(r=>r.text()).then(t=>{
-const parsed=parseM3U(t); if(parsed.length){ all=parsed; save(); updateCounts(); render(); }
-}).catch(()=>alert('URL CORS engelli, dosyayı indirip DOSYA SEÇ ile yükle abi'));
+fetch('https://corsproxy.io/?'+encodeURIComponent(url)).then(r=>r.text()).then(t=>{
+const p=parseM3U(t); if(p.length){ all=p; render(); } else { // proxy olmadan dene
+return fetch(url).then(r=>r.text()).then(t2=>{ const p2=parseM3U(t2); if(p2.length){ all=p2; render(); } else alert('Liste okunamadı'); });
 }
-function clearList(){ if(confirm('Listeyi silmek istiyor musun?')){ all=[]; localStorage.removeItem('mirti_list'); updateCounts(); render(); video.style.display='none'; } }
+}).catch(()=>{ fetch(url).then(r=>r.text()).then(t=>{ const p=parseM3U(t); if(p.length){ all=p; render(); } else alert('CORS engeli, dosyayı indirip DOSYA SEÇ ile yükle'); }).catch(()=>alert('URL açılmıyor, dosyayı indir abi')); });
+}
 document.getElementById('search').addEventListener('input',render);
-if(all.length){ updateCounts(); render(); }
+// İlk açılışta kayıtlı listeleri göster
+renderLists();
+if(Object.keys(savedLists).length){ const first=Object.keys(savedLists)[0]; all=savedLists[first]; currentListName=first; render(); }
 </script>
 </body>
 </html>
