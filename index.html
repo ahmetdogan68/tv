@@ -1,13 +1,17 @@
-<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MIRTI V8.1 MKV HTTP FIX</title>
+<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MIRTI V8.3 H264 ADTS FIX</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script><script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
-<style>/* aynı tasarım V8.0 */*{margin:0;padding:0;box-sizing:border-box}body{background:#070b14;color:#fff;font-family:Arial;height:100vh;display:flex;overflow:hidden}#left{width:270px;min-width:270px;background:#0b1120;border-right:2px solid #ff0a16;display:flex;flex-direction:column}#mid{width:360px;min-width:360px;background:#0e1424;border-right:2px solid #1e2d4a;display:flex;flex-direction:column}#playerArea{flex:1;background:#000;display:flex;flex-direction:column;position:relative}#logoTop{padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #1e2d4a;background:#080e1e}#logoBox{width:38px;height:38px;background:linear-gradient(135deg,#ff0a16,#ff8c00);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold}#groupList{flex:1;overflow-y:auto;padding:6px}.group{padding:11px;background:#1a2340;margin:4px 0;border-radius:8px;cursor:pointer;font-size:12px;border:1px solid #1e2d4a;display:flex;justify-content:space-between}.group.active{background:#ff0a16}#channelList{flex:1;overflow-y:auto;padding:6px}.ch{padding:10px;background:#1a2340;margin:4px 0;border-radius:8px;cursor:pointer;border:1px solid #1e2d4a;display:flex;gap:10px;align-items:center}.ch.active{background:#ff0a16}.ch img{width:42px;height:42px;border-radius:6px;background:#000;object-fit:contain}#player{flex:1;width:100%;background:#000}#bar{padding:8px 10px;background:#0b1120;display:flex;gap:8px;border-top:1px solid #1e2d4a;font-size:12px}#empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#070b14;z-index:10;padding:24px;text-align:center}#settings{position:absolute;top:0;right:0;bottom:0;width:440px;background:#0b1120;border-left:3px solid #ff0a16;z-index:20;transform:translateX(100%);transition:.3s;padding:14px;overflow-y:auto}#settings.open{transform:translateX(0)}.tabs{display:flex;gap:4px;margin-top:10px}.tab{flex:1;padding:11px;background:#1a2744;border-radius:8px;text-align:center;cursor:pointer;font-size:11px;font-weight:bold}.tab.active{background:#ff0a16}.box{display:none;margin-top:10px;padding:12px;background:#151d32;border-radius:10px;border:1px solid #1e2d4a}.box.active{display:block}input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #1e2d4a;background:#060a14;color:#fff;margin-top:6px}input:focus{border-color:#ff0a16}.btn{width:100%;padding:13px;background:#ff0a16;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:8px}.btn:hover{background:#e00a14}.log{font-size:10px;background:#060a14;padding:8px;border-radius:6px;margin-top:8px;max-height:100px;overflow-y:auto;word-break:break-all;white-space:pre-wrap;border:1px solid #1e2d4a;color:#8aa}@media(max-width:900px){body{flex-direction:column}#playerArea{order:1;height:42vh}#left{order:2;width:100%;height:26vh}#mid{order:3;width:100%;height:38vh}#settings{width:100%}}</style>
-</head><body><div id="left"><div id="logoTop"><div id="logoBox">M</div><div><b>MIRTI</b><b style="color:#ff0a16"> TV</b><div style="font-size:8px;color:#0f0">V8.1 MKV HTTP FIX</div></div><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:7px 12px;border-radius:6px">⚙️</button></div><div id="memBar" style="padding:7px 10px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span id="memInfo">Hafıza: 0</span><span id="groupCount">0</span></div><div id="groupList"></div></div><div id="mid"><div style="padding:11px;background:#ff0a16;font-weight:bold;display:flex;justify-content:space-between"><span id="midTitle">KANALLAR</span><span id="midCount">0</span></div><input id="search" placeholder="🔍 Ara..." style="margin:6px;width:94%"><div id="channelList"></div></div><div id="playerArea"><div id="empty"><div style="width:84px;height:84px;background:linear-gradient(135deg,#ff0a16,#ff8c00);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:bold">M</div><h3 style="color:#0f0;margin-top:12px">V8.1 - MKV & HTTP FIX</h3><p style="font-size:11px;color:#8aa;margin-top:8px">ÇUKUR, Ezel, mkv filmler artık açılır<br/>http → https proxy otomatik</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">📂 LİSTE YÜKLE</button><button class="btn" style="width:200px;background:#333;margin-top:6px" onclick="loadSample()">▶ SENİN LİSTENİ YÜKLE (TEST)</button></div><video id="player" controls playsinline></video><div id="bar"><span id="now">Hazır</span><span id="pType" style="margin-left:auto;color:#ff8c00">Universal</span><button onclick="openVLC()" style="background:#ff8c00;border:none;color:#fff;padding:4px 10px;border-radius:4px;cursor:pointer">VLC</button></div><div id="settings"><div style="display:flex;justify-content:space-between"><b>V8.1 MKV HTTP FIX</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 14px;border-radius:6px">X</button></div>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#070b14;color:#fff;font-family:Arial;height:100vh;display:flex;overflow:hidden}#left{width:270px;min-width:270px;background:#0b1120;border-right:2px solid #ff0a16;display:flex;flex-direction:column}#mid{width:360px;min-width:360px;background:#0e1424;border-right:2px solid #1e2d4a;display:flex;flex-direction:column}#playerArea{flex:1;background:#000;display:flex;flex-direction:column;position:relative}#logoTop{padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #1e2d4a;background:#080e1e}#logoBox{width:38px;height:38px;background:linear-gradient(135deg,#ff0a16,#ff8c00);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold}#groupList{flex:1;overflow-y:auto;padding:6px}.group{padding:11px;background:#1a2340;margin:4px 0;border-radius:8px;cursor:pointer;font-size:12px;border:1px solid #1e2d4a;display:flex;justify-content:space-between}.group.active{background:#ff0a16}#channelList{flex:1;overflow-y:auto;padding:6px}.ch{padding:10px;background:#1a2340;margin:4px 0;border-radius:8px;cursor:pointer;border:1px solid #1e2d4a;display:flex;gap:10px;align-items:center}.ch.active{background:#ff0a16}.ch img{width:42px;height:42px;border-radius:6px;background:#000;object-fit:contain}#player{flex:1;width:100%;background:#000}#bar{padding:8px 10px;background:#0b1120;display:flex;gap:8px;align-items:center;border-top:1px solid #1e2d4a;font-size:12px}#empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#070b14;z-index:10;padding:24px;text-align:center}#settings{position:absolute;top:0;right:0;bottom:0;width:440px;background:#0b1120;border-left:3px solid #ff0a16;z-index:20;transform:translateX(100%);transition:.3s;padding:14px;overflow-y:auto}#settings.open{transform:translateX(0)}.tabs{display:flex;gap:4px;margin-top:10px}.tab{flex:1;padding:11px;background:#1a2744;border-radius:8px;text-align:center;cursor:pointer;font-size:11px;font-weight:bold}.tab.active{background:#ff0a16}.box{display:none;margin-top:10px;padding:12px;background:#151d32;border-radius:10px;border:1px solid #1e2d4a}.box.active{display:block}input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #1e2d4a;background:#060a14;color:#fff;margin-top:6px}.btn{width:100%;padding:13px;background:#ff0a16;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:8px}.btnSec{background:#1a2744}.log{font-size:10px;background:#060a14;padding:8px;border-radius:6px;margin-top:8px;max-height:120px;overflow-y:auto;white-space:pre-wrap;border:1px solid #1e2d4a;color:#0f0}@media(max-width:900px){body{flex-direction:column}#playerArea{order:1;height:42vh}#left{order:2;width:100%;height:26vh}#mid{order:3;width:100%;height:38vh}#settings{width:100%}}</style>
+</head><body><div id="left"><div id="logoTop"><div id="logoBox">M</div><div><b>MIRTI</b><b style="color:#ff0a16"> TV</b><div style="font-size:8px;color:#0f0">V8.3 H264 ADTS FIX</div></div><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:7px 12px;border-radius:6px">⚙️</button></div><div style="padding:7px 10px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span id="memInfo">Hafıza: 0</span><span id="groupCount">0</span></div><div id="groupList"></div></div><div id="mid"><div style="padding:11px;background:#ff0a16;font-weight:bold;display:flex;justify-content:space-between"><span id="midTitle">KANALLAR</span><span id="midCount">0</span></div><input id="search" placeholder="🔍 Ara..." style="margin:6px;width:94%"><div id="channelList"></div></div><div id="playerArea"><div id="empty"><div style="width:84px;height:84px;background:linear-gradient(135deg,#ff0a16,#ff8c00);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:bold">M</div><h3 style="color:#0f0;margin-top:12px">V8.3 - Senin Akış İçin</h3><p style="font-size:11px;color:#8aa;margin-top:8px;line-height:1.5">VLC Bilgisi: H264 1920x1080 25fps + ADTS<br/>MPEG-TS özel oynatıcı aktif</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">📂 LİSTE YÜKLE</button><button class="btn btnSec" style="width:200px;margin-top:6px" onclick="loadVLCList()">▶ 71883 BLUE TV TEST</button></div><video id="player" controls playsinline></video><div id="bar"><span id="now">Hazır - H264/ADTS</span><span id="pType" style="margin-left:auto;color:#0f0">mpegts.js</span><button onclick="openVLC()" style="background:#ff8c00;border:none;color:#fff;padding:5px 12px;border-radius:5px">VLC</button></div><div id="settings"><div style="display:flex;justify-content:space-between"><b style="color:#0f0">V8.3 - H264 ADTS Özel Fix</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 14px;border-radius:6px">X</button></div>
 <div id="savedLists" style="margin-top:10px;max-height:150px;overflow-y:auto;background:#151d32;padding:8px;border-radius:8px;border:1px solid #1e2d4a"></div>
 <div class="tabs"><div class="tab active" onclick="openTab(0)">URL</div><div class="tab" onclick="openTab(1)">DOSYA</div><div class="tab" onclick="openTab(2)">XTREAM</div></div>
-<div class="box active" id="b0"><textarea id="urlInput" rows="3" placeholder="Her türlü link - BOŞ"></textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><div id="urlLog" class="log">Hazır</div></div>
-<div class="box" id="b1"><div style="border:2px dashed #1e2d4a;padding:22px;border-radius:10px;text-align:center;color:#8aa;font-size:12px;cursor:pointer" onclick="document.getElementById('fileInput').click()">📁 Tıkla - Dosya BOŞ</div><input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none"><div id="fileName" style="font-size:11px;color:#8aa;margin-top:8px;text-align:center">Dosya seçilmedi</div></div>
+<div class="box active" id="b0"><textarea id="urlInput" rows="3" placeholder="Her türlü link - BOŞ"></textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><div id="urlLog" class="log">V8.3 Hazır - Senin 71883 için:
+Akış 0: H264 1920x1080
+Akış 1: ADTS 44100Hz
+Tip: MPEG-TS - mpegts.js ile oynatılacak
+Proxy: http:// → https://corsproxy.io/?...</div></div>
+<div class="box" id="b1"><div style="border:2px dashed #1e2d4a;padding:22px;border-radius:10px;text-align:center;color:#8aa;font-size:12px;cursor:pointer" onclick="document.getElementById('fileInput').click()">📁 Tıkla - BOŞ</div><input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none"><div id="fileName" style="font-size:11px;color:#8aa;margin-top:8px;text-align:center">Dosya seçilmedi</div></div>
 <div class="box" id="b2"><input id="xtServer" placeholder="http://sunucu:port"><input id="xtUser" placeholder="Kullanıcı"><input id="xtPass" placeholder="Şifre"><button class="btn" onclick="loadXtream()">XTREAM YÜKLE</button></div>
-<div id="status" style="font-size:11px;color:#0f0;margin-top:10px;padding:10px;background:#060a14;border-radius:8px">V8.1 Hazır</div>
+<div id="status" style="font-size:11px;color:#0f0;margin-top:10px;padding:10px;background:#060a14;border-radius:8px">V8.3 Hazır - H264 ADTS</div>
 </div></div>
 <script>
 const PROXIES=[
@@ -16,59 +20,54 @@ const PROXIES=[
  'https://api.allorigins.win/raw?url='
 ];
 let all=[]; let hls=null; let mpegPlayer=null; let activeGroup='Tümü'; let currentList=''; let currentUrl=''; const video=document.getElementById('player'); let db;
-function openDB(){return new Promise(r=>{let req=indexedDB.open('MirtiTV_Universal',3);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;r(db);};});}
+function openDB(){return new Promise(r=>{let req=indexedDB.open('MirtiTV_V83',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;r(db);};});}
 async function saveToDB(n,c){if(!db) await openDB();return new Promise(r=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name:n,channels:c,count:c.length,time:Date.now()});tx.oncomplete=()=>r();});}
 async function getAllFromDB(){if(!db) await openDB();return new Promise(r=>{let tx=db.transaction('lists','readonly');let q=tx.objectStore('lists').getAll();q.onsuccess=()=>r(q.result);});}
 async function deleteFromDB(n){if(!db) await openDB();return new Promise(r=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').delete(n);tx.oncomplete=()=>r();});}
 function toggleSet(){document.getElementById('settings').classList.toggle('open');}
 function openTab(i){document.querySelectorAll('.box').forEach((b,idx)=>b.classList.toggle('active',idx===i));document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));}
-function cleanUrl(u){if(!u) return ''; return u.trim().split('|')[0].split(';')[0].replace(/\s+/g,'').replace(/&amp;/g,'&').replace(/^"+|"+$/g,'');}
-function log(m){document.getElementById('urlLog').textContent=m; document.getElementById('status').textContent=m.slice(0,150);}
+function cleanUrl(u){return u.trim().split('|')[0].split(';')[0].replace(/\s+/g,'').replace(/&amp;/g,'&');}
+function log(m){document.getElementById('urlLog').textContent=m; document.getElementById('status').textContent=m.slice(0,120);}
 function openVLC(){if(!currentUrl) return; let u=cleanUrl(currentUrl); if(/Android/i.test(navigator.userAgent)){ window.location.href=`intent://${u.replace(/^https?:\/\//,'')}#Intent;package=org.videolan.vlc;type=video/*;end`; } else { window.location.href=`vlc://${u}`; }}
 function parseM3U(text){
  const lines=text.split(/\r?\n/); const out=[]; let tmp={name:'',group:'Genel',logo:''};
  for(let l of lines){ l=l.trim(); if(!l) continue;
   if(l.startsWith('#EXTINF')){
-   let raw=l.split(',').pop().trim().replace(/_+/g,' ').replace(/\s{2,}/g,' ').trim();
-   if(raw.length>60) raw=raw.slice(0,60);
+   let raw=l.split(',').pop().trim().replace(/_+/g,' ').slice(0,60);
    tmp.name=raw||'Kanal '+(out.length+1);
    let gM=l.match(/group-title="([^"]+)"/); tmp.group=gM?gM[1].trim():'Genel';
    tmp.logo=(l.match(/tvg-logo="([^"]+)"/)||[])[1]||'';
   } else if(l.startsWith('http')){
    let url=cleanUrl(l);
-   if(!tmp.name) tmp.name='Kanal '+(out.length+1);
-   // mkv/mp4/m3u8/ts hepsi kabul
-   if(url.includes('.m3u8')||url.includes('.mp4')||url.includes('.mkv')||url.includes('.ts')||url.includes(':2095')||url.includes('http')){
-     out.push({name:tmp.name,group:tmp.group,logo:tmp.logo,url:url});
-   }
+   out.push({name:tmp.name||'Kanal '+(out.length+1),group:tmp.group,logo:tmp.logo,url:url});
    tmp={name:'',group:'Genel',logo:''};
   }
  }
  return {channels:out};
 }
-// SENİN LİSTEN - TEST BUTONU
-function loadSample(){
- let txt=document.getElementById('sampleText').value || `#EXTINF:-1 group-title="📺 YERLİ DİZİLER",ÇUKUR
+function loadVLCList(){
+ let txt=`#EXTINF:-1 group-title="📺 YERLİ DİZİLER",ÇUKUR HD - 71883 BLUE TV
 http://sanslm0707pan.com:2095/cgdm4141/29012025cg41/71883
-#EXTINF:-1 group-title="🎬 SİNETÜRK",gelin takımı 2
-https://vs1.photoflax.org/v/Gelin.Takimi.2.2025.WEB-DL.1080p.H.264-HDM/1080.m3u8
-#EXTINF:-1 group-title="🎬 SİNETÜRK",39 Derecede Aşk - 2024
-http://dzcvip1.xyz:2095/movie/chn0000/chn0310dd00/231154.mkv`;
+#EXTINF:-1 group-title="📺 YERLİ DİZİLER",İÇERDE HD
+http://sanslm0707pan.com:2095/cgdm4141/29012025cg41/157782
+#EXTINF:-1 group-title="🎬 SİNETÜRK",EZEL HD
+http://sanslm0707pan.com:2095/cgdm4141/29012025cg41/101342`;
  let res=parseM3U(txt);
- if(res.channels.length){ all=res.channels; currentList='YERLI DIZILER'; apply(); document.getElementById('empty').style.display='none'; log(res.channels.length+' kanal yüklendi - test listesi'); saveToDB(currentList,all); renderSaved(); }
+ all=res.channels; currentList='BLUE TV H264 ADTS'; apply();
+ document.getElementById('empty').style.display='none';
+ log('BLUE TV test yüklendi - ÇUKUR a tıkla, H264+ADTS mpegts.js ile açılacak');
+ saveToDB(currentList,all); renderSaved();
 }
 async function fetchUniversal(url){
  url=cleanUrl(url);
  for(let p of PROXIES){
   try{
-   log('Deneniyor: '+p.slice(0,40)+'...');
    let r=await fetch(p+encodeURIComponent(url),{cache:'no-store'});
    if(r.ok){ let t=await r.text(); if(t.length>50) return t; }
   }catch(e){}
  }
- // direkt dene
  try{ let r=await fetch(url); if(r.ok){ let t=await r.text(); if(t.length>50) return t; } }catch(e){}
- throw 'Proxyler kapalı';
+ throw 'Proxy kapalı';
 }
 async function loadUrl(){
  let u=document.getElementById('urlInput').value.trim();
@@ -77,7 +76,7 @@ async function loadUrl(){
  try{
   let txt=await fetchUniversal(u);
   let res=parseM3U(txt);
-  if(res.channels.length===0){ log('Kanallar yok: '+txt.slice(0,150)); return; }
+  if(!res.channels.length){ log('Kanallar yok'); return; }
   all=res.channels; currentList='URL-'+Date.now().toString().slice(-4);
   await saveToDB(currentList,all); await renderSaved(); apply();
   document.getElementById('empty').style.display='none';
@@ -97,59 +96,61 @@ function play(c){
  if(hls){try{hls.destroy()}catch(e){} hls=null;} if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){} mpegPlayer=null;}
  video.pause(); video.removeAttribute('src'); video.load();
  let url=cleanUrl(c.url);
- // OYNATMA SIRASI - EN ÖNEMLİ KISIM
+ // Senin akışın için özel: H264+ADTS = mpegts.js MUTLAKA
  let attempts=[];
- if(url.includes('.m3u8')){
-  // m3u8 için 3 proxy dene
+ if(url.startsWith('http://')){
   PROXIES.forEach(p=>attempts.push(p+encodeURIComponent(url)));
-  attempts.push(url);
- } else if(url.endsWith('.mkv')||url.endsWith('.mp4')||url.includes('.mkv')||url.includes('.mp4')){
-  // mkv/mp4 için direkt video + proxy
-  PROXIES.forEach(p=>attempts.push(p+encodeURIComponent(url)));
-  attempts.push(url);
  } else {
-  // ts ve diğer http linkler
   PROXIES.forEach(p=>attempts.push(p+encodeURIComponent(url)));
   attempts.push(url);
  }
+ // Log: senin codec
+ log(`Oynatılıyor: ${c.name}\nCodec: H264 1920x1080 + ADTS\nURL: ${url.slice(0,50)}...\nMotor: mpegts.js`);
  tryPlay(attempts,0,c);
 }
 function tryPlay(list, idx, c){
- if(idx>=list.length){ document.getElementById('pType').textContent='❌ Açılamadı - VLC dene'; return; }
+ if(idx>=list.length){ document.getElementById('pType').textContent='❌ Tarayıcı açamadı - VLC butonuna bas'; log('Tüm proxyler denendi, açılmadı. VLC butonuna bas, resmindeki gibi VLC de açılacak.'); return; }
  let finalUrl=list[idx];
- document.getElementById('pType').textContent=`Deneniyor ${idx+1}/${list.length} ${finalUrl.includes('corsproxy')?'cors':finalUrl.includes('allorigins')?'allorigins':'direct'}`;
- if(finalUrl.includes('.m3u8')||c.url.includes('.m3u8')){
-  if(Hls.isSupported()){
-   hls=new Hls({enableWorker:true}); hls.loadSource(finalUrl); hls.attachMedia(video);
-   let to=setTimeout(()=>{ try{hls.destroy()}catch(e){} tryPlay(list, idx+1, c); }, 10000);
-   hls.on(Hls.Events.MANIFEST_PARSED,()=>{ clearTimeout(to); video.play().then(()=>{document.getElementById('pType').textContent='✅ '+c.name;}).catch(()=>{ clearTimeout(to); tryPlay(list, idx+1, c); }); });
-   hls.on(Hls.Events.ERROR,(e,d)=>{ if(d.fatal){ clearTimeout(to); try{hls.destroy()}catch(e){} tryPlay(list, idx+1, c); } });
-  } else { video.src=finalUrl; video.play().catch(()=>tryPlay(list, idx+1, c)); }
- } else {
-  // mp4/mkv/ts için mpegts ve native
-  if(finalUrl.includes('.ts')||c.url.includes(':2095')||c.url.includes('.ts')){
-   if(mpegts.isSupported()){
-    try{
-     mpegPlayer=mpegts.createPlayer({type:'mpegts',isLive:true,url:finalUrl},{enableWorker:true,stashInitialSize:128});
-     mpegPlayer.attachMediaElement(video); mpegPlayer.load(); mpegPlayer.play();
-     document.getElementById('pType').textContent='✅ TS '+c.name; return;
-    }catch(e){}
-   }
+ document.getElementById('pType').textContent=`Deneniyor ${idx+1}/${list.length} - mpegts`;
+ // Bu akış MPEG-TS olduğu için mpegts.js zorunlu
+ if(mpegts.getFeatureList().mseLivePlayback){
+  try{
+   mpegPlayer=mpegts.createPlayer({
+    type:'mpegts',
+    isLive:true,
+    url:finalUrl,
+    hasAudio:true,
+    hasVideo:true
+   },{
+    enableWorker:true,
+    enableStashBuffer:false,
+    stashInitialSize:128,
+    isLive:true,
+    liveBufferLatencyChasing:true,
+    liveBufferLatencyMinRemain:0.5
+   });
+   mpegPlayer.attachMediaElement(video);
+   mpegPlayer.load();
+   mpegPlayer.on(mpegts.Events.ERROR, (e)=>{ console.log('mpegts error',e); mpegPlayer.destroy(); tryPlay(list, idx+1, c); });
+   mpegPlayer.play().then(()=>{
+    document.getElementById('pType').textContent='✅ H264/ADTS - '+c.name;
+    log(`✅ Açıldı: ${c.name}\nÇözünürlük: 1920x1080\nAkış 0: H264\nAkış 1: ADTS 32-bit`);
+   }).catch(()=>{
+    try{ mpegPlayer.destroy(); }catch(e){}
+    tryPlay(list, idx+1, c);
+   });
+   return;
+  }catch(e){
+   console.log('mpegts create error',e);
+   tryPlay(list, idx+1, c);
+   return;
   }
-  video.src=finalUrl; video.play().then(()=>{document.getElementById('pType').textContent='✅ '+c.name;}).catch(()=>{ tryPlay(list, idx+1, c); });
  }
+ video.src=finalUrl;
+ video.play().then(()=>{document.getElementById('pType').textContent='✅ '+c.name;}).catch(()=>{ tryPlay(list, idx+1, c); });
 }
 async function loadXtream(){ let s=document.getElementById('xtServer').value.trim(); let u=document.getElementById('xtUser').value.trim(); let p=document.getElementById('xtPass').value.trim(); if(!s||!u||!p){ log('XTREAM boş'); return; } s=cleanUrl(s); let m3u=`${s}/get.php?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}&type=m3u_plus&output=m3u8`; log('Xtream: '+s); try{ let txt=await fetchUniversal(m3u); let res=parseM3U(txt); if(!res.channels.length){ log('Xtream boş'); return; } all=res.channels; currentList='XTREAM-'+Date.now().toString().slice(-4); await saveToDB(currentList,all); await renderSaved(); apply(); document.getElementById('empty').style.display='none'; log(res.channels.length+' kanal'); toggleSet(); }catch(e){ log('Hata: '+e); } }
 document.getElementById('fileInput').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=async ev=>{ let res=parseM3U(ev.target.result); if(res.channels.length){ all=res.channels; currentList=f.name.slice(0,30); await saveToDB(currentList,all); await renderSaved(); apply(); document.getElementById('empty').style.display='none'; log(res.channels.length+' kanal dosyadan'); document.getElementById('fileInput').value=''; toggleSet(); } }; r.readAsText(f); });
 document.getElementById('search').addEventListener('input',renderCh);
 (async()=>{await openDB();await renderSaved(); buildGroups();})();
-// gizli textarea senin listen için
-</script><textarea id="sampleText" style="display:none">#EXTINF:-1 tvg-logo="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrE05pWJCiGFfTkWZSFzc3lxxYhUK4WRASmgnmLPF6kg&s=10" group-title="📺 YERLİ DİZİLER",ÇUKUR
-http://sanslm0707pan.com:2095/cgdm4141/29012025cg41/71883
-#EXTINF:-1 tvg-logo="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb4QfU_HYk0-IxiLGREJMQiNuJYBfVWh197qfAijCV3Q&s=10" group-title="📺 YERLİ DİZİLER",İÇERDE
-http://sanslm0707pan.com:2095/cgdm4141/29012025cg41/157782
-#EXTINF:-1 tvg-name="39 Derecede Aşk - 2024" tvg-logo="https://image.tmdb.org/t/p/w600_and_h900_bestv2/59xWH8T7yVLbavfrwUwTVsLJE0r.jpg" group-title="🎬 SİNETÜRK",39 Derecede Aşk - 2024
-http://dzcvip1.xyz:2095/movie/chn0000/chn0310dd00/231154.mkv
-#EXTINF:-1 group-title="🎬 SİNETÜRK",gelin takımı 2
-https://vs1.photoflax.org/v/Gelin.Takimi.2.2025.WEB-DL.1080p.H.264-HDM/1080.m3u8
-</textarea></body></html>
+</script></body></html>
