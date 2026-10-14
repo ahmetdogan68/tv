@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIRTI TV - GLOBAL REFERER FIX</title>
+<title>MIRTI TV - WORKER FINAL</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <style>
@@ -25,30 +25,30 @@ input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;backgro
 </head>
 <body>
 <div id="left">
-<div id="logoTop"><b style="color:#ff0a16">MIRTI TV - REFERER FIX</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
+<div id="logoTop"><b style="color:#ff0a16">MIRTI TV - WORKER</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
 <div style="display:flex;padding:6px;gap:4px"><div class="mainCat active" onclick="setMain('Tümü')">Tümü</div><div class="mainCat" onclick="setMain('Canlı')">CANLI</div><div class="mainCat" onclick="setMain('Film')">FİLM</div><div class="mainCat" onclick="setMain('Dizi')">DİZİ</div></div>
-<div style="padding:6px;background:#151d32;font-size:11px;color:#ff0a16;display:flex;justify-content:space-between"><span>GRUPLAR</span><span id="groupCount">0</span></div>
+<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>✅ WORKER AKTİF</span><span id="groupCount">0</span></div>
 <div id="groupList"></div>
 </div>
 <div id="mid">
 <div style="padding:10px;background:#ff0a16;font-weight:bold;display:flex;justify-content:space-between"><span id="midTitle">KANALLAR</span><span id="midCount">0</span></div>
-<input id="search" placeholder="🔍 Ara..."><div id="channelList"></div>
+<input id="search" placeholder="🔍 Ara..." style="margin:6px;width:94%"><div id="channelList"></div>
 </div>
 <div id="playerArea">
-<div id="empty"><h2 style="color:#ff0a16">MIRTI TV</h2><p style="font-size:11px;color:#8aa;margin-top:6px">Global Referer Fix - Televizo gibi</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button></div>
+<div id="empty"><h2 style="color:#0f0">✅ WORKER HAZIR</h2><p style="font-size:11px;color:#8aa;margin-top:6px">Televizo gibi Referer gönderiyor<br>Patron / Arda / Atom / Kanal D / Star</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button><div style="margin-top:10px;font-size:9px;color:#555">hidden-meadow-0d62.a-dogan.workers.dev</div></div>
 <video id="player" controls playsinline webkit-playsinline crossorigin="anonymous"></video>
-<div id="bar"><span id="now">Hazır</span><span id="pType">Hazır - Global Fix</span></div>
+<div id="bar"><span id="now">Hazır - Worker Modu</span><span id="pType">Hazır</span></div>
 <div id="settings">
-<div style="display:flex;justify-content:space-between"><b style="color:#ff0a16">AYARLAR</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
+<div style="display:flex;justify-content:space-between"><b style="color:#0f0">✅ WORKER FINAL</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
 <div id="savedLists" style="margin-top:8px;max-height:120px;overflow-y:auto;background:#151d32;padding:6px;border-radius:6px"></div>
 <div class="tabs"><div class="tab active" onclick="openTab(0)">URL</div><div class="tab" onclick="openTab(1)">DOSYA</div></div>
 <div class="box active" id="b0"><input id="urlInput" value="https://dpaste.com/4T2DNM3J3.txt"><button class="btn" onclick="loadUrl()">YÜKLE</button></div>
 <div class="box" id="b1"><label for="fileInput" style="display:block;text-align:center;color:#ff0a16;border:2px dashed #ff0a16;padding:16px;border-radius:8px">📁 DOSYADAN SEÇ</label><input type="file" id="fileInput" accept=".m3u,.txt" style="display:none"></div>
-<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">Global Referer Fix Hazır</div>
-<div style="margin-top:8px;padding:8px;background:#1a2340;border-radius:6px;font-size:10px;color:#8aa">Televizo gibi: listedeki http-referrer neyse proxy sunucu üzerinden gönderiliyor. Kanal D / Star / beIN hepsi için global çalışır.</div>
+<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">Worker aktif - Televizo gibi açacak</div>
 </div>
 </div>
 <script>
+const MY_PROXY = 'https://hidden-meadow-0d62.a-dogan.workers.dev';
 let all=[]; let hls=null; let mpegPlayer=null; let mainCat='Tümü'; let activeGroup='Tümü'; let currentList=''; const video=document.getElementById('player');
 let db;
 function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_FIX',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
@@ -58,11 +58,7 @@ async function deleteFromDB(name){if(!db) await openDB();return new Promise((r)=
 function toggleSet(){document.getElementById('settings').classList.toggle('open');}
 function openTab(i){document.querySelectorAll('.box').forEach((b,idx)=>b.classList.toggle('active',idx===i));document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));}
 function catOf(n,g){let s=(n+' '+g).toLowerCase();if(/film|movie|vod/.test(s))return 'Film';if(/dizi|series/.test(s))return 'Dizi';return 'Canlı';}
-function splitPipe(url){
-  if(!url.includes('|')) return {url, headers:{}};
-  let [base, query] = url.split('|'); let headers={}; query.split('&').forEach(p=>{let [k,v]=p.split('=');if(k&&v) headers[k.trim().toLowerCase()]=decodeURIComponent(v.trim());});
-  return {url:base.trim(), headers};
-}
+function splitPipe(url){if(!url.includes('|')) return {url, headers:{}};let [base, query]=url.split('|');let headers={};query.split('&').forEach(p=>{let [k,v]=p.split('=');if(k&&v) headers[k.trim().toLowerCase()]=decodeURIComponent(v.trim());});return {url:base.trim(), headers};}
 function parseM3U(text){
   const lines=text.split(/\r?\n/); const out=[]; let tmp={name:'',group:'Genel',logo:'',referrer:''}; let lastRef='';
   for(let l of lines){l=l.trim();if(!l)continue;
@@ -88,7 +84,7 @@ function buildGroups(){
   let base=all.filter(c=>mainCat==='Tümü'||c.cat===mainCat);
   let groups=['Tümü',...new Set(base.map(c=>c.group))].filter(Boolean);
   const box=document.getElementById('groupList'); box.innerHTML='';
-  if(all.length===0){box.innerHTML='<div style="padding:10px;text-align:center;color:#5a6a8a;font-size:10px">Liste yok</div>';document.getElementById('groupCount').textContent='0';return;}
+  if(all.length===0){box.innerHTML='<div style="padding:10px;text-align:center;color:#5a6a8a;font-size:10px">Liste ekle</div>';document.getElementById('groupCount').textContent='0';return;}
   document.getElementById('groupCount').textContent=groups.length-1;
   groups.forEach(g=>{
     let cnt=g==='Tümü'?base.length:base.filter(x=>x.group===g).length;
@@ -107,101 +103,64 @@ function renderCh(){
   list.forEach(c=>{
     let d=document.createElement('div'); d.className='ch';
     d.innerHTML=`<img src="${c.logo}" onerror="this.src='https://via.placeholder.com/42/0b1120/ff0a16?text=TV'"><div style="flex:1;min-width:0"><div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:bold">${c.name}</div><div style="font-size:10px;color:#8aa">${c.group} ${c.referrer?'•Ref':''}</div></div><span>▶</span>`;
-    d.onclick=()=>{document.querySelectorAll('.ch').forEach(x=>x.classList.remove('active'));d.classList.add('active');playGlobal(c,0);};
+    d.onclick=()=>{document.querySelectorAll('.ch').forEach(x=>x.classList.remove('active'));d.classList.add('active');playWorker(c,0);};
     box.appendChild(d);
   });
 }
 
-// GLOBAL FIX - TELEVIZO GIBI - KANAL KANAL DEGIL
 function buildProxyUrl(originalUrl, referrer, attempt){
-  // attempt 0: direkt (referer yoksa)
-  // attempt 1-4: proxy sunucu referer'ı kendi gönderiyor
   const encUrl = encodeURIComponent(originalUrl);
   const encRef = encodeURIComponent(referrer||'');
-
   const proxies = [
     originalUrl,
-    // En önemli fix: corsproxy + referer header'ı server-side ekliyor
-    `https://corsproxy.io/?${referrer?`referrer=${encRef}&`:''}url=${encUrl}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encUrl}`,
-    `https://thingproxy.freeboard.io/fetch/${originalUrl}`,
-    // Worker için: Worker'ın kendi domain'ini referer olarak kullan
+    `${MY_PROXY}/?url=${encUrl}&ref=${encRef}`,
+    `${MY_PROXY}/?url=${encUrl}&ref=https://patronsaha.cfd/`,
+    `${MY_PROXY}/?url=${encUrl}&ref=https://ardaspor31.top`,
     originalUrl.replace('http://','https://')
   ];
   return proxies[attempt] || originalUrl;
 }
 
-function playGlobal(c, attempt){
+function playWorker(c, attempt){
   if(attempt===0){document.getElementById('empty').style.display='none'; document.getElementById('now').textContent=c.name;}
-  if(attempt>=5){document.getElementById('pType').textContent='Açılamadı - Proxy gerekli'; return;}
-
+  if(attempt>=5){document.getElementById('pType').textContent='Açılamadı - Worker blokladı'; return;}
   let ref = c.referrer || '';
   let url = buildProxyUrl(c.url, ref, attempt);
+  document.getElementById('pType').textContent = `Worker ${attempt+1}/5 ${ref? ref.split('/')[2]:''}...`;
 
-  document.getElementById('pType').textContent = `Deneme ${attempt+1}/5 ${ref? 'Ref: '+ref.split('/')[2]:''}...`;
-
-  if(hls){try{hls.destroy()}catch(e){} hls=null;}
-  if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){} mpegPlayer=null;}
+  if(hls){try{hls.destroy()}catch(e){} hls=null;} if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){} mpegPlayer=null;}
   video.pause(); video.removeAttribute('src'); video.load();
 
-  //.ts ise mpegts
-  if(c.url.includes('.ts') && mpegts.isSupported() && attempt===0){
-    try{
-      mpegPlayer=mpegts.createPlayer({type:'mse', isLive:true, url:url},{liveBufferLatencyChasing:true});
-      mpegPlayer.attachMediaElement(video); mpegPlayer.load();
-      let to=setTimeout(()=>{try{mpegPlayer.destroy()}catch(e){} playGlobal(c, attempt+1);},8000);
-      mpegPlayer.on(mpegts.Events.MEDIA_INFO, ()=>{clearTimeout(to); video.play().then(()=>{document.getElementById('pType').textContent='Oynatılıyor (MPEG-TS)';});});
-      mpegPlayer.on(mpegts.Events.ERROR, ()=>{clearTimeout(to); playGlobal(c, attempt+1);});
-      mpegPlayer.play().catch(()=>{});
-      return;
-    }catch(e){}
+  class WorkerLoader extends Hls.DefaultConfig.loader {
+    load(context, config, callbacks){
+      let original = context.url;
+      // Tüm.ts ve.m3u8 parçalarını da worker üzerinden geçir
+      if(!original.includes(MY_PROXY) &&!original.includes('data:')){
+        const enc = encodeURIComponent(original);
+        const encRef = encodeURIComponent(ref);
+        context.url = `${MY_PROXY}/?url=${enc}&ref=${encRef}`;
+      }
+      super.load(context, config, callbacks);
+    }
   }
 
   if(Hls.isSupported()){
-    // GLOBAL: Loader'ı değiştir - fetch ile proxy üzerinden
-    class RefererLoader extends Hls.DefaultConfig.loader{
-      load(context, config, callbacks){
-        let newUrl = context.url;
-        // Eğer orijinal URL deathless worker ise ve referer varsa, proxy URL kullan
-        if(ref && context.url.includes('workers.dev')){
-          newUrl = `https://corsproxy.io/?url=${encodeURIComponent(context.url)}`;
-          // Not: corsproxy referer'ı server-side ekleyemezse kendi worker'ını deploy etmen lazım
-        }
-        context.url = newUrl;
-        super.load(context, config, callbacks);
-      }
-    }
-
-    let cfg={
-      enableWorker:true,
-      loader: RefererLoader,
-      xhrSetup: function(xhr, url2){
-        try{
-          if(ref){
-            // Tarayıcı engellese de dene, proxy zaten gönderiyor
-            xhr.setRequestHeader('Referer', ref);
-            xhr.setRequestHeader('Origin', new URL(ref).origin);
-          }
-        }catch(e){}
-      }
-    };
-
+    let cfg={ enableWorker:true, loader: WorkerLoader };
     hls=new Hls(cfg);
     hls.loadSource(url);
     hls.attachMedia(video);
-    let to=setTimeout(()=>{hls.destroy(); playGlobal(c, attempt+1);},8000);
+    let to=setTimeout(()=>{hls.destroy(); playWorker(c, attempt+1);},10000);
     hls.on(Hls.Events.MANIFEST_PARSED,()=>{
       clearTimeout(to);
       video.play().then(()=>{
-        document.getElementById('pType').textContent=`Oynatılıyor ${attempt>0?'(Proxy '+attempt+')':''} ${ref?'✓Ref':''}`;
-      }).catch(()=>{document.getElementById('pType').textContent='Dokun';});
+        document.getElementById('pType').textContent=`✅ Oynatılıyor Worker ${ref?'✓Ref':''}`;
+      }).catch(()=>{document.getElementById('pType').textContent='Videoya dokun';});
     });
     hls.on(Hls.Events.ERROR,(e,d)=>{
-      if(d.fatal){clearTimeout(to); hls.destroy(); playGlobal(c, attempt+1);}
+      if(d.fatal){clearTimeout(to); hls.destroy(); playWorker(c, attempt+1);}
     });
   }else{
-    video.src=url;
-    video.play().catch(()=>playGlobal(c, attempt+1));
+    video.src=url; video.play().catch(()=>playWorker(c, attempt+1));
   }
 }
 
