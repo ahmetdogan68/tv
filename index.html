@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIRTI TV - PLAYER V3</title>
+<title>MIRTI TV V5 - GENEL FIX</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <style>
@@ -20,14 +20,15 @@
 .tabs{display:flex;gap:4px;margin-top:8px}.tab{flex:1;padding:10px;background:#1a2744;border-radius:6px;text-align:center;cursor:pointer;font-size:11px}.tab.active{background:#ff0a16}
 .box{display:none;margin-top:8px;padding:10px;background:#151d32;border-radius:8px;border:1px solid #1e2d4a}.box.active{display:block}
 input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;background:#060a14;color:#fff;margin-top:5px}.btn{width:100%;padding:12px;background:#ff0a16;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:6px}
+.epg{font-size:10px;color:#0f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
 @media(max-width:900px){body{flex-direction:column}#playerArea{order:1;height:35vh;min-height:220px}#left{order:2;width:100%;min-width:100%;height:28vh;border-right:none;border-top:2px solid #ff0a16}#mid{order:3;width:100%;min-width:100%;height:40vh;border-right:none;border-top:2px solid #1e2d4a}#settings{width:100%}}
 </style>
 </head>
 <body>
 <div id="left">
-<div id="logoTop"><b style="color:#ff0a16">MIRTI TV V3</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
+<div id="logoTop"><b style="color:#ff0a16">MIRTI V5</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
 <div style="display:flex;padding:6px;gap:4px"><div class="mainCat active" onclick="setMain('Tümü')">Tümü</div><div class="mainCat" onclick="setMain('Canlı')">CANLI</div><div class="mainCat" onclick="setMain('Film')">FİLM</div><div class="mainCat" onclick="setMain('Dizi')">DİZİ</div></div>
-<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>PLAYER V3 - AKILLI</span><span id="groupCount">0</span></div>
+<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>V5 GENEL FIX</span><span id="groupCount">0</span></div>
 <div id="groupList"></div>
 </div>
 <div id="mid">
@@ -35,23 +36,60 @@ input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;backgro
 <input id="search" placeholder="🔍 Ara..." style="margin:6px;width:94%"><div id="channelList"></div>
 </div>
 <div id="playerArea">
-<div id="empty"><h2 style="color:#0f0">PLAYER V3</h2><p style="font-size:11px;color:#8aa;margin-top:6px">Ref varsa Worker<br>Ref yoksa Direkt<br>Zeus + Patron + Kanal D</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button></div>
+<div id="empty"><h2 style="color:#0f0">V5 GENEL</h2><p style="font-size:11px;color:#8aa;margin-top:6px">http, IP:PORT, /play/<br>hepsi otomatik Worker<br>Spor + Ulusal + D-SMART</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button></div>
 <video id="player" controls playsinline webkit-playsinline crossorigin="anonymous"></video>
-<div id="bar"><span id="now">Hazır</span><span id="pType">V3 Hazır</span></div>
+<div id="bar"><span id="now">Hazır V5</span><span id="pType">V5</span><span id="epgNow" style="color:#0f0"></span></div>
 <div id="settings">
-<div style="display:flex;justify-content:space-between"><b style="color:#0f0">V3 AYAR</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
-<div id="savedLists" style="margin-top:8px;max-height:120px;overflow-y:auto;background:#151d32;padding:6px;border-radius:6px"></div>
-<div class="tabs"><div class="tab active" onclick="openTab(0)">URL</div><div class="tab" onclick="openTab(1)">DOSYA</div></div>
-<div class="box active" id="b0"><input id="urlInput" value="https://dpaste.com/4T2DNM3J3.txt"><button class="btn" onclick="loadUrl()">YÜKLE</button></div>
+<div style="display:flex;justify-content:space-between"><b style="color:#0f0">V5 AYAR + EPG</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
+<div id="savedLists" style="margin-top:8px;max-height:100px;overflow-y:auto;background:#151d32;padding:6px;border-radius:6px"></div>
+<div class="tabs"><div class="tab active" onclick="openTab(0)">URL</div><div class="tab" onclick="openTab(1)">DOSYA</div><div class="tab" onclick="openTab(2)">EPG</div></div>
+<div class="box active" id="b0"><input id="urlInput" value="https://dpaste.com/4T2DNM3J3.txt"><button class="btn" onclick="loadUrl()">LİSTE YÜKLE</button></div>
 <div class="box" id="b1"><label for="fileInput" style="display:block;text-align:center;color:#ff0a16;border:2px dashed #ff0a16;padding:16px;border-radius:8px">📁 DOSYADAN SEÇ</label><input type="file" id="fileInput" accept=".m3u,.txt" style="display:none"></div>
-<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">V3 Hazır</div>
+<div class="box" id="b2"><input id="epgUrl" value="" placeholder="https://.../epg.xml"><button class="btn" onclick="loadEPG()">EPG YÜKLE</button><div id="epgInfo" style="font-size:10px;color:#8aa;margin-top:6px"></div></div>
+<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">V5 Hazır</div>
 </div>
 </div>
 <script>
 const MY_PROXY = 'https://hidden-meadow-0d62.a-dogan.workers.dev';
 let all=[]; let hls=null; let mpegPlayer=null; let mainCat='Tümü'; let activeGroup='Tümü'; let currentList=''; const video=document.getElementById('player');
-let db;
-function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_V3',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
+let db; let epgData={};
+
+const NATIONAL_REFS = {
+  'kanal d': 'https://www.kanald.com.tr/',
+  'star': 'https://www.startv.com.tr/',
+  'show': 'https://www.showtv.com.tr/',
+  'atv': 'https://www.atv.com.tr/',
+  'tv8': 'https://www.tv8.com.tr/',
+  'ntv': 'https://www.ntv.com.tr/',
+  'szc': 'https://www.sozcu.com.tr/',
+  'sözcü': 'https://www.sozcu.com.tr/',
+  'krt': 'https://www.krttv.com.tr/',
+  'koza': 'https://www.kozatv.com.tr/',
+  'tele1': 'https://tele1.com.tr/'
+};
+function getNationalRef(name){ let low=name.toLowerCase(); for(let k in NATIONAL_REFS){ if(low.includes(k)) return NATIONAL_REFS[k]; } return ''; }
+
+// GENEL TESPİT - IP'YE ÖZEL DEĞİL
+function isBlockedByBrowser(url){
+  if(!url) return false;
+  if(url.startsWith('http://')) return true;
+  if(/:\d{2,5}\//.test(url)) return true;
+  if(/\d+\.\d+\.\d+\.\d+/.test(url)) return true;
+  if(url.includes('/play/')) return true;
+  return false;
+}
+function isRawTS(url){
+  if(!url) return false;
+  if(url.includes('.m3u8')) return false;
+  if(url.includes('.mp4')) return false;
+  if(url.includes('/play/')) return true;
+  if(/:\d{2,5}\//.test(url)) return true;
+  if(/\d+\.\d+\.\d+\.\d+/.test(url)) return true;
+  if(/\/[a-z0-9]{3,8}(\?.*)?$/.test(url) &&!url.includes('.m3u')) return true;
+  return false;
+}
+
+function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_V5',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
 async function saveToDB(name, channels){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name,channels,count:channels.length});tx.oncomplete=()=>r();});}
 async function getAllFromDB(){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readonly');let q=tx.objectStore('lists').getAll();q.onsuccess=()=>r(q.result);});}
 async function deleteFromDB(name){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').delete(name);tx.oncomplete=()=>r();});}
@@ -60,21 +98,22 @@ function openTab(i){document.querySelectorAll('.box').forEach((b,idx)=>b.classLi
 function catOf(n,g){let s=(n+' '+g).toLowerCase();if(/film|movie|vod/.test(s))return 'Film';if(/dizi|series/.test(s))return 'Dizi';return 'Canlı';}
 function splitPipe(url){if(!url.includes('|')) return {url, headers:{}};let [base, query]=url.split('|');let headers={};query.split('&').forEach(p=>{let [k,v]=p.split('=');if(k&&v) headers[k.trim().toLowerCase()]=decodeURIComponent(v.trim());});return {url:base.trim(), headers};}
 function parseM3U(text){
-  const lines=text.split(/\r?\n/); const out=[]; let tmp={name:'',group:'Genel',logo:'',referrer:''}; let lastRef='';
+  const lines=text.split(/\r?\n/); const out=[]; let tmp={name:'',group:'Genel',logo:'',referrer:'',tvgId:''}; let lastRef='';
   for(let l of lines){l=l.trim();if(!l)continue;
     if(l.startsWith('#EXTVLCOPT:http-referrer=')){lastRef=l.split('=')[1]||'';continue;}
+    if(l.startsWith('#EXTM3U')){ let epgUrlMatch=l.match(/x-tvg-url="([^"]+)"/)||l.match(/url-tvg="([^"]+)"/); if(epgUrlMatch &&!document.getElementById('epgUrl').value) document.getElementById('epgUrl').value=epgUrlMatch[1]; }
     if(l.startsWith('#EXTINF')){
-      tmp.name=l.split(',').pop().trim()||''; let gM=l.match(/group-title="([^"]+)"/); tmp.group=gM?gM[1].trim():'Genel'; tmp.logo=(l.match(/tvg-logo="([^"]+)"/)||[])[1]||'';
+      tmp.name=l.split(',').pop().trim()||''; let gM=l.match(/group-title="([^"]+)"/); tmp.group=gM?gM[1].trim():'Genel'; tmp.logo=(l.match(/tvg-logo="([^"]+)"/)||[])[1]||''; tmp.tvgId=(l.match(/tvg-id="([^"]+)"/)||[])[1]||'';
       let r1=(l.match(/http-referrer="([^"]+)"/)||[])[1]||''; let r2=(l.match(/referrer="([^"]+)"/)||[])[1]||''; tmp.referrer=r1||r2||lastRef||''; if(lastRef) lastRef='';
     }else if(!l.startsWith('#')&&l.startsWith('http')){
       if(!tmp.name) tmp.name='Kanal '+(out.length+1);
       let parsed=splitPipe(l);
-      out.push({name:tmp.name,group:tmp.group,logo:tmp.logo,cat:catOf(tmp.name,tmp.group),url:parsed.url,referrer:tmp.referrer||parsed.headers.referrer||parsed.headers.referer||''});
-      tmp={name:'',group:'Genel',logo:'',referrer:''};
+      out.push({name:tmp.name,group:tmp.group,logo:tmp.logo,tvgId:tmp.tvgId,cat:catOf(tmp.name,tmp.group),url:parsed.url,referrer:tmp.referrer||parsed.headers.referrer||parsed.headers.referer||''});
+      tmp={name:'',group:'Genel',logo:'',referrer:'',tvgId:''};
     }
   } return {channels:out};
 }
-async function fetchDirect(url){try{let r=await fetch(url,{cache:'no-store'});if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}const ps=['https://api.allorigins.win/raw?url='+encodeURIComponent(url),'https://corsproxy.io/?'+encodeURIComponent(url)];for(let p of ps){try{let r=await fetch(p);if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}}throw 'CORS';}
+async function fetchDirect(url){try{let r=await fetch(url,{cache:'no-store'});if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}const ps=['https://api.allorigins.win/raw?url='+encodeURIComponent(url),'https://corsproxy.io/?'+encodeURIComponent(url), `${MY_PROXY}/?url=${encodeURIComponent(url)}`];for(let p of ps){try{let r=await fetch(p);if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}}throw 'CORS';}
 async function loadUrl(){let u=document.getElementById('urlInput').value.trim();if(!u) return;let st=document.getElementById('status');st.textContent='Yükleniyor...';try{let txt=await fetchDirect(u);let res=parseM3U(txt);if(res.channels.length){all=res.channels;currentList=u.split('/').pop().slice(0,25);await saveToDB(currentList, all);await renderSaved();apply();document.getElementById('empty').style.display='none';st.textContent=res.channels.length+' kanal';toggleSet();}else{st.textContent='Kanal yok';}}catch(e){st.textContent='Yüklenemedi';}}
 async function renderSaved(){let lists=await getAllFromDB();const box=document.getElementById('savedLists');box.innerHTML='';lists.forEach(item=>{let d=document.createElement('div');d.style.cssText='padding:6px;background:#1a2340;margin:3px 0;border-radius:5px;display:flex;justify-content:space-between;border:1px solid #1e2d4a'+(item.name===currentList?';background:#ff0a16':'');d.innerHTML=`<span>📁 ${item.name} (${item.count})</span><span onclick="event.stopPropagation();delList('${item.name}')" style="color:#ff0a16">✕</span>`;d.onclick=()=>{all=item.channels;currentList=item.name;apply();document.getElementById('empty').style.display='none';toggleSet();};box.appendChild(d);});}
 async function delList(k){if(confirm(k+' sil?')){await deleteFromDB(k);await renderSaved();}}
@@ -94,6 +133,7 @@ function buildGroups(){
   });
   renderCh();
 }
+function getEPGTitle(c){ if(!c.tvgId) return ''; let list=epgData[c.tvgId]||epgData[c.name]||[]; return list[0]?.title||''; }
 function renderCh(){
   let base=all.filter(c=>mainCat==='Tümü'||c.cat===mainCat);
   let list=base.filter(c=>activeGroup==='Tümü'||c.group===activeGroup);
@@ -101,113 +141,111 @@ function renderCh(){
   const box=document.getElementById('channelList'); box.innerHTML='';
   document.getElementById('midTitle').textContent=activeGroup; document.getElementById('midCount').textContent=list.length;
   list.forEach(c=>{
+    let epg=getEPGTitle(c);
     let d=document.createElement('div'); d.className='ch';
-    d.innerHTML=`<img src="${c.logo}" onerror="this.src='https://via.placeholder.com/42/0b1120/ff0a16?text=TV'"><div style="flex:1;min-width:0"><div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:bold">${c.name}</div><div style="font-size:10px;color:#8aa">${c.group} ${c.referrer?'•Ref':''}</div></div><span>▶</span>`;
-    d.onclick=()=>{document.querySelectorAll('.ch').forEach(x=>x.classList.remove('active'));d.classList.add('active');playV3(c);};
+    d.innerHTML=`<img src="${c.logo}" onerror="this.src='https://via.placeholder.com/42/0b1120/ff0a16?text=TV'"><div style="flex:1;min-width:0"><div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:bold">${c.name}</div><div style="font-size:10px;color:#8aa">${c.group} ${c.referrer?'•Ref':''} ${isBlockedByBrowser(c.url)?'•Worker':''} ${isRawTS(c.url)?'•TS':''}</div>${epg?`<div class="epg">▶ ${epg}</div>`:''}</div><span>▶</span>`;
+    d.onclick=()=>{document.querySelectorAll('.ch').forEach(x=>x.classList.remove('active'));d.classList.add('active');playV5(c);};
     box.appendChild(d);
   });
 }
 
-// V3 OYNATICI - AKILLI, KANAL DÜŞÜRMEZ
-function playV3(c){
+// V5 GENEL OYNATICI
+function playV5(c){
   document.getElementById('empty').style.display='none';
   document.getElementById('now').textContent=c.name;
-  document.getElementById('pType').textContent = c.referrer? `Worker + Ref: ${c.referrer.split('/')[2]}` : 'Direkt';
-
+  let epg=getEPGTitle(c); document.getElementById('epgNow').textContent=epg?' | '+epg:'';
   if(hls){try{hls.destroy()}catch(e){} hls=null;}
   if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){} mpegPlayer=null;}
   video.pause(); video.removeAttribute('src'); video.load();
-
-  const ref = c.referrer || '';
-  const hasRef = ref.length > 5;
-
-  // 1..ts dosya ise - mpegts.js ile direkt dene (ref varsa worker ile)
-  if(c.url.includes('.ts')){
-    let tsUrl = hasRef? `${MY_PROXY}/?url=${encodeURIComponent(c.url)}&ref=${encodeURIComponent(ref)}` : c.url;
-    if(mpegts.isSupported()){
-      try{
-        mpegPlayer = mpegts.createPlayer({type:'mse', isLive:true, url:tsUrl},{liveBufferLatencyChasing:true});
-        mpegPlayer.attachMediaElement(video); mpegPlayer.load();
-        mpegPlayer.on(mpegts.Events.MEDIA_INFO, ()=>{ video.play(); document.getElementById('pType').textContent='Oynatılıyor (TS)'; });
-        mpegPlayer.on(mpegts.Events.ERROR, ()=>{ // ts olmazsa hls dene
-          if(hasRef) playHLS(c.url, ref); else {video.src=c.url; video.play();}
-        });
-        mpegPlayer.play(); return;
-      }catch(e){}
-    }
-  }
-
-  // 2. HLS ise
-  if(c.url.includes('.m3u8') || c.url.includes('.txt') || hasRef){
-    playHLS(c.url, ref);
+  let ref=c.referrer||getNationalRef(c.name)||'';
+  let url=c.url;
+  let blocked=isBlockedByBrowser(url);
+  let raw=isRawTS(url);
+  let attempts=[];
+  if(ref){
+    attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}&ref=${encodeURIComponent(ref)}`);
+    attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}&ref=https://patronsaha.cfd/`);
+    attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}&ref=https://ardaspor31.top`);
+    attempts.push(url);
+  }else if(blocked||raw){
+    attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}`);
+    attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url.replace('http://','https://'))}`);
+    attempts.push(url);
+    attempts.push(url.replace('http://','https://'));
   }else{
-    // 3. mp4 veya diğer - direkt
-    video.src = c.url;
-    video.play().then(()=>{document.getElementById('pType').textContent='Oynatılıyor (Direct)'}).catch(()=>{
-      // direct olmazsa hls dene
-      playHLS(c.url, ref);
-    });
+    attempts.push(url);
+    attempts.push(url.replace('http://','https://'));
+    attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}`);
   }
+  tryPlay(attempts,0,c,ref,raw);
 }
-
-function playHLS(originalUrl, ref){
-  const hasRef = ref && ref.length>5;
-
+function tryPlay(list, idx, c, ref, raw){
+  if(idx>=list.length){ document.getElementById('pType').textContent='Açılamadı - tüm yollar denendi'; return; }
+  let finalUrl=list[idx];
+  document.getElementById('pType').textContent=`Deneniyor ${idx+1}/${list.length} ${raw?'HAM-TS': ref?'REFLİ': isBlockedByBrowser(c.url)?'WORKER':''}`;
+  if(raw && mpegts.isSupported()){
+    try{
+      if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){}}
+      mpegPlayer=mpegts.createPlayer({type:'mpegts',isLive:true,url:finalUrl},{enableWorker:true,enableStashBuffer:false,stashInitialSize:128,liveBufferLatencyChasing:true});
+      mpegPlayer.attachMediaElement(video); mpegPlayer.load(); mpegPlayer.play();
+      let failed=false;
+      mpegPlayer.on(mpegts.Events.MEDIA_INFO,()=>{ if(!failed){ video.play(); document.getElementById('pType').textContent='✅ D-SMART/HAM-TS Oynatılıyor'; }});
+      mpegPlayer.on(mpegts.Events.ERROR,()=>{ failed=true; try{mpegPlayer.destroy()}catch(e){} tryPlay(list, idx+1, c, ref, raw); });
+      setTimeout(()=>{ if(video.readyState===0 &&!failed){ try{mpegPlayer.destroy()}catch(e){} tryPlay(list, idx+1, c, ref, raw); } }, 6000);
+      return;
+    }catch(e){}
+  }
   class SmartLoader extends Hls.DefaultConfig.loader{
     load(context, config, callbacks){
-      let u = context.url;
-      // SADECE ref varsa proxy'den geçir, yoksa dokunma - Zeus gibi bozulmaz
-      if(hasRef &&!u.includes(MY_PROXY) &&!u.startsWith('data:') &&!u.startsWith('blob:')){
-        context.url = `${MY_PROXY}/?url=${encodeURIComponent(u)}&ref=${encodeURIComponent(ref)}`;
+      let u=context.url;
+      if(!u.includes(MY_PROXY) &&!u.startsWith('data:') &&!u.startsWith('blob:')){
+        if(u.startsWith('http://') || /\d+\.\d+\.\d+\.\d+/.test(u) || u.includes('/play/') || isBlockedByBrowser(u)){
+          let r=ref||getNationalRef(c.name)||'';
+          context.url=r? `${MY_PROXY}/?url=${encodeURIComponent(u)}&ref=${encodeURIComponent(r)}` : `${MY_PROXY}/?url=${encodeURIComponent(u)}`;
+        }else if(ref){
+          context.url=`${MY_PROXY}/?url=${encodeURIComponent(u)}&ref=${encodeURIComponent(ref)}`;
+        }
       }
       super.load(context, config, callbacks);
     }
   }
-
-  let finalUrl = hasRef? `${MY_PROXY}/?url=${encodeURIComponent(originalUrl)}&ref=${encodeURIComponent(ref)}` : originalUrl;
-
   if(Hls.isSupported()){
-    hls = new Hls({
-      enableWorker:true,
-      loader: hasRef? SmartLoader : Hls.DefaultConfig.loader,
-      lowLatencyMode:false,
-      backBufferLength: 90
-    });
+    hls=new Hls({enableWorker:true,loader:SmartLoader,lowLatencyMode:false,backBufferLength:90});
     hls.loadSource(finalUrl);
     hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, ()=>{
-      video.play().then(()=>{document.getElementById('pType').textContent = hasRef? '✅ Worker ile Oynatılıyor' : '✅ Direkt Oynatılıyor';});
-    });
-    hls.on(Hls.Events.ERROR, (e,d)=>{
-      if(d.fatal){
-        document.getElementById('pType').textContent='Hata: '+d.type;
-        // fatal ise bir kere daha ref'siz dene
-        if(hasRef && finalUrl.includes(MY_PROXY)){
-          hls.destroy();
-          // yedek ref'ler dene
-          const backups = ['https://patronsaha.cfd/','https://ardaspor31.top','https://atomsportv517.top'];
-          let nextRef = backups.find(b=>b!==ref) || '';
-          if(nextRef) playHLS(originalUrl, nextRef);
-        }
-      }
-    });
-  }else if(video.canPlayType('application/vnd.apple.mpegurl')){
-    video.src = finalUrl;
-    video.play();
+    let to=setTimeout(()=>{ hls.destroy(); tryPlay(list, idx+1, c, ref, raw); }, 9000);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>{ clearTimeout(to); video.play().then(()=>{document.getElementById('pType').textContent='✅ '+c.name;}); });
+    hls.on(Hls.Events.ERROR,(e,d)=>{ if(d.fatal){ clearTimeout(to); hls.destroy(); tryPlay(list, idx+1, c, ref, raw); } });
+  }else{
+    video.src=finalUrl; video.play().then(()=>{document.getElementById('pType').textContent='✅ Oynatılıyor';}).catch(()=>{ tryPlay(list, idx+1, c, ref, raw); });
   }
 }
-
+async function loadEPG(){
+  let url=document.getElementById('epgUrl').value.trim(); if(!url) return;
+  let info=document.getElementById('epgInfo'); info.textContent='EPG yükleniyor...';
+  try{
+    let xmlText=await fetchDirect(url);
+    let parser=new DOMParser(); let xml=parser.parseFromString(xmlText,"text/xml");
+    epgData={};
+    xml.querySelectorAll('programme').forEach(p=>{
+      let ch=p.getAttribute('channel'); let title=p.querySelector('title')?.textContent||'';
+      if(!epgData[ch]) epgData[ch]=[]; epgData[ch].push({title, start:p.getAttribute('start')});
+    });
+    xml.querySelectorAll('channel').forEach(ch=>{
+      let id=ch.getAttribute('id'); let name=ch.querySelector('display-name')?.textContent||'';
+      if(name && epgData[id] &&!epgData[name]) epgData[name]=epgData[id];
+    });
+    info.textContent=Object.keys(epgData).length+' kanal EPG yüklendi ✅';
+    document.getElementById('status').textContent='EPG OK';
+    renderCh();
+  }catch(e){ info.textContent='EPG yüklenemedi: '+e; }
+}
 document.getElementById('fileInput').addEventListener('change',e=>{
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
   r.onload=async ev=>{
     let res=parseM3U(ev.target.result);
-    if(res.channels.length){
-      all=res.channels; currentList=f.name.slice(0,20);
-      await saveToDB(currentList,all); await renderSaved(); apply();
-      document.getElementById('empty').style.display='none'; toggleSet();
-      document.getElementById('status').textContent=res.channels.length+' kanal';
-    }
+    if(res.channels.length){ all=res.channels; currentList=f.name.slice(0,20); await saveToDB(currentList,all); await renderSaved(); apply(); document.getElementById('empty').style.display='none'; toggleSet(); document.getElementById('status').textContent=res.channels.length+' kanal'; }
   };
   r.readAsText(f);
 });
