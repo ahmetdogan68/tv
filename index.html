@@ -1,57 +1,64 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIRTI TV</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRTI - Kendi Listen</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0a;color:#fff;font-family:Arial;display:flex;height:100vh}
-#sidebar{width:280px;background:#111;border-right:1px solid #222;overflow-y:auto;padding:10px}
-#sidebar h2{color:#ff0000;text-align:center;padding:15px;font-size:22px;letter-spacing:2px}
-.channel{padding:12px;background:#1a1a1a;margin:6px 0;border-radius:8px;cursor:pointer;border:1px solid #222}
-.channel:hover{background:#ff0000;color:#fff}
-.channel.active{background:#ff0000}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;color:#fff;font-family:Arial;display:flex;height:100vh}
+#sidebar{width:300px;background:#111;border-right:1px solid #222;display:flex;flex-direction:column}
+#sidebar h2{color:#ff0000;text-align:center;padding:12px;font-size:20px}
+.upload{padding:10px;background:#1a1a1a;margin:10px;border-radius:8px;text-align:center;border:1px dashed #ff0000}
+.upload input{display:none}.upload label{cursor:pointer;color:#ff0000;font-weight:bold}
+#list{flex:1;overflow-y:auto;padding:10px}
+.channel{padding:10px;background:#1e1e1e;margin:5px 0;border-radius:6px;cursor:pointer;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.channel:hover,.channel.active{background:#ff0000}
 #main{flex:1;display:flex;flex-direction:column;background:#000}
-#player{flex:1;width:100%;background:#000}
-#info{padding:12px;background:#111;text-align:center}
-input{width:90%;margin:10px 5%;padding:10px;border-radius:8px;border:none;background:#222;color:#fff}
+#player{flex:1;width:100%}#info{padding:10px;background:#111;text-align:center;font-size:13px}
+input[type=text]{width:92%;margin:0 4%;padding:8px;border-radius:6px;border:none;background:#222;color:#fff}
 </style>
 </head>
 <body>
 <div id="sidebar">
 <h2>MIRTI TV</h2>
-<input type="text" id="search" placeholder="Kanal ara..." onkeyup="filterChannels()">
-<div id="list"></div>
+<div class="upload">
+<label for="fileInput">📁 KENDİ M3U LİSTENİ SEÇ</label>
+<input type="file" id="fileInput" accept=".m3u,.m3u8,.txt">
+<div style="font-size:11px;margin-top:6px;color:#888">m3u / m3u8 dosyası seç</div>
+</div>
+<input type="text" id="search" placeholder="Kanal ara...">
+<div id="list">Dosya seç, kanallar burada çıkacak</div>
 </div>
 <div id="main">
 <video id="player" controls autoplay></video>
-<div id="info">Kanal seç ve izle - MIRTI</div>
+<div id="info">Kendi listeni yükle - MIRTI</div>
 </div>
 <script>
-const channels=[
-{name:"TRT 1",url:"https://tv-trt1.medya.trt.com.tr/master.m3u8"},
-{name:"ATV",url:"https://a3a5fb5a.static.cdn.cdn.tv/tv/atv/master.m3u8"},
-{name:"Kanal D",url:"https://ciner-live.ercdn.net/kanald/kanald.m3u8"},
-{name:"Show TV",url:"https://ciner-live.ercdn.net/showtv/showtv.m3u8"},
-{name:"Star TV",url:"https://dogus-live.ercdn.net/startv/startv.m3u8"},
-{name:"TV8",url:"https://tv8-live.ercdn.net/tv8/tv8.m3u8"},
-{name:"TRT Spor",url:"https://tv-trtspor1.medya.trt.com.tr/master.m3u8"},
-{name:"A Spor",url:"https://a2a3efb5.static.cdn.cdn.tv/tv/aspor/master.m3u8"},
-{name:"TGRT Haber",url:"https://tgrthaber-live.ercdn.net/tgrthaber/tgrthaber.m3u8"},
-{name:"Halk TV",url:"https://halktv-live.ercdn.net/halktv/halktv.m3u8"},
-];
 const video=document.getElementById('player');
-const list=document.getElementById('list');
+const listEl=document.getElementById('list');
+const search=document.getElementById('search');
+let allChannels=[];
+function parseM3U(text){
+const lines=text.split('\n'); const channels=[];
+for(let i=0;i<lines.length;i++){
+let line=lines[i].trim();
+if(line.startsWith('#EXTINF')){
+let name=line.split(',').pop().trim();
+let url='';
+for(let j=i+1;j<lines.length;j++){
+let next=lines[j].trim();
+if(next &&!next.startsWith('#')){url=next; i=j; break;}
+}
+if(url)channels.push({name:name||'Kanal',url:url});
+}
+}
+return channels;
+}
 function render(arr){
-list.innerHTML='';
-arr.forEach((c,i)=>{
-const d=document.createElement('div');
-d.className='channel';
-d.textContent=c.name;
-d.onclick=()=>play(c,d);
-list.appendChild(d);
+listEl.innerHTML='';
+arr.forEach(c=>{
+const d=document.createElement('div'); d.className='channel'; d.textContent=c.name;
+d.onclick=()=>play(c,d); listEl.appendChild(d);
 });
 }
 function play(c,el){
@@ -59,21 +66,25 @@ document.querySelectorAll('.channel').forEach(e=>e.classList.remove('active'));
 if(el)el.classList.add('active');
 document.getElementById('info').textContent='Oynatılıyor: '+c.name;
 if(Hls.isSupported()){
-const hls=new Hls({enableWorker:true});
-hls.loadSource(c.url);
-hls.attachMedia(video);
+const hls=new Hls(); hls.loadSource(c.url); hls.attachMedia(video);
 hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play());
-}else if(video.canPlayType('application/vnd.apple.mpegurl')){
-video.src=c.url;
-video.play();
+hls.on(Hls.Events.ERROR,(e,data)=>{ if(data.fatal) { document.getElementById('info').textContent='Hata: '+c.name+' açılmıyor, başka dene'; }});
+}else{ video.src=c.url; video.play(); }
 }
-}
-function filterChannels(){
-const q=document.getElementById('search').value.toLowerCase();
-render(channels.filter(c=>c.name.toLowerCase().includes(q)));
-}
-render(channels);
-play(channels[0]);
+document.getElementById('fileInput').addEventListener('change',function(e){
+const file=e.target.files[0]; if(!file)return;
+const reader=new FileReader();
+reader.onload=function(ev){
+allChannels=parseM3U(ev.target.result);
+document.getElementById('info').textContent=allChannels.length+' kanal yüklendi';
+render(allChannels); if(allChannels[0])play(allChannels[0]);
+};
+reader.readAsText(file);
+});
+search.addEventListener('input',()=>{
+const q=search.value.toLowerCase();
+render(allChannels.filter(c=>c.name.toLowerCase().includes(q)));
+});
 </script>
 </body>
 </html>
