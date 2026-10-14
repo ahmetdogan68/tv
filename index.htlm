@@ -3,202 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlixaTV Tarzı M3U Player</title>
+<title>MIRTI TV Player</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/dashjs@latest/dist/dash.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.10/shaka-player.compiled.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Arial}
 body{background:#0a0a0f;color:#fff;display:flex;flex-direction:column;height:100vh;overflow:hidden}
 header{background:#111118;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #222}
-header h1{font-size:20px;color:#e50914;font-weight:900;letter-spacing:1px}
+header h1{font-size:22px;color:#e50914;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+header h1 img{width:36px;height:36px;border-radius:8px;object-fit:cover}
 header input{flex:1;min-width:250px;padding:10px 12px;border-radius:8px;border:1px solid #333;background:#1a1a24;color:#fff}
 header button{padding:10px 16px;border:none;border-radius:8px;background:#e50914;color:#fff;font-weight:700;cursor:pointer}
 header label.fileBtn{background:#222;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:14px}
 main{flex:1;display:flex;overflow:hidden}
 #sidebar{width:360px;min-width:300px;background:#111118;border-right:1px solid #222;display:flex;flex-direction:column}
-#controls{padding:10px;display:flex;flex-direction:column;gap:8px}
-#controls input{padding:9px;border-radius:8px;border:1px solid #333;background:#1a1a24;color:#fff;width:100%}
-#groups{display:flex;gap:6px;flex-wrap:wrap;padding:0 10px 10px;max-height:120px;overflow:auto}
-.chip{padding:6px 10px;border-radius:20px;background:#222;cursor:pointer;font-size:13px;border:1px solid #333}
-.chip.active{background:#e50914;border-color:#e50914}
 #list{flex:1;overflow-y:auto}
-.cat{padding:10px 12px;font-weight:800;color:#aaa;font-size:13px;text-transform:uppercase;position:sticky;top:0;background:#111118;z-index:2}
 .item{display:flex;gap:10px;align-items:center;padding:10px 12px;cursor:pointer;border-bottom:1px solid #1a1a24}
-.item:hover{background:#1c1c28}
-.item.active{background:#e50914}
+.item:hover{background:#1c1c28}.item.active{background:#e50914}
 .item img{width:44px;height:44px;border-radius:8px;object-fit:contain;background:#000;border:1px solid #333}
-.item.name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item.fav{margin-left:auto;font-size:18px}
 #playerArea{flex:1;display:flex;flex-direction:column;background:#000}
-#videoWrap{flex:1;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
-video{width:100%;height:100%;background:#000;object-fit:contain}
-#nowPlaying{padding:12px 16px;background:#111118;border-top:1px solid #222;display:flex;align-items:center;gap:12px}
-#nowPlaying img{width:56px;height:56px;border-radius:10px;object-fit:contain;background:#000}
-#info{color:#888;font-size:13px;margin-top:4px}
-.empty{padding:40px;text-align:center;color:#666}
-@media(max-width:800px){
-  #sidebar{width:100%;position:absolute;z-index:10;height:100%;background:#111118;display:none}
-  #sidebar.open{display:flex}
-  #menuBtn{display:block!important}
-#menuBtn{display:none;background:#222;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+video{width:100%;height:100%;background:#000}
+#nowPlaying{padding:12px 16px;background:#111118;border-top:1px solid #222}
 </style>
 </head>
 <body>
 <header>
-<button id="menuBtn">☰ Kanallar</button>
-<h1>FLIXA TV</h1>
-<input id="urlInput" placeholder="M3U / M3U8 Linkini yapıştır" />
+<h1><img src="https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.jpg" onerror="this.src='https://i.imgur.com/5R5Jp1L.png'"> MIRTI</h1>
+<input id="urlInput" placeholder="M3U / M3U8 Linki yapıştır" />
 <button onclick="loadFromUrl()">Yükle</button>
-<label class="fileBtn">📁 Dosya Yükle<input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none"></label>
-<button onclick="toggleFavOnly()" id="favBtn" style="background:#222">★ Favoriler</button>
+<label class="fileBtn">📁 Dosya <input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none"></label>
 </header>
 <main>
-<div id="sidebar">
-<div id="controls">
-<input id="search" placeholder="🔍 Kanal ara..." oninput="renderList()">
-<div id="groups"></div>
-<div id="stats" style="font-size:12px;color:#888;padding:0 10px"></div>
-</div>
-<div id="list"><div class="empty">Listeyi yükleyin</div></div>
-</div>
-<div id="playerArea">
-<div id="videoWrap">
-<video id="video" controls autoplay playsinline></video>
-</div>
-<div id="nowPlaying">
-<img id="npLogo" src="" style="display:none">
-<div>
-<div id="npName" style="font-weight:800;font-size:16px">Kanal seçin</div>
-<div id="info">M3U yüklendiğinde yayın burada oynar - HLS / M3U8 destekli</div>
-</div>
-</div>
-</div>
+<div id="sidebar"><div id="list"><div style="padding:40px;text-align:center;color:#666">Liste yükleyin</div></div></div>
+<div id="playerArea"><video id="video" controls autoplay playsinline></video><div id="nowPlaying"><div id="npName" style="font-weight:800">Kanal seçin</div><div id="info" style="font-size:12px;color:#888">MIRTI - Tüm formatlar desteklenir</div></div></div>
 </main>
-
 <script>
-let channels=[];
-let groups=new Set();
-let activeGroup="Tümü";
-let favOnly=false;
-let favs=JSON.parse(localStorage.getItem('favs')||'[]');
-let hls=null;
-
+let channels=[]; let hls=null; let dashPlayer=null;
 function parseM3U(text){
-  channels=[];
-  groups=new Set();
-  const lines=text.split(/\r?\n/);
-  let meta=null;
+  channels=[]; const lines=text.split(/\r?\n/); let meta=null;
   for(let line of lines){
     line=line.trim();
     if(line.startsWith('#EXTINF')){
-      const nameMatch=line.match(/,(.*)$/);
-      const name=nameMatch?nameMatch[1].trim():"Bilinmeyen";
+      const name=(line.match(/,(.*)$/)||[])[1]||"Bilinmeyen").trim();
       const logo=(line.match(/tvg-logo="([^"]*)"/)||[])[1]||"";
       const group=(line.match(/group-title="([^"]*)"/)||[])[1]||"Genel";
-      const tvgId=(line.match(/tvg-id="([^"]*)"/)||[])[1]||"";
-      meta={name,logo,group,tvgId};
-      groups.add(group);
-    } else if(line &&!line.startsWith('#') && meta){
-      channels.push({...meta,url:line});
-      meta=null;
+      meta={name,logo,group};
+    }else if(line &&!line.startsWith('#') && meta){
+      channels.push({...meta,url:line}); meta=null;
     }
   }
-  renderGroups();
   renderList();
-  document.getElementById('stats').innerText=channels.length+" kanal, "+groups.size+" kategori bulundu";
 }
-
-function renderGroups(){
-  const c=document.getElementById('groups');
-  let html=`<span class="chip ${activeGroup==='Tümü'?'active':''}" onclick="setGroup('Tümü')">Tümü</span>`;
-  groups.forEach(g=>{
-    html+=`<span class="chip ${activeGroup===g?'active':''}" onclick="setGroup('${g.replace(/'/g,"")}')">${g}</span>`;
-  });
-  c.innerHTML=html;
-}
-function setGroup(g){activeGroup=g;renderGroups();renderList()}
-function toggleFavOnly(){favOnly=!favOnly;document.getElementById('favBtn').style.background=favOnly?'#e50914':'#222';renderList()}
-
 function renderList(){
-  const q=(document.getElementById('search').value||'').toLowerCase();
-  const list=document.getElementById('list');
-  let filtered=channels.filter(ch=>{
-    if(activeGroup!=='Tümü' && ch.group!==activeGroup) return false;
-    if(favOnly &&!favs.includes(ch.url)) return false;
-    if(q &&!ch.name.toLowerCase().includes(q)) return false;
-    return true;
-  });
-  if(filtered.length===0){list.innerHTML='<div class="empty">Sonuç yok</div>';return}
-  let lastGroup=null;
-  let html='';
-  filtered.slice(0,2000).forEach((ch,i)=>{
-    if(ch.group!==lastGroup){
-      html+=`<div class="cat">${ch.group} (${filtered.filter(x=>x.group===ch.group).length})</div>`;
-      lastGroup=ch.group;
-    }
-    const isFav=favs.includes(ch.url);
-    html+=`<div class="item" onclick="playChannel(${channels.indexOf(ch)})">
-      <img src="${ch.logo||''}" onerror="this.style.display='none'" loading="lazy">
-      <div class="name">${ch.name}</div>
-      <div class="fav" onclick="event.stopPropagation();toggleFav('${ch.url.replace(/'/g,"")}')">${isFav?'★':'☆'}</div>
-    </div>`;
+  const list=document.getElementById('list'); let html='';
+  channels.forEach((ch,i)=>{
+    html+=`<div class="item" onclick="playChannel(${i})"><img src="${ch.logo}" onerror="this.style.display='none'"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ch.name}</div></div>`;
   });
   list.innerHTML=html;
 }
-
-function toggleFav(url){
-  if(favs.includes(url)) favs=favs.filter(u=>u!==url);
-  else favs.push(url);
-  localStorage.setItem('favs',JSON.stringify(favs));
-  renderList();
-}
-
 function playChannel(idx){
-  const ch=channels[idx];
-  if(!ch) return;
+  const ch=channels[idx]; if(!ch) return;
   document.getElementById('npName').innerText=ch.name;
-  document.getElementById('info').innerText=ch.group+" • "+ch.url;
-  const logo=document.getElementById('npLogo');
-  if(ch.logo){logo.src=ch.logo;logo.style.display='block'}else logo.style.display='none';
+  document.getElementById('info').innerText=ch.url;
   const video=document.getElementById('video');
   if(hls){hls.destroy();hls=null}
-  if(Hls.isSupported() && ch.url.includes('.m3u8')){
-    hls=new Hls();
-    hls.loadSource(ch.url);
-    hls.attachMedia(video);
-  } else {
-    video.src=ch.url;
+  if(dashPlayer){dashPlayer.reset();dashPlayer=null}
+  const url=ch.url;
+  // 1. DASH
+  if(url.includes('.mpd')){
+    dashPlayer=dashjs.MediaPlayer().create(); dashPlayer.initialize(video, url, true);
+  // 2. HLS
+  }else if(url.includes('.m3u8')){
+    if(Hls.isSupported()){hls=new Hls({lowLatencyMode:true});hls.loadSource(url);hls.attachMedia(video);}
+    else{video.src=url;}
+  // 3. MP4, MP3, TS, her şey
+  }else{
+    video.src=url;
   }
   video.play().catch(()=>{});
-  if(window.innerWidth<=800) document.getElementById('sidebar').classList.remove('open');
 }
-
 async function loadFromUrl(){
   const url=document.getElementById('urlInput').value.trim();
-  if(!url) return alert('Lütfen M3U linki girin');
-  document.getElementById('stats').innerText='Yükleniyor...';
+  if(!url) return;
   try{
     let text;
-    try{
-      const res=await fetch(url);
-      text=await res.text();
-    }catch(e){
-      const res=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));
-      text=await res.text();
+    try{ text=await (await fetch(url)).text(); }catch{
+      text=await (await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url))).text();
     }
     parseM3U(text);
-  }catch(err){
-    alert('Liste yüklenemedi: '+err.message+'\nCORS engeli olabilir, dosyayı indirip yüklemeyi deneyin.');
-  }
+  }catch(e){ alert('Yüklenemedi, dosyayı indirip manuel yükleyin'); }
 }
-
 document.getElementById('fileInput').addEventListener('change',e=>{
-  const file=e.target.files[0];
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>parseM3U(ev.target.result);
-  reader.readAsText(file);
+  const reader=new FileReader(); reader.onload=ev=>parseM3U(ev.target.result);
+  reader.readAsText(e.target.files[0]);
 });
-document.getElementById('menuBtn').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
 </script>
 </body>
 </html>
