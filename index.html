@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIRTI TV - WORKER FINAL</title>
+<title>MIRTI TV - PLAYER V3</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <style>
@@ -25,9 +25,9 @@ input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;backgro
 </head>
 <body>
 <div id="left">
-<div id="logoTop"><b style="color:#ff0a16">MIRTI TV - WORKER</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
+<div id="logoTop"><b style="color:#ff0a16">MIRTI TV V3</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
 <div style="display:flex;padding:6px;gap:4px"><div class="mainCat active" onclick="setMain('Tümü')">Tümü</div><div class="mainCat" onclick="setMain('Canlı')">CANLI</div><div class="mainCat" onclick="setMain('Film')">FİLM</div><div class="mainCat" onclick="setMain('Dizi')">DİZİ</div></div>
-<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>✅ WORKER AKTİF</span><span id="groupCount">0</span></div>
+<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>PLAYER V3 - AKILLI</span><span id="groupCount">0</span></div>
 <div id="groupList"></div>
 </div>
 <div id="mid">
@@ -35,23 +35,23 @@ input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;backgro
 <input id="search" placeholder="🔍 Ara..." style="margin:6px;width:94%"><div id="channelList"></div>
 </div>
 <div id="playerArea">
-<div id="empty"><h2 style="color:#0f0">✅ WORKER HAZIR</h2><p style="font-size:11px;color:#8aa;margin-top:6px">Televizo gibi Referer gönderiyor<br>Patron / Arda / Atom / Kanal D / Star</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button><div style="margin-top:10px;font-size:9px;color:#555">hidden-meadow-0d62.a-dogan.workers.dev</div></div>
+<div id="empty"><h2 style="color:#0f0">PLAYER V3</h2><p style="font-size:11px;color:#8aa;margin-top:6px">Ref varsa Worker<br>Ref yoksa Direkt<br>Zeus + Patron + Kanal D</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button></div>
 <video id="player" controls playsinline webkit-playsinline crossorigin="anonymous"></video>
-<div id="bar"><span id="now">Hazır - Worker Modu</span><span id="pType">Hazır</span></div>
+<div id="bar"><span id="now">Hazır</span><span id="pType">V3 Hazır</span></div>
 <div id="settings">
-<div style="display:flex;justify-content:space-between"><b style="color:#0f0">✅ WORKER FINAL</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
+<div style="display:flex;justify-content:space-between"><b style="color:#0f0">V3 AYAR</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
 <div id="savedLists" style="margin-top:8px;max-height:120px;overflow-y:auto;background:#151d32;padding:6px;border-radius:6px"></div>
 <div class="tabs"><div class="tab active" onclick="openTab(0)">URL</div><div class="tab" onclick="openTab(1)">DOSYA</div></div>
 <div class="box active" id="b0"><input id="urlInput" value="https://dpaste.com/4T2DNM3J3.txt"><button class="btn" onclick="loadUrl()">YÜKLE</button></div>
 <div class="box" id="b1"><label for="fileInput" style="display:block;text-align:center;color:#ff0a16;border:2px dashed #ff0a16;padding:16px;border-radius:8px">📁 DOSYADAN SEÇ</label><input type="file" id="fileInput" accept=".m3u,.txt" style="display:none"></div>
-<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">Worker aktif - Televizo gibi açacak</div>
+<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">V3 Hazır</div>
 </div>
 </div>
 <script>
 const MY_PROXY = 'https://hidden-meadow-0d62.a-dogan.workers.dev';
 let all=[]; let hls=null; let mpegPlayer=null; let mainCat='Tümü'; let activeGroup='Tümü'; let currentList=''; const video=document.getElementById('player');
 let db;
-function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_FIX',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
+function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_V3',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
 async function saveToDB(name, channels){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name,channels,count:channels.length});tx.oncomplete=()=>r();});}
 async function getAllFromDB(){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readonly');let q=tx.objectStore('lists').getAll();q.onsuccess=()=>r(q.result);});}
 async function deleteFromDB(name){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').delete(name);tx.oncomplete=()=>r();});}
@@ -103,64 +103,97 @@ function renderCh(){
   list.forEach(c=>{
     let d=document.createElement('div'); d.className='ch';
     d.innerHTML=`<img src="${c.logo}" onerror="this.src='https://via.placeholder.com/42/0b1120/ff0a16?text=TV'"><div style="flex:1;min-width:0"><div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:bold">${c.name}</div><div style="font-size:10px;color:#8aa">${c.group} ${c.referrer?'•Ref':''}</div></div><span>▶</span>`;
-    d.onclick=()=>{document.querySelectorAll('.ch').forEach(x=>x.classList.remove('active'));d.classList.add('active');playWorker(c,0);};
+    d.onclick=()=>{document.querySelectorAll('.ch').forEach(x=>x.classList.remove('active'));d.classList.add('active');playV3(c);};
     box.appendChild(d);
   });
 }
 
-function buildProxyUrl(originalUrl, referrer, attempt){
-  const encUrl = encodeURIComponent(originalUrl);
-  const encRef = encodeURIComponent(referrer||'');
-  const proxies = [
-    originalUrl,
-    `${MY_PROXY}/?url=${encUrl}&ref=${encRef}`,
-    `${MY_PROXY}/?url=${encUrl}&ref=https://patronsaha.cfd/`,
-    `${MY_PROXY}/?url=${encUrl}&ref=https://ardaspor31.top`,
-    originalUrl.replace('http://','https://')
-  ];
-  return proxies[attempt] || originalUrl;
-}
+// V3 OYNATICI - AKILLI, KANAL DÜŞÜRMEZ
+function playV3(c){
+  document.getElementById('empty').style.display='none';
+  document.getElementById('now').textContent=c.name;
+  document.getElementById('pType').textContent = c.referrer? `Worker + Ref: ${c.referrer.split('/')[2]}` : 'Direkt';
 
-function playWorker(c, attempt){
-  if(attempt===0){document.getElementById('empty').style.display='none'; document.getElementById('now').textContent=c.name;}
-  if(attempt>=5){document.getElementById('pType').textContent='Açılamadı - Worker blokladı'; return;}
-  let ref = c.referrer || '';
-  let url = buildProxyUrl(c.url, ref, attempt);
-  document.getElementById('pType').textContent = `Worker ${attempt+1}/5 ${ref? ref.split('/')[2]:''}...`;
-
-  if(hls){try{hls.destroy()}catch(e){} hls=null;} if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){} mpegPlayer=null;}
+  if(hls){try{hls.destroy()}catch(e){} hls=null;}
+  if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){} mpegPlayer=null;}
   video.pause(); video.removeAttribute('src'); video.load();
 
-  class WorkerLoader extends Hls.DefaultConfig.loader {
+  const ref = c.referrer || '';
+  const hasRef = ref.length > 5;
+
+  // 1..ts dosya ise - mpegts.js ile direkt dene (ref varsa worker ile)
+  if(c.url.includes('.ts')){
+    let tsUrl = hasRef? `${MY_PROXY}/?url=${encodeURIComponent(c.url)}&ref=${encodeURIComponent(ref)}` : c.url;
+    if(mpegts.isSupported()){
+      try{
+        mpegPlayer = mpegts.createPlayer({type:'mse', isLive:true, url:tsUrl},{liveBufferLatencyChasing:true});
+        mpegPlayer.attachMediaElement(video); mpegPlayer.load();
+        mpegPlayer.on(mpegts.Events.MEDIA_INFO, ()=>{ video.play(); document.getElementById('pType').textContent='Oynatılıyor (TS)'; });
+        mpegPlayer.on(mpegts.Events.ERROR, ()=>{ // ts olmazsa hls dene
+          if(hasRef) playHLS(c.url, ref); else {video.src=c.url; video.play();}
+        });
+        mpegPlayer.play(); return;
+      }catch(e){}
+    }
+  }
+
+  // 2. HLS ise
+  if(c.url.includes('.m3u8') || c.url.includes('.txt') || hasRef){
+    playHLS(c.url, ref);
+  }else{
+    // 3. mp4 veya diğer - direkt
+    video.src = c.url;
+    video.play().then(()=>{document.getElementById('pType').textContent='Oynatılıyor (Direct)'}).catch(()=>{
+      // direct olmazsa hls dene
+      playHLS(c.url, ref);
+    });
+  }
+}
+
+function playHLS(originalUrl, ref){
+  const hasRef = ref && ref.length>5;
+
+  class SmartLoader extends Hls.DefaultConfig.loader{
     load(context, config, callbacks){
-      let original = context.url;
-      // Tüm.ts ve.m3u8 parçalarını da worker üzerinden geçir
-      if(!original.includes(MY_PROXY) &&!original.includes('data:')){
-        const enc = encodeURIComponent(original);
-        const encRef = encodeURIComponent(ref);
-        context.url = `${MY_PROXY}/?url=${enc}&ref=${encRef}`;
+      let u = context.url;
+      // SADECE ref varsa proxy'den geçir, yoksa dokunma - Zeus gibi bozulmaz
+      if(hasRef &&!u.includes(MY_PROXY) &&!u.startsWith('data:') &&!u.startsWith('blob:')){
+        context.url = `${MY_PROXY}/?url=${encodeURIComponent(u)}&ref=${encodeURIComponent(ref)}`;
       }
       super.load(context, config, callbacks);
     }
   }
 
+  let finalUrl = hasRef? `${MY_PROXY}/?url=${encodeURIComponent(originalUrl)}&ref=${encodeURIComponent(ref)}` : originalUrl;
+
   if(Hls.isSupported()){
-    let cfg={ enableWorker:true, loader: WorkerLoader };
-    hls=new Hls(cfg);
-    hls.loadSource(url);
+    hls = new Hls({
+      enableWorker:true,
+      loader: hasRef? SmartLoader : Hls.DefaultConfig.loader,
+      lowLatencyMode:false,
+      backBufferLength: 90
+    });
+    hls.loadSource(finalUrl);
     hls.attachMedia(video);
-    let to=setTimeout(()=>{hls.destroy(); playWorker(c, attempt+1);},10000);
-    hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-      clearTimeout(to);
-      video.play().then(()=>{
-        document.getElementById('pType').textContent=`✅ Oynatılıyor Worker ${ref?'✓Ref':''}`;
-      }).catch(()=>{document.getElementById('pType').textContent='Videoya dokun';});
+    hls.on(Hls.Events.MANIFEST_PARSED, ()=>{
+      video.play().then(()=>{document.getElementById('pType').textContent = hasRef? '✅ Worker ile Oynatılıyor' : '✅ Direkt Oynatılıyor';});
     });
-    hls.on(Hls.Events.ERROR,(e,d)=>{
-      if(d.fatal){clearTimeout(to); hls.destroy(); playWorker(c, attempt+1);}
+    hls.on(Hls.Events.ERROR, (e,d)=>{
+      if(d.fatal){
+        document.getElementById('pType').textContent='Hata: '+d.type;
+        // fatal ise bir kere daha ref'siz dene
+        if(hasRef && finalUrl.includes(MY_PROXY)){
+          hls.destroy();
+          // yedek ref'ler dene
+          const backups = ['https://patronsaha.cfd/','https://ardaspor31.top','https://atomsportv517.top'];
+          let nextRef = backups.find(b=>b!==ref) || '';
+          if(nextRef) playHLS(originalUrl, nextRef);
+        }
+      }
     });
-  }else{
-    video.src=url; video.play().catch(()=>playWorker(c, attempt+1));
+  }else if(video.canPlayType('application/vnd.apple.mpegurl')){
+    video.src = finalUrl;
+    video.play();
   }
 }
 
