@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIRTI TV V6 - XTREAM + GENEL FIX</title>
+<title>MIRTI TV V6.2 - FINAL</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <style>
@@ -26,9 +26,9 @@ input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;backgro
 </head>
 <body>
 <div id="left">
-<div id="logoTop"><b style="color:#ff0a16">MIRTI V6</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
+<div id="logoTop"><b style="color:#ff0a16">MIRTI V6.2</b><button onclick="toggleSet()" style="margin-left:auto;background:#ff0a16;border:none;color:#fff;padding:6px 10px;border-radius:4px">⚙️</button></div>
 <div style="display:flex;padding:6px;gap:4px"><div class="mainCat active" onclick="setMain('Tümü')">Tümü</div><div class="mainCat" onclick="setMain('Canlı')">CANLI</div><div class="mainCat" onclick="setMain('Film')">FİLM</div><div class="mainCat" onclick="setMain('Dizi')">DİZİ</div></div>
-<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>V6 XTREAM + TS FIX</span><span id="groupCount">0</span></div>
+<div style="padding:6px;background:#151d32;font-size:11px;color:#0f0;display:flex;justify-content:space-between"><span>V6.2 GENEL PAYLAŞIM</span><span id="groupCount">0</span></div>
 <div id="groupList"></div>
 </div>
 <div id="mid">
@@ -36,24 +36,18 @@ input{width:100%;padding:10px;border-radius:6px;border:1px solid #1e2d4a;backgro
 <input id="search" placeholder="🔍 Ara..." style="margin:6px;width:94%"><div id="channelList"></div>
 </div>
 <div id="playerArea">
-<div id="empty"><h2 style="color:#0f0">V6 GENEL PAYLAŞIM</h2><p style="font-size:11px;color:#8aa;margin-top:6px">M3U / DOSYA / XTREAM<br>http, IP:PORT, /play/, TS hepsi fix</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button></div>
+<div id="empty"><h2 style="color:#0f0">V6.2 HAZIR</h2><p style="font-size:11px;color:#8aa;margin-top:6px">M3U / DOSYA / XTREAM / EPG<br>http, IP:PORT, /play/, TS hepsi fix</p><button class="btn" style="width:200px;margin-top:12px" onclick="toggleSet()">⚙️ LİSTE EKLE</button></div>
 <video id="player" controls playsinline webkit-playsinline crossorigin="anonymous"></video>
-<div id="bar"><span id="now">Hazır V6</span><span id="pType">V6</span><span id="epgNow" style="color:#0f0"></span></div>
+<div id="bar"><span id="now">Hazır V6.2</span><span id="pType">V6.2</span><span id="epgNow" style="color:#0f0"></span></div>
 <div id="settings">
-<div style="display:flex;justify-content:space-between"><b style="color:#0f0">V6 AYAR + EPG + XTREAM</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
+<div style="display:flex;justify-content:space-between"><b style="color:#0f0">V6.2 AYAR</b><button onclick="toggleSet()" style="background:#ff0a16;border:none;color:#fff;padding:6px 12px;border-radius:4px">X</button></div>
 <div id="savedLists" style="margin-top:8px;max-height:100px;overflow-y:auto;background:#151d32;padding:6px;border-radius:6px"></div>
 <div class="tabs"><div class="tab active" onclick="openTab(0)">URL</div><div class="tab" onclick="openTab(1)">DOSYA</div><div class="tab" onclick="openTab(2)">XTREAM</div><div class="tab" onclick="openTab(3)">EPG</div></div>
-<div class="box active" id="b0"><input id="urlInput" value="" placeholder="https://.../liste.m3u veya.txt - BOŞ"><button class="btn" onclick="loadUrl()">LİSTE YÜKLE</button></div>
+<div class="box active" id="b0"><input id="urlInput" value="" placeholder="https://.../liste.m3u - BOŞ"><button class="btn" onclick="loadUrl()">LİSTE YÜKLE</button><div style="font-size:9px;color:#888;margin-top:6px">Örn: http://20zp98.7039512.xyz/get.php?username=ahmet%3Adogan&password=...&type=m3u_plus&output=m3u8</div></div>
 <div class="box" id="b1"><label for="fileInput" style="display:block;text-align:center;color:#ff0a16;border:2px dashed #ff0a16;padding:16px;border-radius:8px">📁 DOSYADAN SEÇ</label><input type="file" id="fileInput" accept=".m3u,.txt" style="display:none"></div>
-<div class="box" id="b2">
-<input id="xtServer" placeholder="Server: http://line.tivi-one.net:80">
-<input id="xtUser" placeholder="Kullanıcı Adı">
-<input id="xtPass" placeholder="Şifre">
-<button class="btn" onclick="loadXtream()">XTREAM GİRİŞ</button>
-<div id="xtInfo" style="font-size:10px;color:#8aa;margin-top:6px"></div>
-</div>
-<div class="box" id="b3"><input id="epgUrl" value="" placeholder="https://.../epg.xml - BOŞ"><button class="btn" onclick="loadEPG()">EPG YÜKLE</button><div id="epgInfo" style="font-size:10px;color:#8aa;margin-top:6px"></div></div>
-<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">V6 Hazır - Genel Paylaşım</div>
+<div class="box" id="b2"><input id="xtServer" placeholder="Server: http://20zp98.7039512.xyz:80"><input id="xtUser" placeholder="Kullanıcı: ahmet:dogan"><input id="xtPass" placeholder="Şifre: XjFCm3ZHBq"><button class="btn" onclick="loadXtream()">XTREAM GİRİŞ</button><div id="xtInfo" style="font-size:10px;color:#8aa;margin-top:6px"></div></div>
+<div class="box" id="b3"><input id="epgUrl" value="" placeholder="https://.../epg.xml"><button class="btn" onclick="loadEPG()">EPG YÜKLE</button><div id="epgInfo" style="font-size:10px;color:#8aa;margin-top:6px"></div></div>
+<div id="status" style="font-size:11px;color:#0f0;margin-top:8px;padding:8px;background:#060a14;border-radius:6px">V6.2 Hazır - Genel Paylaşım</div>
 </div>
 </div>
 <script>
@@ -63,19 +57,8 @@ let db; let epgData={};
 const NATIONAL_REFS = {'kanal d':'https://www.kanald.com.tr/','star':'https://www.startv.com.tr/','show':'https://www.showtv.com.tr/','atv':'https://www.atv.com.tr/','tv8':'https://www.tv8.com.tr/','ntv':'https://www.ntv.com.tr/','szc':'https://www.sozcu.com.tr/','sözcü':'https://www.sozcu.com.tr/','krt':'https://www.krttv.com.tr/','koza':'https://www.kozatv.com.tr/','tele1':'https://tele1.com.tr/'};
 function getNationalRef(name){ let low=name.toLowerCase(); for(let k in NATIONAL_REFS){ if(low.includes(k)) return NATIONAL_REFS[k]; } return ''; }
 function isBlockedByBrowser(url){ if(!url) return false; if(url.startsWith('http://')) return true; if(/:\d{2,5}\//.test(url)) return true; if(/\d+\.\d+\.\d+\.\d+/.test(url)) return true; if(url.includes('/play/')) return true; return false; }
-function isRawTS(url){
-  if(!url) return false;
-  let low=url.toLowerCase();
-  if(low.includes('.m3u8')) return false;
-  if(low.includes('.mp4')) return false;
-  if(low.includes('extension=ts')) return true;
-  if(low.includes('/play/')) return true;
-  if(/:\d{2,5}\//.test(url)) return true;
-  if(/\d+\.\d+\.\d+\.\d+/.test(url)) return true;
-  if(/\/[a-z0-9]{3,8}(\?.*)?$/.test(url) &&!low.includes('.m3u')) return true;
-  return false;
-}
-function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_V6',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
+function isRawTS(url){ if(!url) return false; let low=url.toLowerCase(); if(low.includes('.m3u8')) return false; if(low.includes('.mp4')) return false; if(low.includes('extension=ts')) return true; if(low.includes('/play/')) return true; if(/:\d{2,5}\//.test(url)) return true; if(/\d+\.\d+\.\d+\.\d+/.test(url)) return true; if(/\/[a-z0-9]{3,8}(\?.*)?$/.test(url) &&!low.includes('.m3u')) return true; return false; }
+function openDB(){return new Promise((res)=>{let req=indexedDB.open('MirtiTV_V62',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;res(db);};});}
 async function saveToDB(name, channels){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name,channels,count:channels.length});tx.oncomplete=()=>r();});}
 async function getAllFromDB(){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readonly');let q=tx.objectStore('lists').getAll();q.onsuccess=()=>r(q.result);});}
 async function deleteFromDB(name){if(!db) await openDB();return new Promise((r)=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').delete(name);tx.oncomplete=()=>r();});}
@@ -83,13 +66,7 @@ function toggleSet(){document.getElementById('settings').classList.toggle('open'
 function openTab(i){document.querySelectorAll('.box').forEach((b,idx)=>b.classList.toggle('active',idx===i));document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));}
 function catOf(n,g){let s=(n+' '+g).toLowerCase();if(/film|movie|vod/.test(s))return 'Film';if(/dizi|series/.test(s))return 'Dizi';return 'Canlı';}
 function splitPipe(url){if(!url.includes('|')) return {url, headers:{}};let [base, query]=url.split('|');let headers={};query.split('&').forEach(p=>{let [k,v]=p.split('=');if(k&&v) headers[k.trim().toLowerCase()]=decodeURIComponent(v.trim());});return {url:base.trim(), headers};}
-function cleanUrl(u){
-  if(!u) return '';
-  u=u.trim();
-  // KRT gibi sonda boşlukla gelen play_token fix
-  u=u.replace(/\s+/g,'');
-  return u;
-}
+function cleanUrl(u){ if(!u) return ''; u=u.trim().replace(/\s+/g,'').replace(/ı/g,'i'); return u; }
 function parseM3U(text){
   const lines=text.split(/\r?\n/); const out=[]; let tmp={name:'',group:'Genel',logo:'',referrer:'',tvgId:''}; let lastRef='';
   for(let l of lines){l=l.trim();if(!l)continue;
@@ -108,8 +85,42 @@ function parseM3U(text){
     }
   } return {channels:out};
 }
-async function fetchDirect(url){try{let r=await fetch(url,{cache:'no-store'});if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}const ps=['https://api.allorigins.win/raw?url='+encodeURIComponent(url),'https://corsproxy.io/?'+encodeURIComponent(url), `${MY_PROXY}/?url=${encodeURIComponent(url)}`];for(let p of ps){try{let r=await fetch(p);if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}}throw 'CORS';}
-async function loadUrl(){let u=document.getElementById('urlInput').value.trim();if(!u) return alert('Link yapıştır'); let st=document.getElementById('status');st.textContent='Yükleniyor...';try{let txt=await fetchDirect(u);let res=parseM3U(txt);if(res.channels.length){all=res.channels;currentList=u.split('/').pop().slice(0,25);await saveToDB(currentList, all);await renderSaved();apply();document.getElementById('empty').style.display='none';st.textContent=res.channels.length+' kanal';toggleSet();}else{st.textContent='Kanal yok';}}catch(e){st.textContent='Yüklenemedi: '+e;}}
+async function fetchDirect(url){
+  url=cleanUrl(url);
+  if(url.includes('get.php') || url.includes(':80') || url.startsWith('http://')){
+    try{
+      let proxied = `${MY_PROXY}/?url=${encodeURIComponent(url)}`;
+      let r = await fetch(proxied, {cache:'no-store'});
+      if(r.ok){ let t=await r.text(); if(t.length>50) return t; }
+    }catch(e){ console.log('proxy fail', e); }
+  }
+  try{let r=await fetch(url,{cache:'no-store'});if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}
+  const ps=[`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,`https://corsproxy.io/?${encodeURIComponent(url)}`, `${MY_PROXY}/?url=${encodeURIComponent(url)}`];
+  for(let p of ps){try{let r=await fetch(p);if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}}
+  throw 'CORS';
+}
+async function loadUrl(){
+  let u=document.getElementById('urlInput').value.trim();
+  if(!u) return alert('Link yapıştır');
+  u=cleanUrl(u);
+  let st=document.getElementById('status');
+  st.textContent='Yükleniyor... Worker ile';
+  if(u.includes('get.php') && u.includes('output=ts')){ u=u.replace('output=ts','output=m3u8'); document.getElementById('urlInput').value=u; }
+  try{
+    let txt=await fetchDirect(u);
+    if(!txt.includes('#EXTINF') && txt.length<1000){
+      throw 'Geçersiz liste - Kullanıcı adı/şifre hatalı: '+txt.slice(0,100);
+    }
+    let res=parseM3U(txt);
+    if(res.channels.length){
+      all=res.channels; currentList='LISTE '+new Date().toLocaleTimeString();
+      await saveToDB(currentList, all); await renderSaved(); apply();
+      document.getElementById('empty').style.display='none';
+      st.textContent=res.channels.length+' kanal yüklendi ✅';
+      toggleSet();
+    }else{ st.textContent='Kanal yok'; }
+  }catch(e){ st.textContent='Yüklenemedi: '+e; }
+}
 async function renderSaved(){let lists=await getAllFromDB();const box=document.getElementById('savedLists');box.innerHTML='';lists.forEach(item=>{let d=document.createElement('div');d.style.cssText='padding:6px;background:#1a2340;margin:3px 0;border-radius:5px;display:flex;justify-content:space-between;border:1px solid #1e2d4a'+(item.name===currentList?';background:#ff0a16':'');d.innerHTML=`<span>📁 ${item.name} (${item.count})</span><span onclick="event.stopPropagation();delList('${item.name}')" style="color:#ff0a16">✕</span>`;d.onclick=()=>{all=item.channels;currentList=item.name;apply();document.getElementById('empty').style.display='none';toggleSet();};box.appendChild(d);});}
 async function delList(k){if(confirm(k+' sil?')){await deleteFromDB(k);await renderSaved();}}
 function apply(){buildGroups();}
@@ -163,10 +174,8 @@ function playV6(c){
     attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}`);
     attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url.replace('http://','https://'))}`);
     attempts.push(url);
-    attempts.push(url.replace('http://','https://'));
   }else{
     attempts.push(url);
-    attempts.push(url.replace('http://','https://'));
     attempts.push(`${MY_PROXY}/?url=${encodeURIComponent(url)}`);
   }
   tryPlay(attempts,0,c,ref,raw);
@@ -181,7 +190,7 @@ function tryPlay(list, idx, c, ref, raw){
       mpegPlayer=mpegts.createPlayer({type:'mpegts',isLive:true,url:finalUrl},{enableWorker:true,enableStashBuffer:false,stashInitialSize:128,liveBufferLatencyChasing:true});
       mpegPlayer.attachMediaElement(video); mpegPlayer.load(); mpegPlayer.play();
       let failed=false;
-      mpegPlayer.on(mpegts.Events.MEDIA_INFO,()=>{ if(!failed){ video.play(); document.getElementById('pType').textContent='✅ Oynatılıyor TS'; }});
+      mpegPlayer.on(mpegts.Events.MEDIA_INFO,()=>{ if(!failed){ video.play(); document.getElementById('pType').textContent='✅ TS Oynatılıyor'; }});
       mpegPlayer.on(mpegts.Events.ERROR,()=>{ failed=true; try{mpegPlayer.destroy()}catch(e){} tryPlay(list, idx+1, c, ref, raw); });
       setTimeout(()=>{ if(video.readyState===0 &&!failed){ try{mpegPlayer.destroy()}catch(e){} tryPlay(list, idx+1, c, ref, raw); } }, 7000);
       return;
@@ -218,25 +227,21 @@ async function loadXtream(){
   let pass=document.getElementById('xtPass').value.trim();
   let info=document.getElementById('xtInfo');
   if(!server||!user||!pass){ alert('Server, kullanıcı, şifre gir'); return; }
-  info.textContent='Xtream yükleniyor...';
+  info.textContent='Xtream yükleniyor... Worker ile';
   try{
-    // Kategoriler
-    let catUrl=`${server}/player_api.php?username=${user}&password=${pass}&action=get_live_categories`;
-    let catText=await fetchDirect(`${MY_PROXY}/?url=${encodeURIComponent(catUrl)}`);
+    let catUrl=`${server}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_live_categories`;
+    let catText=await fetchDirect(catUrl);
     let cats=JSON.parse(catText);
-    // Kanallar
-    let liveUrl=`${server}/player_api.php?username=${user}&password=${pass}&action=get_live_streams`;
-    let liveText=await fetchDirect(`${MY_PROXY}/?url=${encodeURIComponent(liveUrl)}`);
+    let liveUrl=`${server}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_live_streams`;
+    let liveText=await fetchDirect(liveUrl);
     let streams=JSON.parse(liveText);
     let catMap={}; cats.forEach(c=>catMap[c.category_id]=c.category_name);
     let channels=[];
     streams.forEach(s=>{
       let group=catMap[s.category_id]||'XTREAM';
       let streamId=s.stream_id;
-      // HLS öncelikli
       let url=`${server}/live/${user}/${pass}/${streamId}.m3u8`;
-      let urlTs=`${server}/live/${user}/${pass}/${streamId}.ts`;
-      channels.push({name:s.name, group:group, logo:s.stream_icon||'', tvgId:'', cat:'Canlı', url:url, urlTs:urlTs, referrer:''});
+      channels.push({name:s.name, group:group, logo:s.stream_icon||'', tvgId:'', cat:'Canlı', url:cleanUrl(url), referrer:''});
     });
     if(channels.length>0){
       all=channels; currentList='XTREAM '+server.slice(0,15);
