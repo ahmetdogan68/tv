@@ -1,87 +1,108 @@
-<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MIRTI V23 STABLE FIX</title>
+<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MIRTI V25 KOMPAKT</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#141414;color:#fff;font-family:Arial;height:100vh;overflow:hidden;display:flex;outline:none}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#141414;color:#fff;font-family:Arial;height:100vh;overflow:hidden;display:flex}
 #splash{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:1s}
 #splash.hide{opacity:0;pointer-events:none}
-#splashLogo{width:200px;height:200px;background:#E50914;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:110px;font-weight:900}
-#left{width:340px;background:#181818;border-right:2px solid #333;display:flex;flex-direction:column;flex-shrink:0}
+#splashLogo{width:160px;height:160px;background:#E50914;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:90px;font-weight:900}
+#left{width:320px;background:#181818;border-right:2px solid #333;display:flex;flex-direction:column;flex-shrink:0}
 #mid{flex:1;background:#141414;display:flex;flex-direction:column;overflow:hidden}
-#playerArea{flex:1.4;background:#000;display:flex;flex-direction:column;position:relative;max-width:720px;border-left:2px solid #333}
-#logoTop{padding:16px;background:#000;border-bottom:3px solid #E50914;display:flex;align-items:center;gap:12px}
-.catTabs{display:flex;gap:6px;padding:12px;background:#181818;border-bottom:1px solid #333}
-.catTab{flex:1;padding:14px;background:#2f2f2f;border-radius:10px;text-align:center;font-size:13px;font-weight:900;border:2px solid transparent;color:#fff}
+#playerArea{flex:1.3;background:#000;display:flex;flex-direction:column;position:relative;max-width:720px;border-left:2px solid #333}
+#logoTop{padding:12px;background:#000;border-bottom:3px solid #E50914;display:flex;align-items:center;gap:10px}
+.catTabs{display:flex;gap:4px;padding:8px;background:#181818;border-bottom:1px solid #333}
+.catTab{flex:1;padding:12px;background:#2f2f2f;border-radius:8px;text-align:center;font-size:12px;font-weight:900;border:2px solid transparent;color:#fff}
 .catTab.active{background:#E50914;border-color:#fff}
-.pStrip{display:flex;gap:5px;padding:10px;background:#000;border-bottom:2px solid #E50914}
-.pBtn{flex:1;padding:10px;background:#2f2f2f;border-radius:8px;text-align:center;font-size:10px;font-weight:900;border:1px solid #444;color:#fff}
-.pBtn.active{background:#fff;color:#000}.pBtn.auto{background:#E50914;color:#fff}
-#groupList{flex:1;overflow-y:auto;padding:8px}
-.group{padding:16px;background:#2f2f2f;margin:6px 0;border-radius:10px;font-size:14px;font-weight:bold;border:2px solid transparent;color:#fff;display:flex;justify-content:space-between}
+.pStrip{display:flex;gap:4px;padding:8px;background:#000;border-bottom:2px solid #E50914;flex-wrap:wrap}
+.pBtn{flex:1;min-width:60px;padding:10px;background:#2f2f2f;border-radius:8px;text-align:center;font-size:9px;font-weight:900;border:1px solid #444;color:#fff}
+.pBtn.active{background:#fff;color:#000}.pBtn.auto{background:#E50914;color:#fff}.pBtn.app{background:#0f0;color:#000;border-color:#0f0}
+#groupList{flex:1;overflow-y:auto;padding:6px}
+/* KOMPAKT GRUP - BUYUK DEGIL */
+.group{padding:10px 12px;background:#2f2f2f;margin:4px 0;border-radius:8px;font-size:12px;font-weight:700;border:1px solid transparent;color:#fff;display:flex;justify-content:space-between;cursor:pointer}
 .group.active{background:#E50914;border-color:#fff}
-#searchWrap{padding:12px;background:#181818;display:flex;gap:8px}
-#search{flex:1;padding:18px;background:#fff;color:#000;border:3px solid #E50914;border-radius:12px;font-size:16px;font-weight:900}
-#filmGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding:16px;overflow-y:auto;flex:1;background:#141414}
-.filmCard{background:#222;border-radius:12px;overflow:hidden;border:3px solid transparent}
+#searchWrap{padding:8px;background:#181818;display:flex;gap:6px}
+#search{flex:1;padding:14px;background:#fff;color:#000;border:2px solid #E50914;border-radius:10px;font-size:14px;font-weight:900}
+#filmGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:10px;overflow-y:auto;flex:1;background:#141414}
+.filmCard{background:#222;border-radius:10px;overflow:hidden;border:2px solid transparent}
 .filmCard.active{border-color:#E50914}
-.poster{width:100%;height:240px;background:#222;object-fit:cover;display:block}
-.posterFb{width:100%;height:240px;background:linear-gradient(135deg,#E50914,#5a0000);display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:900}
-.filmInfo{padding:10px}.filmTitle{font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.filmMeta{font-size:11px;color:#aaa}
-#channelList{flex:1;overflow-y:auto;padding:10px}
-.ch{padding:16px;background:#2f2f2f;margin:6px 0;border-radius:12px;display:flex;gap:14px;align-items:center;border:2px solid transparent;color:#fff}
+.poster{width:100%;height:210px;object-fit:cover;display:block;background:#222}
+.posterFb{width:100%;height:210px;background:linear-gradient(135deg,#E50914,#5a0000);display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900}
+.filmInfo{padding:8px}.filmTitle{font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.filmMeta{font-size:10px;color:#aaa}
+/* KOMPAKT KANAL LISTESI - CANLI TV ICIN KUCUK */
+#channelList{flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:4px}
+.ch{padding:10px 12px;background:#2f2f2f;border-radius:8px;display:flex;gap:10px;align-items:center;border:1px solid transparent;color:#fff;cursor:pointer}
 .ch.active{background:#E50914;border-color:#fff}
+.ch-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-group{font-size:10px;color:#aaa}
 #player{flex:1;width:100%;background:#000}
-#bar{padding:12px;background:#000;display:flex;gap:10px;align-items:center;border-top:2px solid #333;font-size:12px}
+#bar{padding:8px 10px;background:#000;display:flex;gap:8px;align-items:center;border-top:1px solid #333;font-size:11px;flex-shrink:0}
 #empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#141414;z-index:10;text-align:center;padding:20px}
-#settings{position:absolute;top:0;right:0;bottom:0;width:500px;background:#181818;border-left:3px solid #E50914;z-index:30;transform:translateX(100%);transition:.3s;padding:18px;overflow-y:auto}
+#settings{position:absolute;top:0;right:0;bottom:0;width:500px;background:#181818;border-left:3px solid #E50914;z-index:30;transform:translateX(100%);transition:.3s;padding:16px;overflow-y:auto}
 #settings.open{transform:translateX(0)}
-.tabs{display:flex;gap:6px;margin-top:14px}.tab{flex:1;padding:12px;background:#2f2f2f;border-radius:8px;text-align:center;font-weight:900;border:2px solid transparent;color:#fff}.tab.active{background:#E50914;border-color:#fff}
-.box{display:none;margin-top:12px;padding:14px;background:#000;border-radius:12px;border:1px solid #333}.box.active{display:block}
-input,textarea{width:100%;padding:14px;border-radius:8px;border:2px solid #333;background:#111;color:#fff;margin-top:8px;font-size:14px}
-.btn{width:100%;padding:14px;background:#E50914;color:#fff;border:none;border-radius:10px;font-weight:900;margin-top:10px;font-size:14px}
-.log{font-size:12px;background:#000;padding:12px;border-radius:8px;margin-top:12px;max-height:200px;overflow-y:auto;white-space:pre-wrap;border:1px solid #333;color:#0f0}
-/* SADECE TELEFON FIX - GRUPLAR GORUNSUN */
-@media(max-width:900px){
+.tabs{display:flex;gap:4px;margin-top:10px}.tab{flex:1;padding:10px;background:#2f2f2f;border-radius:8px;text-align:center;font-weight:900;font-size:12px;border:2px solid transparent;color:#fff}.tab.active{background:#E50914;border-color:#fff}
+.box{display:none;margin-top:10px;padding:12px;background:#000;border-radius:10px;border:1px solid #333}.box.active{display:block}
+input,textarea{width:100%;padding:12px;border-radius:8px;border:2px solid #333;background:#111;color:#fff;margin-top:6px;font-size:14px}
+.btn{width:100%;padding:14px;background:#E50914;color:#fff;border:none;border-radius:10px;font-weight:900;margin-top:8px;font-size:14px}
+.log{font-size:11px;background:#000;padding:10px;border-radius:8px;margin-top:10px;max-height:180px;overflow-y:auto;white-space:pre-wrap;border:1px solid #333;color:#0f0}
+/* TELEFON DIKEY */
+@media(max-width:900px) and (orientation:portrait){
  body{flex-direction:column;overflow:auto;height:auto;min-height:100vh}
- #left{width:100%;height:auto;max-height:50vh;order:2}
- #groupList{max-height:200px;min-height:120px;display:block!important}
- #mid{width:100%;height:auto;min-height:40vh;order:3}
- #playerArea{width:100%;height:45vh;max-width:none;order:1;position:sticky;top:0;z-index:20}
+ #left{width:100%;height:auto;max-height:38vh;order:2}
+ #groupList{max-height:140px;min-height:90px;display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:6px;flex-wrap:nowrap}
+.group{flex-shrink:0;white-space:nowrap;padding:8px 14px;font-size:11px}
+ #mid{width:100%;height:auto;min-height:32vh;order:3}
+ #playerArea{width:100%;height:44vh;max-width:none;order:1;position:sticky;top:0;z-index:20}
  #filmGrid{grid-template-columns:repeat(2,1fr)}
  #settings{width:100%}
 }
+/* TELEFON YAN - LANDSCAPE NET OLSUN */
+@media(max-width:900px) and (orientation:landscape){
+ body{flex-direction:row;overflow:hidden;height:100vh}
+ #left{width:28%;height:100vh;order:1}
+ #groupList{flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.group{white-space:normal}
+ #mid{width:22%;height:100vh;order:2}
+ #playerArea{width:50%;height:100vh;order:3;max-width:none}
+ #filmGrid{grid-template-columns:repeat(2,1fr)}
+}
 </style>
-</head><body tabindex="0">
-<div id="splash"><div id="splashLogo">M</div><h1 style="margin-top:20px;font-size:36px;font-weight:900">MIRTI TV</h1><p style="color:#E50914;font-weight:900">V23 STABLE FIX</p></div>
+</head><body>
+<div id="splash"><div id="splashLogo">M</div><h1 style="margin-top:16px;font-size:32px;font-weight:900">MIRTI TV</h1><p style="color:#E50914;font-weight:900">V25 KOMPAKT + UYGULAMA PLAYER</p></div>
 
-<div id="left"><div id="logoTop"><div style="width:44px;height:44px;background:#E50914;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px">M</div><div><b style="font-size:18px">MIRTI</b><b style="color:#E50914"> TV</b><div style="font-size:10px;color:#0f0">V23 STABLE</div></div><button onclick="toggleSet()" style="margin-left:auto;background:#E50914;border:none;color:#fff;padding:10px 16px;border-radius:10px;font-weight:900">⚙️</button></div>
+<div id="left"><div id="logoTop"><div style="width:36px;height:36px;background:#E50914;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900">M</div><div><b>MIRTI</b><b style="color:#E50914"> TV</b><div style="font-size:9px;color:#0f0">V25 KOMPAKT</div></div><button onclick="toggleSet()" style="margin-left:auto;background:#E50914;border:none;color:#fff;padding:8px 12px;border-radius:8px;font-weight:900">⚙️</button></div>
 <div class="catTabs"><button class="catTab active" data-cat="CANLI" onclick="setCat('CANLI')">CANLI</button><button class="catTab" data-cat="FILM" onclick="setCat('FILM')">FİLM</button><button class="catTab" data-cat="DIZI" onclick="setCat('DIZI')">DİZİ</button><button class="catTab" data-cat="TUMU" onclick="setCat('TUMU')">TÜMÜ</button></div>
-<div class="pStrip"><button class="pBtn" data-p="internal" onclick="setPlayer('internal')">INTERNAL</button><button class="pBtn" data-p="external" onclick="setPlayer('external')">EXTERNAL</button><button class="pBtn" data-p="kanald" onclick="setPlayer('kanald')">KANAL D</button><button class="pBtn auto active" data-p="auto" onclick="setPlayer('auto')">AUTO</button></div>
-<div style="padding:8px 12px;background:#000;font-size:12px;color:#0f0;display:flex;justify-content:space-between;font-weight:900"><span id="memInfo">Hafıza</span><span id="groupCount">0 grup</span></div>
+<div class="pStrip"><button class="pBtn app" data-p="app" onclick="setPlayer('app')">UYGULAMA</button><button class="pBtn" data-p="internal" onclick="setPlayer('internal')">INTERNAL</button><button class="pBtn" data-p="external" onclick="setPlayer('external')">EXTERNAL</button><button class="pBtn" data-p="kanald" onclick="setPlayer('kanald')">KANAL D</button><button class="pBtn auto active" data-p="auto" onclick="setPlayer('auto')">AUTO</button></div>
+<div style="padding:6px 10px;background:#000;font-size:10px;color:#0f0;display:flex;justify-content:space-between;font-weight:900"><span id="memInfo">Hafıza</span><span id="groupCount">0 grup</span></div>
 <div id="groupList"></div></div>
 
-<div id="mid"><div id="searchWrap"><input id="search" placeholder="🔍 Ara..."><button onclick="toggleSet()" style="padding:0 18px;background:#E50914;border:none;color:#fff;border-radius:12px;font-weight:900">⚙️</button></div>
+<div id="mid"><div id="searchWrap"><input id="search" placeholder="🔍 Ara..."><button onclick="toggleSet()" style="padding:0 14px;background:#E50914;border:none;color:#fff;border-radius:10px;font-weight:900">⚙️</button></div>
 <div id="channelList"></div><div id="filmGrid" style="display:none"></div></div>
 
-<div id="playerArea"><div id="empty"><div style="width:120px;height:120px;background:#E50914;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:900">M</div><h2 style="margin-top:16px;font-weight:900">V23 STABLE</h2><p style="font-size:12px;color:#aaa;margin-top:8px">Gruplar + Dosya yükle duruyor<br/>Telefon fix + Kanal D fix</p><button style="margin-top:14px;background:#E50914;color:#fff;border:none;padding:14px 28px;border-radius:12px;font-weight:900" onclick="loadDPaste()">▶ DPASTE YÜKLE</button><button style="margin-top:8px;background:#fff;color:#000;border:none;padding:12px 24px;border-radius:10px;font-weight:900" onclick="playKanalD()">🔴 KANAL D DENE</button></div>
-<video id="player" controls playsinline></video><div id="bar"><span id="now">V23 Stable</span><span id="pType" style="margin-left:auto;color:#0f0">AUTO</span><button onclick="toggleSet()" style="background:#2f2f2f;border:none;color:#fff;padding:8px 14px;border-radius:8px">⚙️</button></div>
+<div id="playerArea"><div id="empty"><div style="width:100px;height:100px;background:#E50914;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900">M</div><h2 style="margin-top:12px;font-weight:900;font-size:18px">V25 KOMPAKT</h2><p style="font-size:11px;color:#aaa;margin-top:6px;line-height:1.5">Grup içi küçük • Telefon yan net<br/>Uygulama player: Gelin Takımı hızlı</p><button style="margin-top:12px;background:#0f0;color:#000;border:none;padding:12px 24px;border-radius:10px;font-weight:900" onclick="setPlayer('app');loadDPaste()">▶ UYGULAMA PLAYER İLE YÜKLE</button><button style="margin-top:8px;background:#fff;color:#000;border:none;padding:10px 20px;border-radius:8px;font-weight:900;font-size:12px" onclick="playKanalD()">🔴 KANAL D DENE</button></div>
+<video id="player" controls playsinline></video><div id="bar"><span id="now">V25 Kompakt + App Player</span><span id="pType" style="margin-left:auto;color:#0f0">AUTO</span></div></div>
 
-<div id="settings"><div style="display:flex;justify-content:space-between"><b style="color:#E50914;font-size:18px;font-weight:900">AYARLAR - ESKİ SİSTEM</b><button onclick="toggleSet()" style="background:#E50914;border:none;color:#fff;padding:10px 18px;border-radius:10px;font-weight:900">X</button></div>
-<div id="savedLists" style="margin-top:12px;max-height:120px;overflow-y:auto;background:#000;padding:10px;border-radius:12px;border:1px solid #333"></div>
+<div id="settings"><div style="display:flex;justify-content:space-between"><b style="color:#E50914;font-size:16px;font-weight:900">AYARLAR V25</b><button onclick="toggleSet()" style="background:#E50914;border:none;color:#fff;padding:8px 14px;border-radius:8px;font-weight:900">X</button></div>
+<div id="savedLists" style="margin-top:10px;max-height:100px;overflow-y:auto;background:#000;padding:8px;border-radius:10px;border:1px solid #333"></div>
 <div class="tabs"><button class="tab active" onclick="openTab(0)">URL</button><button class="tab" onclick="openTab(1)">DOSYA</button><button class="tab" onclick="openTab(2)">XTREAM</button></div>
-<div class="box active" id="b0"><textarea id="urlInput" rows="3">https://dpaste.com/7FMSCCLYX.txt</textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><button class="btn" style="background:#fff;color:#000" onclick="playKanalD()">🔴 KANAL D TEST - demiroren...kanald.m3u8</button><div id="urlLog" class="log">V23 STABLE FIX
-- Eski sistem korundu
-- Gruplar telefonda gorunur (fix)
-- Dosya yukle var
-- Kanal D ozel player
-- Dün acilan: KANAL D modu</div></div>
-<div class="box" id="b1"><div style="border:3px dashed #E50914;padding:30px;border-radius:12px;text-align:center;font-weight:900;background:#111;cursor:pointer" onclick="document.getElementById('fileInput').click()">📁 DOSYA SEÇ<br><span style="font-size:12px;color:#aaa">M3U / TXT - ESKİ SİSTEM</span></div><input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none"></div>
+<div class="box active" id="b0"><textarea id="urlInput" rows="2">https://dpaste.com/7FMSCCLYX.txt</textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><button class="btn" style="background:#0f0;color:#000" onclick="playKanalD()">🔴 KANAL D - demiroren...kanald.m3u8</button><div id="urlLog" class="log">V25 KOMPAKT
+- Grup ic kucuk (10px) - kompakt
+- Telefon dikey: gruplar yatay kayar
+- Telefon yan: player %50 sol, net sigar
+- UYGULAMA PLAYER: Gelin Takimi icin hizli native
+- KANAL D: referer + proxy fix
+- Dün acilan: UYGULAMA + KANAL D modu</div></div>
+<div class="box" id="b1"><div style="border:2px dashed #E50914;padding:24px;border-radius:10px;text-align:center;font-weight:900;background:#111;cursor:pointer" onclick="document.getElementById('fileInput').click()">📁 DOSYA SEÇ<br><span style="font-size:11px;color:#aaa">M3U / TXT</span></div><input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none"></div>
 <div class="box" id="b2"><input id="xtServer" placeholder="http://sunucu:port"><input id="xtUser" placeholder="Kullanıcı"><input id="xtPass" placeholder="Şifre"><button class="btn" onclick="loadXtream()">XTREAM YÜKLE</button></div>
-</div></div>
+</div>
 
 <script>
-const DPASTE_URL='https://dpaste.com/7FMSCCLYX.txt';const MY_PROXY='https://hidden-meadow-0d62.a-dogan.workers.dev/?url=';const ALLORIGINS='https://api.allorigins.win/raw?url=';const KANALD_URL='https://demiroren.daioncdn.net/kanald/kanald.m3u8?app=kanald_web&ce=3';let all=[];let hls=null;let mpegPlayer=null;let activeGroup='Tümü';let activeCat='CANLI';let currentPlayer='auto';const video=document.getElementById('player');let db;
-function openDB(){return new Promise(r=>{let req=indexedDB.open('MirtiTV_V23',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;r(db);};});}
+const DPASTE_URL='https://dpaste.com/7FMSCCLYX.txt';
+const MY_PROXY='https://hidden-meadow-0d62.a-dogan.workers.dev/?url=';
+const ALLORIGINS='https://api.allorigins.win/raw?url=';
+const KANALD_URL='https://demiroren.daioncdn.net/kanald/kanald.m3u8?app=kanald_web&ce=3';
+let all=[];let hls=null;let mpegPlayer=null;let activeGroup='Tümü';let activeCat='CANLI';let currentPlayer='app'; // DUN HIZLI OLAN: UYGULAMA PLAYER
+const video=document.getElementById('player');let db;
+function openDB(){return new Promise(r=>{let req=indexedDB.open('MirtiTV_V25',1);req.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=e=>{db=e.target.result;r(db);};});}
 async function saveToDB(n,c){if(!db) await openDB();return new Promise(r=>{let tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name:n,channels:c,count:c.length,time:Date.now()});tx.oncomplete=()=>r();});}
 async function getAllFromDB(){if(!db) await openDB();return new Promise(r=>{let tx=db.transaction('lists','readonly');let q=tx.objectStore('lists').getAll();q.onsuccess=()=>r(q.result);});}
 function toggleSet(){document.getElementById('settings').classList.toggle('open');}
@@ -90,7 +111,7 @@ function cleanUrl(u){return u.trim().split('|')[0].split(';')[0].replace(/\s+/g,
 function log(m){document.getElementById('urlLog').textContent=m;}
 function getCat(ch){let g=(ch.group||'').toLowerCase();let n=(ch.name||'').toLowerCase();if(g.includes('film')||g.includes('movie')) return 'FILM';if(g.includes('dizi')||n.includes('bölüm')) return 'DIZI';return 'CANLI';}
 function setCat(cat){activeCat=cat;document.querySelectorAll('.catTab').forEach(t=>t.classList.toggle('active',t.dataset.cat===cat));activeGroup='Tümü';buildGroups();}
-function setPlayer(p){currentPlayer=p;document.querySelectorAll('.pBtn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));}
+function setPlayer(p){currentPlayer=p;document.querySelectorAll('.pBtn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));log('Player: '+p.toUpperCase()+(p==='app'?' - UYGULAMA PLAYER: Gelin Takimi icin en hizli (native direkt)':p==='kanald'?' - KANAL D OZEL: referer+proxy+HLS':''));}
 function parseM3U(text){
  const lines=text.split(/\r?\n/);const out=[];let tmp={name:'',group:'Genel',logo:''};
  for(let l of lines){
@@ -100,27 +121,27 @@ function parseM3U(text){
    let gM=l.match(/group-title="([^"]+)"/);tmp.group=gM?gM[1].trim():'Genel';
    tmp.logo=(l.match(/tvg-logo="([^"]+)"/)||[])[1]||'';
   } else if(l.startsWith('http')){
-   out.push({name:tmp.name,group:tmp.group,logo:tmp.logo,url:cleanUrl(l),cat:getCat({name:tmp.name,group:tmp.group}),diziKey:tmp.name.replace(/S\d+.*E\d+.*/i,'').replace(/\d+\. Bölüm.*/i,'').trim()});
+   out.push({name:tmp.name,group:tmp.group,logo:tmp.logo,url:cleanUrl(l),cat:getCat({name:tmp.name,group:tmp.group}),diziKey:tmp.name.replace(/S\d+.*E\d+.*/i,'').trim()});
    tmp={name:'',group:'Genel',logo:''};
   }
  } return {channels:out};
 }
 async function loadDPaste(){
- log('Yukleniyor...');try{
+ log('Yukleniyor UYGULAMA PLAYER ile...');try{
   let txt=null;try{let r=await fetch(DPASTE_URL,{cache:'no-store'});if(r.ok) txt=await r.text();}catch(e){}
   if(!txt||txt.length<100){try{let r=await fetch(MY_PROXY+encodeURIComponent(DPASTE_URL));if(r.ok) txt=await r.text();}catch(e){}}
   if(!txt||txt.length<100){try{let r=await fetch(ALLORIGINS+encodeURIComponent(DPASTE_URL));if(r.ok) txt=await r.text();}catch(e){}}
-  if(!txt) throw 'Alinamadi';let res=parseM3U(txt);all=res.channels;buildGroups();document.getElementById('empty').style.display='none';log(`✅ ${all.length} kanal`);saveToDB('DPASTE',all);renderSaved();
+  if(!txt) throw 'Alinamadi';let res=parseM3U(txt);all=res.channels;buildGroups();document.getElementById('empty').style.display='none';log(`✅ ${all.length} kanal - UYGULAMA PLAYER aktif`);saveToDB('DPASTE',all);renderSaved();
  }catch(e){log('Hata: '+e);}
 }
 async function fetchUniversal(url){url=cleanUrl(url);try{let r=await fetch(url);if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}try{let r=await fetch(MY_PROXY+encodeURIComponent(url));if(r.ok){let t=await r.text();if(t.length>50) return t;}}catch(e){}throw 'Alinamadi';}
 async function loadUrl(){let u=document.getElementById('urlInput').value.trim();if(!u) u=DPASTE_URL;try{let txt=await fetchUniversal(u);let res=parseM3U(txt);all=res.channels;buildGroups();document.getElementById('empty').style.display='none';log(res.channels.length+' kanal');toggleSet();}catch(e){log('Hata: '+e);}}
-async function renderSaved(){let lists=await getAllFromDB();const box=document.getElementById('savedLists');box.innerHTML='';lists.sort((a,b)=>(b.time||0)-(a.time||0));lists.forEach(item=>{let d=document.createElement('div');d.style.cssText='padding:12px;background:#2f2f2f;margin:6px 0;border-radius:10px;display:flex;justify-content:space-between;border:1px solid #444;cursor:pointer;color:#fff;font-weight:900';d.innerHTML=`<span>📁 ${item.name} (${item.count})</span><span>▶</span>`;d.onclick=()=>{all=item.channels.map(c=>({...c,cat:c.cat||getCat(c)}));buildGroups();document.getElementById('empty').style.display='none';toggleSet();};box.appendChild(d);});}
+async function renderSaved(){let lists=await getAllFromDB();const box=document.getElementById('savedLists');box.innerHTML='';lists.sort((a,b)=>(b.time||0)-(a.time||0));lists.forEach(item=>{let d=document.createElement('div');d.style.cssText='padding:10px;background:#2f2f2f;margin:4px 0;border-radius:8px;display:flex;justify-content:space-between;border:1px solid #444;cursor:pointer;color:#fff;font-weight:700;font-size:12px';d.innerHTML=`<span>📁 ${item.name} (${item.count})</span><span>▶</span>`;d.onclick=()=>{all=item.channels.map(c=>({...c,cat:c.cat||getCat(c)}));buildGroups();document.getElementById('empty').style.display='none';toggleSet();};box.appendChild(d);});}
 function buildGroups(){
  let base=activeCat==='TUMU'?all:all.filter(c=>c.cat===activeCat);
  let groups=['Tümü',...new Set(base.map(c=>c.group))].filter(Boolean);
  const box=document.getElementById('groupList');box.innerHTML='';document.getElementById('groupCount').textContent=groups.length-1+' grup';
- groups.forEach(g=>{let cnt=g==='Tümü'?base.length:base.filter(x=>x.group===g).length;let b=document.createElement('div');b.className='group'+(activeGroup===g?' active':'');b.innerHTML=`<span>${g}</span><span style="background:#000;padding:4px 10px;border-radius:12px">${cnt}</span>`;b.onclick=()=>{activeGroup=g;document.querySelectorAll('.group').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();};box.appendChild(b);});
+ groups.forEach(g=>{let cnt=g==='Tümü'?base.length:base.filter(x=>x.group===g).length;let b=document.createElement('div');b.className='group'+(activeGroup===g?' active':'');b.innerHTML=`<span>${g}</span><span style="background:#000;padding:2px 6px;border-radius:8px;font-size:10px">${cnt}</span>`;b.onclick=()=>{activeGroup=g;document.querySelectorAll('.group').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();};box.appendChild(b);});
  render();
 }
 function render(){
@@ -130,10 +151,10 @@ function render(){
  const chList=document.getElementById('channelList');const filmGrid=document.getElementById('filmGrid');
  if(activeCat==='FILM'||activeCat==='DIZI'){
    chList.style.display='none';filmGrid.style.display='grid';filmGrid.innerHTML='';
-   list.forEach(c=>{let d=document.createElement('div');d.className='filmCard';let img=c.logo?`<img class="poster" src="${c.logo}" onerror="this.outerHTML='<div class=posterFb>${c.name.charAt(0)}</div>'">`:`<div class="posterFb">${c.name.charAt(0)}</div>`;d.innerHTML=`${img}<div class="filmInfo"><div class="filmTitle">${c.name.slice(0,30)}</div><div class="filmMeta">${c.group}</div></div>`;d.onclick=()=>play(c);filmGrid.appendChild(d);});return;
+   list.forEach(c=>{let d=document.createElement('div');d.className='filmCard';let img=c.logo?`<img class="poster" src="${c.logo}" onerror="this.outerHTML='<div class=posterFb>${c.name.charAt(0)}</div>'">`:`<div class="posterFb">${c.name.charAt(0)}</div>`;d.innerHTML=`${img}<div class="filmInfo"><div class="filmTitle">${c.name.slice(0,28)}</div><div class="filmMeta">${c.group}</div></div>`;d.onclick=()=>play(c);filmGrid.appendChild(d);});return;
  }
- filmGrid.style.display='none';chList.style.display='flex';chList.style.flexDirection='column';chList.style.gap='8px';chList.innerHTML='';
- list.forEach(c=>{let d=document.createElement('div');d.className='ch';d.innerHTML=`<div style="width:48px;height:48px;background:#000;display:flex;align-items:center;justify-content:center;border-radius:10px;font-weight:900;color:#E50914">${c.name.charAt(0)}</div><div style="flex:1"><div style="font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div><div style="font-size:12px;color:#aaa">${c.group}</div></div><span>▶</span>`;d.onclick=()=>play(c);chList.appendChild(d);});
+ filmGrid.style.display='none';chList.style.display='flex';chList.innerHTML='';
+ list.forEach(c=>{let d=document.createElement('div');d.className='ch';d.innerHTML=`<div style="width:36px;height:36px;background:#000;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:900;color:#E50914;font-size:14px">${c.name.charAt(0)}</div><div style="flex:1;min-width:0"><div class="ch-name">${c.name}</div><div class="ch-group">${c.group}</div></div><span style="font-size:12px">▶</span>`;d.onclick=()=>play(c);chList.appendChild(d);});
 }
 function playKanalD(){play({name:'Kanal D',group:'Ulusal',url:KANALD_URL,cat:'CANLI'});}
 async function play(c){
@@ -141,29 +162,55 @@ async function play(c){
  if(hls){try{hls.destroy()}catch(e){}hls=null;}if(mpegPlayer){try{mpegPlayer.destroy()}catch(e){}mpegPlayer=null;}
  video.pause();video.removeAttribute('src');video.load();
  let url=c.url;let isKanalD=url.includes('kanald')||c.name.toLowerCase().includes('kanal d');
- let players=isKanalD||currentPlayer==='kanald'?['hls-direct','hls-proxy','native-proxy','mpegts-proxy','allorigins']:currentPlayer==='auto'?['hls-direct','hls-proxy','native-proxy','mpegts-proxy','allorigins']:currentPlayer==='internal'?['hls-direct','native-direct']:['mpegts-proxy','native-proxy'];
- log(`▶ ${c.name}\n${isKanalD?'KANAL D OZEL':currentPlayer.toUpperCase()} → ${players.join(' → ')}\n${url.slice(0,60)}`);
+ let isFilm=url.includes('.mkv')||url.includes('.mp4')||c.cat==='FILM'||c.name.toLowerCase().includes('gelin takımı');
+ let players;
+ if(currentPlayer==='app' || isFilm){
+   // DUN HIZLI OLAN: UYGULAMA PLAYER - Gelin Takimi icin direkt native
+   players=['app-native','app-proxy','hls-direct','hls-proxy'];
+ } else if(isKanalD || currentPlayer==='kanald'){
+   players=['kanald-direct-hls','kanald-proxy-hls','hls-proxy','native-proxy','mpegts-proxy'];
+ } else if(currentPlayer==='auto'){
+   players=['hls-direct','app-native','hls-proxy','native-proxy','mpegts-proxy','allorigins'];
+ } else if(currentPlayer==='internal'){
+   players=['hls-direct','app-native'];
+ } else {
+   players=['mpegts-proxy','native-proxy'];
+ }
+ log(`▶ ${c.name}\n${isFilm?'FILM/GELIN TAKIMI - UYGULAMA PLAYER HIZLI':isKanalD?'KANAL D OZEL':currentPlayer.toUpperCase()} → ${players.join(' → ')}\n${url.slice(0,65)}`);
  for(let i=0;i<players.length;i++){
    document.getElementById('pType').textContent=`${i+1}/${players.length} ${players[i]}`;
-   let ok=await tryPlay(url,players[i]);if(ok){document.getElementById('pType').textContent=`✅ ${players[i]}`;log(`✅ ACILDI: ${players[i]}\n${c.name}\nDun acilan: ${players[i]}`);return;}
+   let ok=await tryPlay(url,players[i],isKanalD);if(ok){document.getElementById('pType').textContent=`✅ ${players[i]}`;log(`✅ ACILDI: ${players[i]}\n${c.name}\nDun hizli acan: ${players[i]}`);return;}
  }
+ log(`❌ Acilamadi - tum player denendi`);
 }
-function tryPlay(url,type){
+function tryPlay(url,type,isKanalD){
  return new Promise((resolve)=>{
-  let timeout=setTimeout(()=>resolve(false),6000);let proxied=url;
-  if(type.includes('proxy')) proxied=MY_PROXY+encodeURIComponent(url);if(type==='allorigins') proxied=ALLORIGINS+encodeURIComponent(url);
-  if(type.includes('hls')||type==='hls-direct'){
-   if(type==='hls-direct') proxied=url.startsWith('http://')?MY_PROXY+encodeURIComponent(url):url;
-   if(Hls.isSupported()){
-     try{hls=new Hls({enableWorker:true});hls.loadSource(proxied);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,()=>{video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});});hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal){clearTimeout(timeout);try{hls.destroy()}catch(e){}resolve(false);}});}catch(e){clearTimeout(timeout);resolve(false);}
-   } else {video.src=proxied;video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}
+  let timeout=setTimeout(()=>resolve(false), isKanalD?8000:5000);
+  let proxied=url;
+  if(type.includes('proxy')) proxied=MY_PROXY+encodeURIComponent(url);
+  if(type==='allorigins') proxied=ALLORIGINS+encodeURIComponent(url);
+  if(type.includes('app') || type==='native-proxy' || type==='app-native' || type==='app-proxy'){
+    // UYGULAMA PLAYER - direkt native, Gelin Takimi icin en hizli
+    let src=type==='app-native'?url:proxied;
+    video.src=src; video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});
+    return;
+  }
+  if(type.includes('hls') || type.includes('kanald')){
+    if(type==='hls-direct' || type==='kanald-direct-hls') proxied=url.startsWith('http://')?MY_PROXY+encodeURIComponent(url):url;
+    if(Hls.isSupported()){
+      try{
+        let cfg={enableWorker:true,lowLatencyMode:type.includes('kanald'),maxBufferLength:20};
+        hls=new Hls(cfg); hls.loadSource(proxied); hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED,()=>{video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});});
+        hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal){clearTimeout(timeout);try{hls.destroy()}catch(e){}resolve(false);}});}catch(e){clearTimeout(timeout);resolve(false);}
+    } else {video.src=proxied; video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}
   } else if(type.includes('mpegts')){
-    if(mpegts.getFeatureList().mseLivePlayback){try{mpegPlayer=mpegts.createPlayer({type:'mpegts',isLive:true,url:proxied},{enableWorker:true});mpegPlayer.attachMediaElement(video);mpegPlayer.load();mpegPlayer.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}catch(e){clearTimeout(timeout);resolve(false);}} else {video.src=proxied;video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}
-  } else {video.src=proxied;video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}
+    if(mpegts.getFeatureList().mseLivePlayback){try{mpegPlayer=mpegts.createPlayer({type:'mpegts',isLive:true,url:proxied},{enableWorker:true}); mpegPlayer.attachMediaElement(video); mpegPlayer.load(); mpegPlayer.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}catch(e){clearTimeout(timeout);resolve(false);}} else {video.src=proxied; video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}
+  } else {video.src=proxied; video.play().then(()=>{clearTimeout(timeout);resolve(true);}).catch(()=>{clearTimeout(timeout);resolve(false);});}
  });
 }
 async function loadXtream(){let s=document.getElementById('xtServer').value.trim();let u=document.getElementById('xtUser').value.trim();let p=document.getElementById('xtPass').value.trim();if(!s||!u||!p){log('Bos');return;}s=cleanUrl(s);let m3u=`${s}/get.php?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}&type=m3u_plus&output=m3u8`;try{let txt=await fetchUniversal(m3u);let res=parseM3U(txt);all=res.channels;buildGroups();document.getElementById('empty').style.display='none';log(res.channels.length+' kanal');toggleSet();}catch(e){log('Hata: '+e);}}
 document.getElementById('fileInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f) return;const r=new FileReader();r.onload=ev=>{let res=parseM3U(ev.target.result);if(res.channels.length){all=res.channels;buildGroups();document.getElementById('empty').style.display='none';log(res.channels.length+' kanal');document.getElementById('fileInput').value='';toggleSet();}};r.readAsText(f);});
 document.getElementById('search').addEventListener('input',()=>render());
-(async()=>{await openDB();await renderSaved();setTimeout(()=>{document.getElementById('splash').classList.add('hide');},2500);setTimeout(()=>{loadDPaste();},1000);})();
+(async()=>{await openDB();await renderSaved();setTimeout(()=>{document.getElementById('splash').classList.add('hide');},2000);setTimeout(()=>{loadDPaste();},800);})();
 </script></body></html>
