@@ -83,6 +83,42 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
 @media(max-width:900px){body{flex-direction:column;height:auto;min-height:100vh;overflow:auto}#playerArea{order:1;height:48vh;position:sticky;top:0;z-index:5}#left{order:2;width:100%;min-width:100%;max-width:100%;max-height:220px}#groupList{display:flex;gap:5px;overflow-x:auto;overflow-y:hidden;max-height:90px;flex-wrap:nowrap}.group{flex:none;white-space:nowrap}#mid{order:3;width:100%;min-width:100%;max-width:100%;min-height:55vh}#filmGrid{grid-template-columns:repeat(2,1fr);gap:12px;padding:12px}#settings{width:100%}}
 </style>
 </head>
+
+<script>
+// PWA Kaydet
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+
+// TV Kumanda - D-Pad ile gezinme
+let focusIndex = 0;
+let focusList = [];
+function updateFocusList(){
+  focusList = [...document.querySelectorAll('.ch,.group,.catTab,.btn,.gear')];
+}
+function focusMove(dir){
+  if(!focusList.length) updateFocusList();
+  focusList[focusIndex]?.style && (focusList[focusIndex].style.outline='none');
+  if(dir==='down') focusIndex = Math.min(focusList.length-1, focusIndex+1);
+  if(dir==='up') focusIndex = Math.max(0, focusIndex-1);
+  if(dir==='right') focusIndex = Math.min(focusList.length-1, focusIndex+1);
+  if(dir==='left') focusIndex = Math.max(0, focusIndex-1);
+  const el = focusList[focusIndex];
+  if(el){ el.focus(); el.style.outline='3px solid #e50914'; el.scrollIntoView({block:'center',behavior:'smooth'}); }
+}
+document.addEventListener('keydown', e=>{
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.key)){
+    e.preventDefault();
+    if(e.key==='ArrowDown') focusMove('down');
+    if(e.key==='ArrowUp') focusMove('up');
+    if(e.key==='ArrowRight') focusMove('right');
+    if(e.key==='ArrowLeft') focusMove('left');
+    if(e.key==='Enter') focusList[focusIndex]?.click();
+  }
+});
+document.addEventListener('click', ()=>setTimeout(updateFocusList,300));
+setTimeout(updateFocusList,1000);
+</script>
+  
+  
 <body>
 <aside id="left">
   <div id="topLeft">
