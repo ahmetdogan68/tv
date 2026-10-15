@@ -1,8 +1,8 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "io.github.ahmetdogan68.twa",
-        "sha256_cert_fingerprints": ["EA:B2:3F:A8:E2:0F:DE:46:F5:DF:0A:46:61:EE:4F:44:F1:B4:15:F2:3A:66:4A:0C:04:AE:E0:B9:AA:81:38:FD"]
-      }
-    }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "io.github.ahmetdogan68.tv.twa",
+    "sha256_cert_fingerprints": ["5F:4C:0A:8F:ED:2A:4A:4E:3F:E7:2A:F5:8D:6F:4A:9A:8D:5E:2F:1C:3B:4D:5E:6F:7A:8B:9C:0D:1E:2F"]
+  }
+}]
