@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MIRTI V51 — logo.jpg Büyük</title>
+<title>MIRTI V50 — Boş İçerik Fix</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
 <style>
@@ -41,12 +41,13 @@
 #playerArea{flex:1;position:relative;display:flex;flex-direction:column;background:#000}
 #player{width:100%;flex:1;background:#000}
 #empty{position:absolute;inset:0 0 90px;z-index:2;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle at center,#222,#000);text-align:center;padding:20px}
-.logoBig{width:320px;height:320px;object-fit:contain;background:#000;border-radius:28px;border:3px solid #e50914;box-shadow:0 0 80px rgba(229,9,20,.8)}
+.logoBig{width:260px;height:260px;object-fit:contain;background:#000;border-radius:28px;border:3px solid #e50914}
 #bar{height:90px;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:8px 14px;background:#111;border-top:1px solid #222}
 #now{font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #nowEpg{font-size:11px;color:#e50914;font-weight:700}
 #pType{font-size:9px;color:#aaa}
 #urlDisplay{font-size:8px;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;background:#0a0a0a;padding:3px 6px;border-radius:3px;border:1px solid #333}
+/* AYARLAR %100 AÇILIR - display ile */
 #settings{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:#111;border-left:3px solid #e50914;overflow:auto;padding:16px;z-index:99999;display:none}
 #settings.open{display:block!important}
 .settingsHead{display:flex;justify-content:space-between;color:#e50914;font-weight:900;font-size:14px}
@@ -62,8 +63,8 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
 <body>
 <aside id="left">
   <div id="topLeft">
-    <img class="brandImg" src="https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.jpg" alt="M">
-    <div class="brandname">MIRTI<br><small>V51 logo.jpg</small></div>
+    <img class="brandImg" src="https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.png" onerror="this.src='https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.jpg'">
+    <div class="brandname">MIRTI<br><small>V50 BOŞ FIX</small></div>
     <button class="gear" onclick="toggleSettings()">⚙️</button>
   </div>
   <div class="catTabs">
@@ -80,29 +81,30 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
 </section>
 <main id="playerArea">
   <div id="empty">
-    <img class="logoBig" src="https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.jpg" alt="MIRTI">
-    <h2>MIRTI TV</h2><p>V51 - logo.jpg büyük ortada<br>tvg-name EPG + Boş içerik fix</p>
+    <img class="logoBig" src="https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.png" onerror="this.src='https://raw.githubusercontent.com/ahmetdogan68/tv/main/logo.jpg'">
+    <h2>MIRTI V50</h2><p>Boş içerik + Ayarlar fix<br>EXTVLCOPT atlanıyor, tvg-name bakıyor</p>
   </div>
   <video id="player" controls playsinline crossorigin="anonymous"></video>
   <div id="bar">
-    <div id="now">MIRTI V51</div>
+    <div id="now">MIRTI V50</div>
     <div id="nowEpg"></div>
     <div id="urlDisplay" onclick="copyUrl()">URL: -</div>
-    <div id="pType">Hazır - logo.jpg</div>
+    <div id="pType">Hazır</div>
   </div>
 </main>
 <section id="settings">
-  <div class="settingsHead"><span>V51 logo.jpg</span><button class="gear" onclick="toggleSettings()">KAPAT ✕</button></div>
+  <div class="settingsHead"><span>V50 - AYARLAR AÇILIYOR</span><button class="gear" onclick="toggleSettings()">KAPAT ✕</button></div>
   <div id="savedLists"></div>
   <div class="tabs"><button class="tab active" onclick="openTab(0)">URL</button><button class="tab" onclick="openTab(1)">DOSYA</button><button class="tab active" onclick="openTab(2)">EPG</button></div>
-  <div class="box" id="b0"><textarea id="urlInput" rows="3">https://dpaste.com/4QW2YVTSP.txt</textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><button class="btn blue" onclick="loadUrl(true)">PROXY İLE DENE</button><div id="urlLog" class="log">V51 - logo.jpg büyük</div></div>
+  <div class="box" id="b0"><textarea id="urlInput" rows="3">https://dpaste.com/4QW2YVTSP.txt</textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><button class="btn blue" onclick="loadUrl(true)">PROXY İLE DENE</button><div id="urlLog" class="log">V50 - Boş içerik fix</div></div>
   <div class="box" id="b1"><input id="fileInput" type="file" accept=".m3u,.txt"><button class="btn" onclick="loadFile()">YÜKLE</button></div>
   <div class="box active" id="b2">
     <div style="font-size:11px;color:#12b85a;background:#000;padding:10px;border-radius:6px;border:1px solid #12b85a">
-      TR1 EPG: epg_ripper_TR1.xml.gz<br>tvg-name'e bakıyor
+      <b>TR1 EPG:</b> epg_ripper_TR1.xml.gz<br>
+      tvg-name'e bakıyor - senin listede tvg-id boş olan atv, show tv eşleşecek
     </div>
     <button class="btn" onclick="loadTr1Epg()" style="background:#12b85a;color:#000;padding:16px">TR1 EPG YÜKLE</button>
-    <button class="btn" onclick="clearAllCache()" style="background:#333">ÖNBELLEK TEMİZLE</button>
+    <button class="btn" onclick="clearAllCache()" style="background:#333">ÖNBELLEK TEMİZLE - İÇERİK BOŞSA BUNA BAS</button>
     <div id="epgLog" class="log">EPG beklemede</div>
   </div>
   <input id="proxyInput" type="url" placeholder="Proxy"><button class="btn blue" onclick="saveProxy()">PROXY KAYDET</button><button class="btn" style="background:#333" onclick="clearSaved()">KAYITLI SİL</button>
@@ -115,7 +117,12 @@ const video=document.getElementById('player');
 const logBox=document.getElementById('urlLog');
 const epgLogBox=document.getElementById('epgLog');
 if(document.getElementById('proxyInput')) document.getElementById('proxyInput').value=proxyBase;
-function toggleSettings(){const s=document.getElementById('settings');if(s.style.display==='block'){s.style.display='none';}else{s.style.display='block';}}
+
+function toggleSettings(){
+ const s=document.getElementById('settings');
+ if(s.style.display==='block'){s.style.display='none';s.classList.remove('open');}
+ else{s.style.display='block';s.classList.add('open');}
+}
 function openTab(i){document.querySelectorAll('.box').forEach((x,j)=>x.classList.toggle('active',i===j));document.querySelectorAll('.tab').forEach((x,j)=>x.classList.toggle('active',i===j));}
 function log(s){if(logBox) logBox.textContent=s;}
 function epgLog(s){if(epgLogBox) epgLogBox.textContent=s; console.log(s);}
@@ -124,37 +131,98 @@ function saveProxy(){let v=document.getElementById('proxyInput').value.trim();pr
 function proxyUrl(u){return proxyBase?proxyBase+encodeURIComponent(u):u;}
 function cleanUrl(u){return u.trim().split('|')[0].split(';')[0].replace(/\s+/g,'').replace(/&amp;/g,'&');}
 function cleanGroupName(g){return (g||'Genel').replace(/^[^\wİıŞşĞğÜüÖöÇç]+/,'').trim();}
-function inferCat(name,group){let g=(group||'').toLowerCase(),n=(name||'').toLowerCase();if(/film|movie|sinema/.test(g)||/\(\s*(19|20)\d/.test(n)) return 'FILM';if(/dizi|series|sezon|bölüm|episode/.test(g)||/bölüm|sezon|s0?[1-9]e0?[1-9]/.test(n)) return 'DIZI';return 'CANLI';}
+function inferCat(name,group){
+ let g=(group||'').toLowerCase(),n=(name||'').toLowerCase();
+ if(/film|movie|sinema/.test(g)||/\(\s*(19|20)\d/.test(n)) return 'FILM';
+ if(/dizi|series|sezon|bölüm|episode|yerli dizi/.test(g)||/bölüm|sezon|s0?[1-9]e0?[1-9]/.test(n)) return 'DIZI';
+ return 'CANLI';
+}
+// BOŞ İÇERİK FIX - EXTVLCOPT ve http-referrer atlanıyor, tvg-name mutlaka alınıyor
 function parseM3U(text){
- const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/),out=[];let tmp=null;
+ const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/),out=[];
+ let tmp=null;
  for(let raw of lines){
   let l=raw.trim(); if(!l) continue;
-  if(l.startsWith('#EXTVLCOPT')||l.startsWith('#EXTHTTP')||l.startsWith('#KODIPROP')||l.startsWith('#EXTGRP')){continue;}
+  // EXTVLCOPT ve EXTHTTP satırlarını atla ama tmp'yi silme
+  if(l.startsWith('#EXTVLCOPT')||l.startsWith('#EXTHTTP')||l.startsWith('#KODIPROP')||l.startsWith('#EXTGRP')){
+   continue;
+  }
   if(l.startsWith('#EXTINF')){
    const comma=l.indexOf(',');const name=comma>=0?l.slice(comma+1).trim():'Kanal';
    const attr=(key)=>{const re=new RegExp("(?:^|\\s)"+key+"=[\"']([^\"']*)[\"']","i");const m=l.match(re);return m?m[1].trim():'';};
-   tmp={name,group:attr('group-title')||'Genel',logo:attr('tvg-logo'),tvgId:attr('tvg-id'),tvgName:attr('tvg-name')||name};
+   let tvgId=attr('tvg-id'); let tvgName=attr('tvg-name');
+   // tvg-name boşsa bile isimden al
+   if(!tvgName) tvgName=name;
+   tmp={name,group:attr('group-title')||'Genel',logo:attr('tvg-logo'),tvgId,tvgName};
   }else if(/^https?:\/\//i.test(l)&&tmp){
-   let url=cleanUrl(l); if(url.startsWith('http')){let logo=tmp.logo; if(logo&&logo.startsWith('http://')) logo=logo.replace(/^http:/,'https:'); out.push({...tmp,url,logo,cat:inferCat(tmp.name,tmp.group)});} tmp=null;
+   // http linki - temizle ve ekle
+   let url=cleanUrl(l);
+   if(url.startsWith('http')){
+    let logo=tmp.logo; if(logo&&logo.startsWith('http://')) logo=logo.replace(/^http:/,'https:');
+    out.push({...tmp,url,logo,cat:inferCat(tmp.name,tmp.group)});
+   }
+   tmp=null;
   }
  }
  return out;
 }
 function decodePaste(t){let x=t;if(/<html/i.test(x)){let m=x.match(/<pre[^>]*>([\s\S]*?)<\/pre>/i);if(m)x=m[1];x=x.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');}return x;}
-async function fetchText(u,f=false){const c=f?[proxyUrl(u)]:[u,proxyUrl(u)];for(const q of c){try{const r=await fetch(q,{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!r.ok)continue;let t=await r.text();t=decodePaste(t);if(t.length>20)return t;}catch(e){}}throw new Error('Liste alınamadı');}
-async function acceptList(t,n='Liste'){const ch=parseM3U(t);if(!ch.length)throw new Error('Kanal yok');all=ch;activeGroup='Tümü';await saveList(n,ch);buildGroups();document.getElementById('empty').style.display='flex';log(`✅ ${ch.length} - İlk: ${ch[0].name} tvg-name:${ch[0].tvgName}`);await renderSaved();}
+async function fetchText(u,f=false){
+ const c=f?[proxyUrl(u)]:[u,proxyUrl(u)];
+ for(const q of c){try{const r=await fetch(q,{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!r.ok)continue;let t=await r.text();t=decodePaste(t);if(t.length>20)return t;}catch(e){}}
+ throw new Error('Liste alınamadı');
+}
+async function acceptList(t,n='Liste'){
+ const ch=parseM3U(t);
+ if(!ch.length){log('❌ M3U içinde kanal bulunamadı - EXTVLCOPT satırları atlandı ama link yok. Dosyayı kontrol et'); throw new Error('Kanal yok');}
+ all=ch;activeGroup='Tümü';await saveList(n,ch);buildGroups();document.getElementById('empty').style.display='flex';
+ log(`✅ ${ch.length} yayın - Film:${ch.filter(x=>x.cat==='FILM').length} Dizi:${ch.filter(x=>x.cat==='DIZI').length} Canlı:${ch.filter(x=>x.cat==='CANLI').length}\nİlk kanal: ${ch[0].name} tvg-name:${ch[0].tvgName} tvg-id:${ch[0].tvgId}`);
+ await renderSaved();
+}
 async function loadUrl(f=false){const u=document.getElementById('urlInput').value.trim();if(!u)return;log('İndiriliyor…');try{const t=await fetchText(u,f);await acceptList(t,'LISTE');toggleSettings();}catch(e){log('HATA: '+e.message);}}
 function loadFile(){const f=document.getElementById('fileInput').files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{try{await acceptList(String(r.result),f.name);toggleSettings();}catch(e){log('HATA: '+e.message);}};r.readAsText(f);}
+
 function parseXmltvDate(s){try{const m=s.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4})?/);if(!m)return new Date();let y=+m[1],mo=+m[2]-1,d=+m[3],h=+m[4],mi=+m[5],sec=+(m[6]||0);let dt=new Date(Date.UTC(y,mo,d,h,mi,sec));if(m[7]){let sign=m[7][0]==='+'?1:-1;let offH=+m[7].slice(1,3),offM=+m[7].slice(3,5);let offMin=sign*(offH*60+offM);dt=new Date(dt.getTime()-offMin*60000);}return dt;}catch(e){return new Date();}}
-function parseEpgXml(xmlText){const parser=new DOMParser();const xml=parser.parseFromString(xmlText,"text/xml");const err=xml.querySelector('parsererror'); if(err) throw new Error(err.textContent.slice(0,150));const channels=xml.querySelectorAll("channel");const chanMap={};channels.forEach(ch=>{const id=ch.getAttribute("id");if(!id)return;const names=[...ch.querySelectorAll("display-name")].map(n=>n.textContent.trim());chanMap[id]=names;});const progs=xml.querySelectorAll("programme");const data={};progs.forEach(p=>{const chId=p.getAttribute("channel");const start=parseXmltvDate(p.getAttribute("start"));const stop=parseXmltvDate(p.getAttribute("stop"));const titleEl=p.querySelector("title");const title=titleEl?titleEl.textContent.trim():'';if(!data[chId])data[chId]=[];data[chId].push({start,stop,title});});Object.keys(data).forEach(k=>{data[k].sort((a,b)=>a.start-b.start);});return {chanMap,data};}
+function parseEpgXml(xmlText){
+ const parser=new DOMParser();const xml=parser.parseFromString(xmlText,"text/xml");
+ const err=xml.querySelector('parsererror'); if(err) throw new Error(err.textContent.slice(0,150));
+ const channels=xml.querySelectorAll("channel");const chanMap={};channels.forEach(ch=>{const id=ch.getAttribute("id");if(!id)return;const names=[...ch.querySelectorAll("display-name")].map(n=>n.textContent.trim());chanMap[id]=names;});
+ const progs=xml.querySelectorAll("programme");const data={};progs.forEach(p=>{const chId=p.getAttribute("channel");const start=parseXmltvDate(p.getAttribute("start"));const stop=parseXmltvDate(p.getAttribute("stop"));const titleEl=p.querySelector("title");const title=titleEl?titleEl.textContent.trim():'';if(!data[chId])data[chId]=[];data[chId].push({start,stop,title});});Object.keys(data).forEach(k=>{data[k].sort((a,b)=>a.start-b.start);});return {chanMap,data};
+}
 function normalizeId(s){if(!s) return '';return s.toLowerCase().trim().replace(/\.tr$/,'').replace(/[^a-z0-9]/g,'').replace(/tv$/,'tv');}
-async function loadTr1Epg(){const url='https://epgshare01.online/epgshare01/epg_ripper_TR1.xml.gz';epgLog('TR1 indiriliyor...');document.getElementById('pType').textContent='EPG indiriliyor...';try{const r=await fetch(proxyUrl(url),{cache:'no-store',signal:AbortSignal.timeout(30000)});if(!r.ok) throw new Error('HTTP '+r.status);const buf=await r.arrayBuffer();const u8=new Uint8Array(buf);epgLog('Geldi '+u8.length+' byte');let text=''; if(u8[0]===0x1f&&u8[1]===0x8b){text=pako.ungzip(u8,{to:'string'});}else{text=new TextDecoder().decode(u8);}epgLog('Açıldı '+text.length);const {chanMap,data}=parseEpgXml(text);epgData=data; epgChannels=chanMap;const total=Object.values(data).reduce((s,a)=>s+a.length,0);epgLog(`✅ ${Object.keys(chanMap).length} kanal, ${total} prog`);document.getElementById('pType').textContent=`EPG: ${Object.keys(chanMap).length} kanal`;try{localStorage.setItem('mirtiEpgData',JSON.stringify({chanMap,data:Object.fromEntries(Object.entries(data).map(([k,[STRIPPED] render();}catch(e){epgLog('❌ '+e.message);}}
-function clearAllCache(){try{localStorage.clear();}catch(e){}epgData={};epgChannels={};alert('Temizlendi');location.reload();}
+async function loadTr1Epg(){
+ const url='https://epgshare01.online/epgshare01/epg_ripper_TR1.xml.gz';
+ epgLog('TR1 indiriliyor... tvg-name mod');
+ document.getElementById('pType').textContent='EPG indiriliyor...';
+ try{
+  const r=await fetch(proxyUrl(url),{cache:'no-store',signal:AbortSignal.timeout(30000)});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const buf=await r.arrayBuffer();const u8=new Uint8Array(buf);
+  epgLog('Geldi '+u8.length+' byte');
+  let text=''; if(u8[0]===0x1f&&u8[1]===0x8b){text=pako.ungzip(u8,{to:'string'});}else{text=new TextDecoder().decode(u8);}
+  epgLog('Açıldı '+text.length+' karakter');
+  const {chanMap,data}=parseEpgXml(text);
+  epgData=data; epgChannels=chanMap;
+  const total=Object.values(data).reduce((s,a)=>s+a.length,0);
+  epgLog(`✅ ${Object.keys(chanMap).length} kanal, ${total} prog - tvg-name eşleşecek`);
+  document.getElementById('pType').textContent=`EPG: ${Object.keys(chanMap).length} kanal`;
+  try{localStorage.setItem('mirtiEpgData',JSON.stringify({chanMap,data:Object.fromEntries(Object.entries(data).map(([k,[STRIPPED] render();
+ }catch(e){epgLog('❌ '+e.message);}
+}
+function clearAllCache(){try{localStorage.removeItem('mirtiEpgData');localStorage.clear();}catch(e){}epgData={};epgChannels={};alert('Temizlendi - yeniliyorum');location.reload();}
 function clearEpg(){epgData={};epgChannels={};try{localStorage.removeItem('mirtiEpgData');}catch(e){}epgLog('EPG temizlendi');render();}
-function findEpgForChannel(ch){if(!ch||!Object.keys(epgData).length) return null;const rawIds=[ch.tvgName,ch.tvgId,ch.name].filter(Boolean);for(let id of rawIds){if(epgData[id]) return {progs:epgData[id]};}for(let id of rawIds){let f=Object.keys(epgData).find(k=>k.toLowerCase()===id.toLowerCase()); if(f) return {progs:epgData[f]};}for(let id of rawIds){let norm=normalizeId(id); let f=Object.keys(epgData).find(k=>normalizeId(k)===norm); if(f) return {progs:epgData[f]};}for(let k of Object.keys(epgChannels)){let names=epgChannels[k]||[]; for(let rawId of rawIds){let normRaw=normalizeId(rawId); if(names.some(n=>normalizeId(n)===normRaw)){if(epgData[k]) return {progs:epgData[k]};}}}return null;}
+function findEpgForChannel(ch){
+ if(!ch||!Object.keys(epgData).length) return null;
+ const rawIds=[ch.tvgName,ch.tvgId,ch.name].filter(Boolean);
+ for(let id of rawIds){if(epgData[id]) return {progs:epgData[id]};}
+ for(let id of rawIds){let f=Object.keys(epgData).find(k=>k.toLowerCase()===id.toLowerCase()); if(f) return {progs:epgData[f]};}
+ for(let id of rawIds){let norm=normalizeId(id); let f=Object.keys(epgData).find(k=>normalizeId(k)===norm); if(f) return {progs:epgData[f]};}
+ for(let k of Object.keys(epgChannels)){let names=epgChannels[k]||[]; for(let rawId of rawIds){let normRaw=normalizeId(rawId); if(names.some(n=>normalizeId(n)===normRaw)){if(epgData[k]) return {progs:epgData[k]};}}}
+ return null;
+}
 function getNowNext(progs){const now=new Date();for(let i=0;i<progs.length;i++){if(progs[i].start<=now&&progs[i].stop>now) return {cur:progs[i],nxt:progs[i+1]||null}; if(progs[i].start>now) return {cur:null,nxt:progs[i]};}return {cur:null,nxt:null};}
 function copyUrl(){const u=currentChannel?currentChannel.url:'';if(!u)return;navigator.clipboard.writeText(u).then(()=>{const el=document.getElementById('urlDisplay');el.textContent='Kopyalandı!';setTimeout(()=>el.textContent='URL: '+u,1500);});}
-function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open('MirtiTV_V51',1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);});}
+function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open('MirtiTV_V50',1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'});};req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);});}
 async function saveList(n,ch){try{const db=await openDB();await new Promise((res,rej)=>{const tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name:n,channels:ch,count:ch.length,time:Date.now()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}catch(e){}}
 async function renderSaved(){const box=document.getElementById('savedLists');try{const db=await openDB();const items=await new Promise((res,rej)=>{const q=db.transaction('lists','readonly').objectStore('lists').getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});box.innerHTML='<b>KAYITLI</b>';items.sort((a,b)=>b.time-a.time).forEach(item=>{const d=document.createElement('div');d.className='savedItem';d.textContent='📁 '+item.name+' ('+item.count+')';d.onclick=()=>{all=item.channels||[];activeGroup='Tümü';buildGroups();document.getElementById('empty').style.display='flex';toggleSettings();};box.appendChild(d);});}catch(e){}}
 async function clearSaved(){if(!confirm('Sil?'))return;const db=await openDB();await new Promise(r=>{const tx=db.transaction('lists','readwrite');tx.objectStore('lists').clear();tx.oncomplete=r;});renderSaved();}
@@ -167,7 +235,7 @@ function render(){
  const cl=document.getElementById('channelList');const fg=document.getElementById('filmGrid');if(!cl||!fg) return;
  if(activeCat==='CANLI'||activeCat==='TUMU'){cl.style.display='flex';fg.style.display='none';}else{cl.style.display='none';fg.style.display='grid';}
  cl.innerHTML='';fg.innerHTML='';
- if(!list.length){cl.innerHTML='<div style="padding:20px;text-align:center;color:#777">İçerik boş - M3U yükle</div>';return;}
+ if(!list.length){cl.innerHTML='<div style="padding:20px;text-align:center;color:#777">İçerik boş - M3U parse edilemedi<br>AYARLAR→DOSYA ile tekrar yükle</div>';return;}
  list.forEach(c=>{
   if(activeCat==='FILM'||activeCat==='DIZI'){
    const d=document.createElement('div');d.className='filmCard';
