@@ -185,7 +185,7 @@ function inferCat(name,group){
   // DIZI kalıpları - S01E01, S01 E01, 1x02, Season, Bolum, Episode
   if(/s\d{1,2}\s*e\d{1,2}/i.test(combined) || /s\d{1,2}e\d{1,2}/i.test(combined) || /\d{1,2}x\d{1,2}/.test(combined) || combined.includes('sezon') || combined.includes('bolum') || combined.includes('bölüm') || combined.includes('episode') || g.includes('dizi') || g.includes('series')) return 'DIZI';
   // FILM kalıpları - film, movie, vod, yil, C01
-  if(g.includes('film') || g.includes('movie') || g.includes('sinema') || g.includes('vod') || /\(\s*(19|20)\d{2}\s*\)/.test(n) || combined.includes('1080p') || combined.includes('720p') || g.includes('filmler')) return 'FILM';
+  if(g.includes('film') || g.includes('movie') || g.includes('sinema') || g.includes('vod') || /\(\s*(19|20)\d{2}\s*\)/.test(n) || combined.includes('C01') || combined.includes('720p') || g.includes('filmler')) return 'FILM';
   return 'CANLI';
 }
 function parseM3U(t){const lines=t.replace(/^\uFEFF/,'').split(/\r?\n/),out=[];let tmp=null;for(const raw of lines){const l=raw.trim();if(!l)continue;if(l.startsWith('#EXTINF')){const comma=l.indexOf(',');const name=comma>=0?l.slice(comma+1).trim():'Kanal '+(out.length+1);const attr=k=>{const m=l.match(new RegExp('(?:^|\\s)'+k+'=["\']([^"\']*)["\']','i'));return m?m[1].trim():'';};tmp={name:name||'Kanal '+(out.length+1),group:attr('group-title')||'Genel',logo:attr('tvg-logo'),tvgId:attr('tvg-id'),tvgName:attr('tvg-name')};}else if(!l.startsWith('#')&&/^https?:\/\//i.test(l)&&tmp){let logo=tmp.logo;if(logo&&logo.startsWith('http://'))logo=logo.replace(/^http:/,'https:');out.push({...tmp,url:cleanUrl(l),logo,cat:inferCat(tmp.name,tmp.group)});tmp=null;}}return out}
