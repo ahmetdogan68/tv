@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MIRTI V48.2 2-PART</title>
+<title>MIRTI V48.5 FIX</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
 <style>
@@ -14,7 +14,6 @@
 .brandImg{width:50px;height:50px;border-radius:10px;object-fit:contain;background:#000;border:2px solid #e50914}
 .brandname{font-weight:900;font-size:14px}.brandname small{color:#e50914;font-size:11px}
 .gear{margin-left:auto;background:#e50914;border:0;color:#fff;padding:9px 12px;border-radius:7px;font-weight:900;cursor:pointer}
-.gear:focus,.catTab:focus,.group:focus,.ch:focus,.filmCard:focus{outline:3px solid #ffeb00!important;outline-offset:1px;transform:scale(1.02);z-index:10;box-shadow:0 0 12px #ffeb00}
 .catTabs{display:flex;gap:4px;padding:6px;background:#111}
 .catTab{flex:1;padding:10px 2px;border:1px solid #333;border-radius:7px;background:#242424;color:#fff;font-size:11px;font-weight:900;cursor:pointer}
 .catTab.active{background:#e50914;border-color:#e50914}
@@ -34,18 +33,6 @@
 .posterWrap{height:240px;background:#000;overflow:hidden}.poster{width:100%;height:100%;object-fit:cover}
 .posterFb{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,#e50914,#300);font-size:36px;font-weight:900}
 .filmInfo{height:60px;padding:8px 9px;background:#181818}.filmTitle{font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.filmMeta{font-size:9px;color:#888;margin-top:2px}
-#playerArea{flex:1;position:relative;display:flex;flex-direction:column;background:#000;overflow:hidden}
-#player{width:100%;flex:1;background:#000;object-fit:contain}
-#empty{position:absolute;inset:0 0 100px;z-index:2;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle at center,#222,#000);text-align:center;padding:20px}
-.logoBig{width:180px;height:180px;object-fit:contain;background:#000;border-radius:24px;border:3px solid #e50914;box-shadow:0 0 40px rgba(229,9,20,.6)}
-#bar{height:100px;min-height:100px;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:8px 14px;background:#111;border-top:1px solid #222}
-#barTop{display:flex;gap:8px;align-items:center}#now{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:900;font-size:13px}
-#nowEpg{font-size:11px;color:#e50914;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#urlDisplay{font-size:9px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#0a0a0a;padding:4px 6px;border-radius:4px;border:1px solid #222}
-#pType{font-size:10px;color:#aaa}#epgProgress{height:3px;background:#333;border-radius:2px;overflow:hidden;width:100%;margin-top:3px}#epgProgressBar{height:100%;background:#e50914;width:0%}
-#fsOverlay{position:absolute;inset:0;z-index:20;display:none;background:#000;flex-direction:column}#fsOverlay.active{display:flex}
-#fsVideo{width:100%;flex:1;background:#000;object-fit:contain}
-#fsInfo{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.95) 30%);padding:50px 28px 20px;display:flex;gap:18px;align-items:flex-end;transform:translateY(100%);opacity:0;transition:0.4s}
 #settings{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:#111;border-left:3px solid #e50914;overflow:auto;transform:translateX(105%);transition:.25s;padding:16px;z-index:9999}
 #settings.open{transform:translateX(0)}.settingsHead{display:flex;justify-content:space-between;color:#e50914;font-weight:900;font-size:14px}
 .tabs{display:flex;gap:4px;margin-top:10px}.tab{flex:1;padding:8px;background:#222;border:1px solid #333;border-radius:6px;color:#fff;font-size:10px;font-weight:900;cursor:pointer}.tab.active{background:#e50914}
@@ -61,7 +48,7 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
 <aside id="left">
   <div id="topLeft">
     <img class="brandImg" src="logo.png" alt="M">
-    <div class="brandname">MIRTI<br><small>V48.2 FIX</small></div>
+    <div class="brandname">MIRTI<br><small>V48.5 FIX</small></div>
     <button class="gear" tabindex="0" id="mainGear" onclick="toggleSettings()">⚙️</button>
   </div>
   <div class="catTabs">
@@ -73,72 +60,68 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
   <div id="groupList"></div>
 </aside>
 <section id="mid">
-  <div id="midHeader"><span id="midCount">KANALLAR</span> <span style="margin-left:auto;font-size:10px">SAĞ=FİLM • YUKARI=AYAR • ESC=GERİ</span></div>
+  <div id="midHeader"><span id="midCount">KANALLAR</span></div>
   <div id="channelList"></div><div id="filmGrid"></div>
 </section>
 
-
-
-
-
-
-
-
-<main id="playerArea" style="position:relative;flex:1;display:flex;flex-direction:column;background:#000;overflow:hidden;">
-  <div id="empty" style="position:absolute;inset:0 0 82px 0;z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle at center,#222,#000);text-align:center;padding:20px">
-    <img class="logoBig" src="logo.png" style="width:180px;height:180px;object-fit:contain;background:#000;border-radius:24px;border:3px solid #e50914;box-shadow:0 0 40px rgba(229,9,20,.6)">
-    <h2>MIRTI V48.4</h2><p>Alttaki Bar Fix</p>
+<main id="playerArea" style="position:relative;flex:1;display:flex;flex-direction:column;background:#000;overflow:hidden;min-width:0">
+  <div id="videoWrap" style="position:relative;flex:1;background:#000;overflow:hidden">
+    <div id="empty" style="position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle at center,#222,#000);text-align:center;padding:20px">
+      <img class="logoBig" src="logo.png" style="width:180px;height:180px;object-fit:contain;background:#000;border-radius:24px;border:3px solid #e50914;box-shadow:0 0 40px rgba(229,9,20,.6)">
+      <h2 style="margin-top:12px">MIRTI V48.5</h2><p style="color:#888;margin-top:4px">Siyah ekran fixlendi</p>
+    </div>
+    <div id="loading" style="display:none;position:absolute;inset:0;z-index:20;background:rgba(0,0,0,0.88);flex-direction:column;align-items:center;justify-content:center;gap:14px">
+      <div style="width:64px;height:64px;border:4px solid #333;border-top:4px solid #e50914;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+      <div id="loadingName" style="color:#fff;font-size:16px;font-weight:900"></div>
+    </div>
+    <video id="player" playsinline muted preload="auto" style="position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain"></video>
   </div>
-  <div id="loading" style="display:none;position:absolute;inset:0 0 82px 0;z-index:20;background:#000;flex-direction:column;align-items:center;justify-content:center;gap:14px">
-    <img src="logo.png" style="width:100px;height:100px;border-radius:50%;border:4px solid #e50914;animation:spin 0.8s linear infinite">
-    <div id="loadingName" style="color:#fff;font-size:16px;font-weight:900"></div>
-  </div>
-  <video id="player" playsinline tabindex="-1" muted controlsList="nodownload noremoteplayback" disablepictureinpicture style="width:100%;flex:1;background:#000;object-fit:contain"></video>
 
-  <!-- ALTTA ÇIKACAK BAR - ESKİDEN GÖZÜKMÜYORDU -->
-  <div id="bar" style="position:absolute;bottom:0;left:0;right:0;height:82px;min-height:82px;background:#111;border-top:2px solid #e50914;z-index:25;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px">
-    <div id="barTop" style="display:flex;gap:8px;align-items:center"><span id="now" style="flex:1;font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">MIRTI V48.4</span><span id="pType" style="font-size:10px;color:#aaa">Hazır</span></div>
+  <div id="bar" style="height:82px;min-height:82px;background:#111;border-top:2px solid #e50914;z-index:25;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px;flex-shrink:0">
+    <div id="barTop" style="display:flex;gap:8px;align-items:center"><span id="now" style="flex:1;font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">MIRTI V48.5</span><span id="pType" style="font-size:10px;color:#aaa">Hazır</span></div>
     <div id="nowEpg" style="font-size:11px;color:#ffeb00;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:14px"></div>
     <div id="urlDisplay" style="font-size:8px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">URL: -</div>
     <div id="epgProgress" style="height:5px;background:#333;border-radius:3px;overflow:hidden;width:100%;margin-top:2px"><div id="epgProgressBar" style="height:100%;background:#e50914;width:0%;transition:width 1s linear"></div></div>
   </div>
 
-  <div id="fsOverlay" style="position:absolute;inset:0;z-index:30;display:none;background:#000;flex-direction:column"><video id="fsVideo" playsinline tabindex="-1" controlsList="nodownload" disablepictureinpicture style="width:100%;flex:1;background:#000;object-fit:contain"></video>
+  <div id="fsOverlay" style="position:absolute;inset:0;z-index:30;display:none;background:#000;flex-direction:column">
+    <video id="fsVideo" playsinline preload="auto" style="flex:1;width:100%;background:#000;object-fit:contain"></video>
     <div id="volumeBar" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.92);padding:20px 30px;border-radius:16px;border:3px solid #e50914;z-index:60;text-align:center"><div style="font-size:36px">🔊</div><div id="volText" style="font-size:22px;font-weight:900;margin-top:8px">100%</div><div style="width:160px;height:10px;background:#333;border-radius:5px;margin-top:10px"><div id="volFill" style="height:100%;background:#e50914;width:100%"></div></div></div>
     <div id="fsInfo" style="position:absolute;bottom:82px;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.95));padding:20px 20px 10px;display:flex;gap:18px;align-items:flex-end;transform:translateY(100%);opacity:0;transition:0.4s"><img id="fsLogo" src="" style="width:80px;height:80px;border-radius:12px;border:3px solid #e50914;background:#000;object-fit:contain"><div><div id="fsName" style="font-size:22px;font-weight:900">Kanal</div><div style="color:#aaa;margin-top:4px"><b id="fsGroup">Genel</b> <span id="fsVol">🔊 100%</span></div><div id="fsNow" style="color:#ffeb00;font-weight:800;margin-top:6px;font-size:13px"></div><div id="fsNext" style="color:#ddd;font-size:11px"></div></div></div>
-    <!-- TAM EKRANDA DA ALTTA AYNI BAR -->
-    <div id="fsBar" style="position:absolute;bottom:0;left:0;right:0;height:82px;background:#111;border-top:2px solid #e50914;z-index:35;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px"><div style="display:flex;gap:8px"><span id="fsNowBar" style="flex:1;color:#ffeb00;font-weight:700;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span><span style="font-size:9px;color:#666">CANLI</span></div><div style="height:5px;background:#333;border-radius:3px;overflow:hidden"><div id="fsProgressBar" style="height:100%;background:#e50914;width:0%"></div></div></div>
+    <div id="fsBar" style="height:82px;min-height:82px;background:#111;border-top:2px solid #e50914;z-index:35;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px;flex-shrink:0"><div style="display:flex;gap:8px"><span id="fsNowBar" style="flex:1;color:#ffeb00;font-weight:700;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span><span style="font-size:9px;color:#666">CANLI</span></div><div style="height:5px;background:#333;border-radius:3px;overflow:hidden"><div id="fsProgressBar" style="height:100%;background:#e50914;width:0%"></div></div></div>
   </div>
 </main>
+
 <section id="settings">
-  <div class="settingsHead"><span>V48.4 BAR FIX</span><button class="gear" id="settingsCloseBtn" tabindex="0" onclick="toggleSettings()">KAPAT ✕</button></div>
+  <div class="settingsHead"><span>V48.5 BAR + PLAYER FIX</span><button class="gear" id="settingsCloseBtn" tabindex="0" onclick="toggleSettings()">KAPAT ✕</button></div>
   <div id="savedLists"></div>
   <div class="tabs"><button class="tab active" tabindex="0" onclick="openTab(0)">URL</button><button class="tab" tabindex="0" onclick="openTab(1)">DOSYA</button><button class="tab" tabindex="0" onclick="openTab(2)">EPG</button></div>
-  <div class="box active" id="b0"><textarea id="urlInput" rows="3" tabindex="0"></textarea><button class="btn" tabindex="0" onclick="loadUrl()">YÜKLE</button><button class="btn blue" tabindex="0" onclick="loadUrl(true)">PROXY</button><div id="urlLog" class="log">V48.4 - Altta bar çıkıyor, ileri gidiyor</div></div>
+  <div class="box active" id="b0"><textarea id="urlInput" rows="3" tabindex="0"></textarea><button class="btn" tabindex="0" onclick="loadUrl()">YÜKLE</button><button class="btn blue" tabindex="0" onclick="loadUrl(true)">PROXY</button><div id="urlLog" class="log">V48.5 - Siyah ekran fix</div></div>
   <div class="box" id="b1"><input id="fileInput" type="file" tabindex="0"><button class="btn" tabindex="0" onclick="loadFile()">M3U</button></div>
   <div class="box" id="b2"><input id="epgUrl" type="url" tabindex="0"><button class="btn green" tabindex="0" onclick="loadEpg()">EPG</button><button class="btn" tabindex="0" onclick="autoLoadEmbeddedEpg()" style="background:#12b85a;color:#000">4 EPG</button><div id="epgLog" class="log"></div></div>
   <input id="proxyInput" type="url" tabindex="0"><button class="btn blue" tabindex="0" onclick="saveProxy()">PROXY</button><button class="btn" style="background:#333" tabindex="0" onclick="clearSaved()">SİL</button>
 </section>
+
 <script>
 const DEFAULT_PROXY='https://hidden-meadow-0d62.a-dogan.workers.dev/?url=';const CODETABS='https://api.codetabs.com/v1/proxy?quest=';const ALLORIGINS='https://api.allorigins.win/raw?url=';
 const EPG_SOURCES=[{url:'https://www.bevy.be/download.php?file=turkey.xml',name:'TVPlus'},{url:'https://epgshare01.online/epgshare01/epg_ripper_TR1.xml.gz',name:'TR1'},{url:'https://www.bevy.be/download.php?file=turkeypremium1.xml',name:'Digiturk'},{url:'https://www.bevy.be/download.php?file=turkeypremium2.xml',name:'D-Smart'}];
 let proxyBase=localStorage.getItem('mirtiProxyBase')||DEFAULT_PROXY;
-let all=[],hls=null,activeGroup='Tümü',activeCat='CANLI',currentChannel=null,lastClickTime=0,lastClickedChannel=null,epgData={},epgChannels={},currentIndex=-1,fsInfoTimer=null,volTimer=null,visibleListCache=[];
+let all=[],hls=null,fsHls=null,activeGroup='Tümü',activeCat='CANLI',currentChannel=null,lastClickTime=0,lastClickedChannel=null,epgData={},epgChannels={},currentIndex=-1,fsInfoTimer=null,volTimer=null,visibleListCache=[];
 const video=document.getElementById('player');const fsVideo=document.getElementById('fsVideo');
 document.getElementById('proxyInput').value=proxyBase;
-function toggleSettings(){const s=document.getElementById('settings');s.classList.toggle('open');if(s.classList.contains('open')){setTimeout(()=>document.getElementById('settingsCloseBtn').focus(),150)}else{setTimeout(()=>document.querySelector('.catTab.active')?.focus(),150)}}
+function toggleSettings(){const s=document.getElementById('settings');s.classList.toggle('open');}
 function openTab(i){document.querySelectorAll('.box').forEach((x,j)=>x.classList.toggle('active',i===j));document.querySelectorAll('.tab').forEach((x,j)=>x.classList.toggle('active',i===j));}
 function log(s){document.getElementById('urlLog').textContent=s}function epgLog(s){document.getElementById('epgLog').textContent+='\n'+s}
-function setCat(c){activeCat=c;activeGroup='Tümü';document.querySelectorAll('.catTab').forEach(x=>x.classList.toggle('active',x.dataset.cat===c));buildGroups();setTimeout(()=>{if(c==='FILM'||c==='DIZI'){document.querySelector('#filmGrid.filmCard')?.focus()||document.querySelector('#groupList.group')?.focus();}else{document.querySelector('#groupList.group')?.focus();}},150);}
+function setCat(c){activeCat=c;activeGroup='Tümü';document.querySelectorAll('.catTab').forEach(x=>x.classList.toggle('active',x.dataset.cat===c));buildGroups();}
 function saveProxy(){proxyBase=document.getElementById('proxyInput').value.trim()||DEFAULT_PROXY;localStorage.setItem('mirtiProxyBase',proxyBase);alert('Kaydedildi')}
 function proxyUrl(u,b=proxyBase,ref='',ua=''){let url=b?b+encodeURIComponent(u):u;if(ref)url+='&referer='+encodeURIComponent(ref)+'&referrer='+encodeURIComponent(ref);if(ua)url+='&userAgent='+encodeURIComponent(ua);return url;}
 function cleanUrl(u){return u.trim().split('|')[0].split(';')[0].replace(/\s+/g,'')}function cleanGroupName(g){return (g||'Genel').replace(/^[^\wİıŞşĞğÜüÖöÇç]+/,'').trim()}
-function inferCat(name,group){let g=(group||'').toString().toLocaleLowerCase('tr-TR');let n=(name||'').toString().toLocaleLowerCase('tr-TR');const norm=s=>s.replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ş/g,'s').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');g=norm(g);n=norm(n);let c=g+' '+n;if(g.includes('dizi')||g.includes('series'))return 'DIZI';if(g.includes('filim')||g.includes('film')||g.includes('sinema')||g.includes('movie')||g.includes('vod'))return 'FILM';if(/s\d+\s*e\d+/i.test(c)||c.includes('sezon')||c.includes('bolum'))return 'DIZI';return 'CANLI';}
+function inferCat(name,group){let g=(group||'').toString().toLocaleLowerCase('tr-TR');let n=(name||'').toString().toLocaleLowerCase('tr-TR');const norm=s=>s.replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ş/g,'s').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c');g=norm(g);n=norm(n);if(g.includes('dizi')||g.includes('series'))return 'DIZI';if(g.includes('film')||g.includes('sinema')||g.includes('movie')||g.includes('vod'))return 'FILM';if(/s\d+\s*e\d+/i.test(g+' '+n))return 'DIZI';return 'CANLI';}
 function extractEpgUrlFromM3U(text){let m=text.slice(0,3000).match(/(?:url-tvg|x-tvg-url|tvg-url)\s*=\s*["']([^"']+)["']/i);return m?m[1]:null;}
-function parseM3U(t){const lines=t.replace(/^\uFEFF/,'').split(/\r?\n/),out=[];let tmp=null,extra={ref:'',ua:''};for(const raw of lines){const l=raw.trim();if(!l)continue;if(l.startsWith('#EXTINF')){const comma=l.lastIndexOf(',');const name=comma>=0?l.slice(comma+1).trim():'Kanal';const attr=k=>{const m=l.match(new RegExp('(?:^|\\s)'+k+'=["\']([^"\']*)["\']','i'));return m?m[1].trim():'';};tmp={name,group:attr('group-title')||'Genel',logo:attr('tvg-logo'),tvgId:attr('tvg-id'),tvgName:attr('tvg-name')};extra={ref:'',ua:''};}else if(l.startsWith('#EXTVLCOPT:')){const refM=l.match(/http-(?:referrer|referer)\s*=\s*["']?([^"']+)["']?/i);const uaM=l.match(/http-user-agent\s*=\s*["']?([^"']+)["']?/i);if(refM)extra.ref=refM[1].trim();if(uaM)extra.ua=uaM[1].trim();}else if(!l.startsWith('#')&&/^https?:\/\//i.test(l)&&tmp){if(/like Gecko|Chrome\/\d+/i.test(tmp.name)){let realName=tmp.tvgName||tmp.tvgId||'';if(!realName||/Chrome|Gecko/i.test(realName)){tmp=null;continue;}tmp.name=realName;}out.push({...tmp,url:cleanUrl(l),logo:tmp.logo&&tmp.logo.startsWith('http://')?tmp.logo.replace(/^http:/,'https:'):tmp.logo,cat:inferCat(tmp.name,tmp.group),referrer:extra.ref,userAgent:extra.ua});tmp=null;}}return out;}
-async function fetchText(url,force=false){const cands=force?[proxyUrl(url),CODETABS+encodeURIComponent(url),ALLORIGINS+encodeURIComponent(url)]:[url,proxyUrl(url),CODETABS+encodeURIComponent(url)];for(const u of [...new Set(cands)]){try{const r=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!r.ok)continue;let txt=await r.text();if(txt.length>20&&/#EXTM3U|#EXTINF/i.test(txt))return txt;}catch(e){}}throw new Error('M3U gelmedi')}
+function parseM3U(t){const lines=t.replace(/^\uFEFF/,'').split(/\r?\n/),out=[];let tmp=null,extra={ref:'',ua:''};for(const raw of lines){const l=raw.trim();if(!l)continue;if(l.startsWith('#EXTINF')){const comma=l.lastIndexOf(',');const name=comma>=0?l.slice(comma+1).trim():'Kanal';const attr=k=>{const m=l.match(new RegExp('(?:^|\\s)'+k+'=["\']([^"\']*)["\']','i'));return m?m[1].trim():'';};tmp={name,group:attr('group-title')||'Genel',logo:attr('tvg-logo'),tvgId:attr('tvg-id'),tvgName:attr('tvg-name')};extra={ref:'',ua:''};}else if(l.startsWith('#EXTVLCOPT:')){const refM=l.match(/http-(?:referrer|referer)\s*=\s*["']?([^"']+)["']?/i);const uaM=l.match(/http-user-agent\s*=\s*["']?([^"']+)["']?/i);if(refM)extra.ref=refM[1].trim();if(uaM)extra.ua=uaM[1].trim();}else if(!l.startsWith('#')&&/^https?:\/\//i.test(l)&&tmp){out.push({...tmp,url:cleanUrl(l),logo:tmp.logo&&tmp.logo.startsWith('http://')?tmp.logo.replace(/^http:/,'https:'):tmp.logo,cat:inferCat(tmp.name,tmp.group),referrer:extra.ref,userAgent:extra.ua});tmp=null;}}return out;}
+async function fetchText(url,force=false){const cands=force?[proxyUrl(url),CODETABS+encodeURIComponent(url),ALLORIGINS+encodeURIComponent(url)]:[url,proxyUrl(url),CODETABS+encodeURIComponent(url)];for(const u of [...new Set(cands)]){try{const r=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!r.ok)continue;let txt=await r.text();if(txt.length>20&&/#EXTM3U|#EXTINF/i.test(txt))return txt;}catch(e){}}throw new Error('M3U gelmedi')}
 async function fetchEpgText(u,f=false){const urls=f?[proxyUrl(u),CODETABS+encodeURIComponent(u),ALLORIGINS+encodeURIComponent(u)]:[u,proxyUrl(u),CODETABS+encodeURIComponent(u)];for(const q of [...new Set(urls)]){try{const r=await fetch(q,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!r.ok)continue;const buf=await r.arrayBuffer();const u8=new Uint8Array(buf);let text='';if(u8[0]===0x1f&&u8[1]===0x8b)text=pako.ungzip(u8,{to:'string'});else text=new TextDecoder().decode(u8);if(text.includes('<tv')||text.includes('<programme'))return text;}catch(e){}}throw new Error('EPG gelmedi')}
-async function acceptList(text,name){const ch=parseM3U(text);if(!ch.length)throw new Error('Kanal yok');all=ch;activeGroup='Tümü';await saveList(name,ch);buildGroups();log(`✅ ${ch.length} CANLI=${ch.filter(x=>x.cat==='CANLI').length} FILM=${ch.filter(x=>x.cat==='FILM').length} DIZI=${ch.filter(x=>x.cat==='DIZI').length}`);await renderSaved();const epgUrl=extractEpgUrlFromM3U(text);if(epgUrl){try{const epgTxt=await fetchEpgText(epgUrl,true);loadEpgMap(epgTxt,'M3U-EPG');}catch(e){epgLog('M3U EPG hata:'+e.message)}}}
+async function acceptList(text,name){const ch=parseM3U(text);if(!ch.length)throw new Error('Kanal yok');all=ch;activeGroup='Tümü';await saveList(name,ch);buildGroups();log(`✅ ${ch.length} CANLI=${ch.filter(x=>x.cat==='CANLI').length} FILM=${ch.filter(x=>x.cat==='FILM').length}`);await renderSaved();const epgUrl=extractEpgUrlFromM3U(text);if(epgUrl){try{const epgTxt=await fetchEpgText(epgUrl,true);loadEpgMap(epgTxt,'M3U-EPG');}catch(e){}}}
 async function loadUrl(fp=false){const url=document.getElementById('urlInput').value.trim();if(!url)return;log('İndiriliyor…');try{const t=await fetchText(url,fp);await acceptList(t,'LISTE');toggleSettings()}catch(e){log('HATA: '+e.message)}}
 function loadFile(){const f=document.getElementById('fileInput').files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{await acceptList(String(r.result),f.name);toggleSettings()};r.readAsText(f)}
 function parseXmltvDate(s){try{const m=s.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4})?/);if(!m)return new Date();let y=+m[1],mo=+m[2]-1,d=+m[3],h=+m[4],mi=+m[5],sec=+(m[6]||0);let dt=new Date(Date.UTC(y,mo,d,h,mi,sec));if(m[7]){let sign=m[7][0]==='+'?1:-1;let offH=+m[7].slice(1,3),offM=+m[7].slice(3,5);let offMin=sign*(offH*60+offM);dt=new Date(dt.getTime()-offMin*60000);}return dt;}catch(e){return new Date()}}
@@ -148,7 +131,7 @@ async function loadEpg(){let url=document.getElementById('epgUrl').value.trim();
 async function autoLoadEmbeddedEpg(){for(let i=0;i<EPG_SOURCES.length;i++){try{const txt=await fetchEpgText(EPG_SOURCES[i].url,true);if(txt.length>1000)loadEpgMap(txt,EPG_SOURCES[i].name);await new Promise(r=>setTimeout(r,600))}catch(e){}}}
 function findEpgForChannel(ch){if(!ch||!Object.keys(epgData).length)return null;const ids=[ch.tvgId,ch.tvgName,ch.name].filter(Boolean);for(let id of ids){if(epgData[id])return {id,progs:epgData[id]};let f=Object.keys(epgData).find(k=>k.toLowerCase()===id.toLowerCase());if(f)return {id:f,progs:epgData[f]}}for(let k of Object.keys(epgChannels)){let names=epgChannels[k]||[];if(names.some(n=>ids.some(i=>i&&(n.toLowerCase().includes(i.toLowerCase())||i.toLowerCase().includes(n.toLowerCase()))))){if(epgData[k])return {id:k,progs:epgData[k]}}}return null}
 function getNowNext(progs){const now=new Date();let cur=null,nxt=null;for(let i=0;i<progs.length;i++){if(progs[i].start<=now&&progs[i].stop>now){cur=progs[i];nxt=progs[i+1]||null;break;}if(progs[i].start>now){nxt=progs[i];break;}}return {cur,nxt}}
-function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open('MirtiTV_V47',1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'})};req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error)})}
+function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open('MirtiTV_V48',1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'})};req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error)})}
 async function saveList(n,ch){try{const db=await openDB();await new Promise((res)=>{const tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name:n,channels:ch,count:ch.length,time:Date.now()});tx.oncomplete=res});}catch(e){}}
 async function renderSaved(){const box=document.getElementById('savedLists');try{const db=await openDB();const items=await new Promise((res)=>{const q=db.transaction('lists','readonly').objectStore('lists').getAll();q.onsuccess=()=>res(q.result)});box.innerHTML='<b>KAYITLI</b>';items.sort((a,b)=>b.time-a.time).forEach(it=>{const d=document.createElement('div');d.className='savedItem';d.tabIndex=0;d.innerHTML=`<span>📁 ${it.name} (${it.count})</span><b>▶</b>`;d.onclick=()=>{all=it.channels||[];activeGroup='Tümü';buildGroups();document.getElementById('empty').style.display='flex';toggleSettings()};box.appendChild(d)});}catch(e){}}
 async function clearSaved(){if(!confirm('Sil?'))return;const db=await openDB();await new Promise(r=>{const tx=db.transaction('lists','readwrite');tx.objectStore('lists').clear();tx.oncomplete=r});renderSaved()}
@@ -180,8 +163,54 @@ function render(){
 }
 function handleChannelClick(c,idx){currentIndex=idx;const now=Date.now();if(lastClickedChannel&&lastClickedChannel.url===c.url&&(now-lastClickTime)<550){openFullscreen(c);}else{play(c);}lastClickTime=now;lastClickedChannel=c}
 function showLoading(name){const el=document.getElementById('loading');const nm=document.getElementById('loadingName');if(el){el.style.display='flex';if(nm)nm.textContent=name||'YÜKLENİYOR...'} }
-function hideLoading(){const el=document.getElementById('loading');if(el)el.style.display='none';showFsInfoTemporarily();}
+function hideLoading(){const el=document.getElementById('loading');if(el)el.style.display='none';}
 function showFsInfoTemporarily(){const fsInfo=document.getElementById('fsInfo');if(!fsInfo)return;fsInfo.style.transform='translateY(0)';fsInfo.style.opacity='1';clearTimeout(fsInfoTimer);fsInfoTimer=setTimeout(()=>{fsInfo.style.transform='translateY(100%)';fsInfo.style.opacity='0';},4500);}
+
+function stopPlayback(v){
+  try{
+    if(v===video && hls){hls.destroy();hls=null}
+    if(v===fsVideo && fsHls){fsHls.destroy();fsHls=null}
+  }catch(e){}
+  try{v.pause();}catch(e){}
+  try{v.removeAttribute('src'); v.load();}catch(e){}
+}
+
+function tryRoute(o,r,i,target){
+  if(i>=r.length){document.getElementById('pType').textContent='Açılamadı';hideLoading();return;}
+  stopPlayback(target);
+  const m=r[i];const prox=m.endsWith('-proxy');const ref=currentChannel?currentChannel.referrer||'':'';const ua=currentChannel?currentChannel.userAgent||'':'';
+  const u=prox?proxyUrl(o,proxyBase,ref,ua):o;
+  document.getElementById('pType').textContent=`Bağlanıyor ${i+1}/${r.length} ${m}`;
+  let done=false;
+  const to=setTimeout(()=>fin(false),10000);
+  function fin(ok){
+    if(done) return; done=true; clearTimeout(to);
+    target.removeEventListener('playing',onP); target.removeEventListener('canplay',onP); target.removeEventListener('error',onE); target.removeEventListener('loadeddata',onP);
+    if(ok){
+      hideLoading(); showFsInfoTemporarily();
+      document.getElementById('pType').textContent=`▶ ${m}`;
+      target.muted=false; target.volume=1;
+    }else{ tryRoute(o,r,i+1,target) }
+  }
+  function onP(){
+    try{ if(target.duration && target.duration>120){ target.currentTime = Math.max(0, target.duration-12); } }catch(e){}
+    fin(true)
+  }
+  function onE(){ fin(false) }
+  target.addEventListener('playing',onP); target.addEventListener('canplay',onP); target.addEventListener('loadeddata',onP); target.addEventListener('error',onE);
+  target.muted=true; target.volume=1; target.playsInline=true;
+  try{
+    if(Hls.isSupported()){
+      const cfg={enableWorker:true,lowLatencyMode:true,liveSyncDurationCount:3,liveMaxLatencyDurationCount:8,maxBufferLength:20};
+      const tmp=new Hls(cfg);
+      if(target===video) hls=tmp; else fsHls=tmp;
+      tmp.loadSource(u); tmp.attachMedia(target);
+      tmp.on(Hls.Events.MANIFEST_PARSED,()=>{ target.play().catch(()=>{}) });
+      tmp.on(Hls.Events.ERROR,(ev,data)=>{ if(data.fatal) fin(false) });
+    }else{ target.src=u; target.load(); target.play().catch(()=>{}) }
+  }catch(e){ fin(false) }
+}
+
 function play(c){
   currentChannel=c;const idx=visibleListCache.findIndex(x=>x.url===c.url);if(idx>=0)currentIndex=idx;
   document.getElementById('empty').style.display='none';showLoading(c.name);
@@ -193,142 +222,37 @@ function play(c){
     document.getElementById('fsNext').textContent=nxt?`Sonra: ${nxt.title}`:'';
     document.getElementById('nowEpg').textContent=cur?`▶ ${cur.title}`:'';
     document.getElementById('fsNowBar').textContent=cur?`▶ ${cur.title}`:'';
-    const bar=document.getElementById('epgProgressBar');
-    const fsBar=document.getElementById('fsProgressBar');
     if(cur){
-      const total=cur.stop-cur.start;
-      const elapsed=new Date()-cur.start;
-      const pct=Math.max(0,Math.min(100,(elapsed/total)*100));
-      if(bar) bar.style.width=pct+'%';
-      if(fsBar) fsBar.style.width=pct+'%';
+      const total=cur.stop-cur.start; const elapsed=new Date()-cur.start; const pct=Math.max(0,Math.min(100,(elapsed/total)*100));
+      document.getElementById('epgProgressBar').style.width=pct+'%'; document.getElementById('fsProgressBar').style.width=pct+'%';
     }
   }else{
-    document.getElementById('fsNow').textContent='';
-    document.getElementById('fsNext').textContent='';
-    document.getElementById('nowEpg').textContent='';
-    document.getElementById('fsNowBar').textContent='';
-    document.getElementById('epgProgressBar').style.width='0%';
-    document.getElementById('fsProgressBar').style.width='0%';
+    document.getElementById('fsNow').textContent=''; document.getElementById('fsNext').textContent=''; document.getElementById('nowEpg').textContent=''; document.getElementById('fsNowBar').textContent=''; document.getElementById('epgProgressBar').style.width='0%'; document.getElementById('fsProgressBar').style.width='0%';
   }
   document.getElementById('urlDisplay').textContent='URL: '+c.url.slice(0,80);
   const isFs=document.getElementById('fsOverlay').classList.contains('active');
-  if(isFs){stopPlayback(video);tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo);}else{fsVideo.pause();fsVideo.removeAttribute('src');fsVideo.load();tryRoute(c.url,['hls-direct','hls-proxy'],0,video);}
+  if(isFs) tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo); else { stopPlayback(fsVideo); tryRoute(c.url,['hls-direct','hls-proxy'],0,video); }
 }
-function stopPlayback(v){if(v===video){if(hls){try{hls.destroy()}catch(_){}hls=null}v.pause();v.removeAttribute('src');v.load();}}
-function tryRoute(o,r,i,target){
-  if(i>=r.length){document.getElementById('pType').textContent='Açılamadı';hideLoading();return;}
-  if(target===video)stopPlayback(target);
-  const m=r[i];const prox=m.endsWith('-proxy');const ref=currentChannel?currentChannel.referrer||'':'';const ua=currentChannel?currentChannel.userAgent||'':'';
-  const u=prox?proxyUrl(o,proxyBase,ref,ua):o;
-  document.getElementById('pType').textContent=`Bağlanıyor ${i+1}/${r.length}...`;
-  let done=false;
-  const to=setTimeout(()=>fin(false),3500);
-  function fin(ok){if(done)return;done=true;clearTimeout(to);target.removeEventListener('playing',onP);target.removeEventListener('canplay',onP);target.removeEventListener('error',onE);if(ok){hideLoading();document.getElementById('pType').textContent=`▶ ${m} Oynuyor`;target.muted=false;target.volume=1;target.controls=false;}else{tryRoute(o,r,i+1,target)}}
-  function onP(){
-    try{
-      if(target.duration && isFinite(target.duration) && target.duration>120){
-        if(target.currentTime < target.duration - 30){
-          target.currentTime = Math.max(0, target.duration - 8);
-        }
-      }
-    }catch(e){}
-    fin(true)
-  }
-  function onE(){fin(false)}
-  target.addEventListener('playing',onP);target.addEventListener('canplay',onP);target.addEventListener('error',onE);
-  target.controls=false;
-  try{
-    if(Hls.isSupported()){
-      const cfg={enableWorker:true,lowLatencyMode:true,liveSyncDurationCount:1,liveMaxLatencyDurationCount:3,liveDurationInfinity:false,maxBufferLength:10,maxMaxBufferLength:18};
-      const tmpHls=new Hls(cfg);
-      tmpHls.loadSource(u);tmpHls.attachMedia(target);
-      if(target===video)hls=tmpHls;
-      tmpHls.on(Hls.Events.MANIFEST_PARSED,()=>{
-        target.controls=false;
-        target.play().catch(()=>{});
-        setTimeout(()=>{try{if(target.duration&&target.duration>120){target.currentTime=target.duration-5;}}catch(e){}},600);
-      });
-      tmpHls.on(Hls.Events.ERROR,(ev,data)=>{if(data.fatal){fin(false);}});
-    }else{target.src=u;target.load();target.controls=false;target.play().catch(()=>{})}
-  }catch(e){fin(false)}
-}
-function openFullscreen(c){const over=document.getElementById('fsOverlay');over.classList.add('active');document.getElementById('fsName').textContent=c.name;document.getElementById('fsGroup').textContent=c.group||'Genel';document.getElementById('fsLogo').src=c.logo||'logo.png';stopPlayback(video);tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo);showFsInfoTemporarily();}
-function closeFullscreen(){const over=document.getElementById('fsOverlay');over.classList.remove('active');fsVideo.pause();fsVideo.removeAttribute('src');fsVideo.load();if(currentChannel)tryRoute(currentChannel.url,['hls-direct','hls-proxy'],0,video)}
+
+function openFullscreen(c){const over=document.getElementById('fsOverlay');over.classList.add('active');over.style.display='flex';document.getElementById('fsName').textContent=c.name;document.getElementById('fsGroup').textContent=c.group||'Genel';document.getElementById('fsLogo').src=c.logo||'logo.png';stopPlayback(video);tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo);showFsInfoTemporarily();}
+function closeFullscreen(){const over=document.getElementById('fsOverlay');over.classList.remove('active');over.style.display='none';stopPlayback(fsVideo);if(currentChannel) tryRoute(currentChannel.url,['hls-direct','hls-proxy'],0,video)}
 function setVolume(delta){let target=document.getElementById('fsOverlay').classList.contains('active')?fsVideo:video;let nv=Math.min(1,Math.max(0,target.volume+delta));target.volume=nv;video.volume=nv;fsVideo.volume=nv;const pct=Math.round(nv*100);document.getElementById('volText').textContent=pct+'%';document.getElementById('volFill').style.width=pct+'%';document.getElementById('fsVol').textContent='🔊 '+pct+'%';const bar=document.getElementById('volumeBar');bar.style.display='block';clearTimeout(volTimer);volTimer=setTimeout(()=>{bar.style.display='none'},2000);showFsInfoTemporarily();}
 
 document.addEventListener('keydown', e=>{
-  const key=e.key,code=e.keyCode,fsOpen=document.getElementById('fsOverlay').classList.contains('active'),focused=document.activeElement,settingsOpen=document.getElementById('settings').classList.contains('open');
-  if(settingsOpen){
-    const focusables=[...document.querySelectorAll('#settings button, #settings input, #settings textarea, #settings.savedItem')].filter(el=>el.offsetParent!==null);
-    if(key==='Escape'||code===27||code===8){e.preventDefault();toggleSettings();return;}
-    if(key==='Enter'||code===13){focused?.click();return;}
-    if(key==='ArrowDown'||code===40){e.preventDefault();let idx=focusables.indexOf(focused);idx=Math.min(focusables.length-1,idx+1);focusables[idx]?.focus();return;}
-    if(key==='ArrowUp'||code===38){e.preventDefault();let idx=focusables.indexOf(focused);idx=Math.max(0,idx-1);focusables[idx]?.focus();return;}
-    return;
-  }
+  const key=e.key,fsOpen=document.getElementById('fsOverlay').style.display==='flex',settingsOpen=document.getElementById('settings').classList.contains('open');
+  if(settingsOpen && (key==='Escape'||key==='Backspace')){e.preventDefault();toggleSettings();return;}
   if(fsOpen){
-    if(key==='Escape'||key==='Backspace'||code===8||code===10009){e.preventDefault();closeFullscreen();return}
-    if(key==='Enter'||code===13){e.preventDefault();const fi=document.getElementById('fsInfo');fi.style.transform=fi.style.transform.includes('100%')?'translateY(0)':'translateY(100%)';fi.style.opacity=fi.style.opacity==='0'?'1':'0';return}
-    if(key==='ArrowUp'||code===38){e.preventDefault();if(!visibleListCache.length)return;let ni=currentIndex-1;if(ni<0)ni=visibleListCache.length-1;currentIndex=ni;play(visibleListCache[ni]);return}
-    if(key==='ArrowDown'||code===40){e.preventDefault();if(!visibleListCache.length)return;let ni=currentIndex+1;if(ni>=visibleListCache.length)ni=0;currentIndex=ni;play(visibleListCache[ni]);return}
-    if(key==='ArrowLeft'||code===37){e.preventDefault();setVolume(-0.08);return}
-    if(key==='ArrowRight'||code===39){e.preventDefault();setVolume(0.08);return}
+    if(key==='Escape'||key==='Backspace'){e.preventDefault();closeFullscreen();return}
+    if(key==='Enter'){e.preventDefault();const fi=document.getElementById('fsInfo');fi.style.transform=fi.style.transform.includes('100%')?'translateY(0)':'translateY(100%)';fi.style.opacity=fi.style.opacity==='0'?'1':'0';return}
+    if(key==='ArrowUp'){e.preventDefault();if(!visibleListCache.length)return;let ni=currentIndex-1;if(ni<0)ni=visibleListCache.length-1;currentIndex=ni;play(visibleListCache[ni]);return}
+    if(key==='ArrowDown'){e.preventDefault();if(!visibleListCache.length)return;let ni=currentIndex+1;if(ni>=visibleListCache.length)ni=0;currentIndex=ni;play(visibleListCache[ni]);return}
+    if(key==='ArrowLeft'){e.preventDefault();setVolume(-0.08);return}
+    if(key==='ArrowRight'){e.preventDefault();setVolume(0.08);return}
     return
   }
-  const mainGear=document.getElementById('mainGear');
-  const catTabs=[...document.querySelectorAll('.catTab')];
-  const groups=[...document.querySelectorAll('#groupList.group')];
-  const channels=[...document.querySelectorAll('#channelList.ch')];
-  const films=[...document.querySelectorAll('#filmGrid.filmCard')];
-  const isFilm=activeCat==='FILM'||activeCat==='DIZI';
-  const list=isFilm?films:channels;
-
-  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Escape','Backspace'].includes(key)||(code>=37&&code<=40)||code===13||code===27||code===8||code===10009){
-    e.preventDefault();
-    if(key==='Escape'||code===27||key==='Backspace'||code===8||code===10009){
-      if(isFilm&&films.includes(focused)){groups[0]?.focus();return;}
-      if(!isFilm&&channels.includes(focused)){groups[0]?.focus();return;}
-      if(groups.includes(focused)){catTabs.find(x=>x.classList.contains('active'))?.focus();return;}
-      if(catTabs.includes(focused)){mainGear?.focus();return;}
-      return;
-    }
-    if(key==='Enter'||code===13){
-      if(focused===mainGear){toggleSettings();return;}
-      if(focused&&focused.classList.contains('catTab')){focused.click();return;}
-      if(focused&&focused.classList.contains('group')){focused.click();setTimeout(()=>{(list[0])?.focus();},150);return;}
-      if(focused&&(focused.classList.contains('ch')||focused.classList.contains('filmCard'))){focused.click();return;}
-      return;
-    }
-    if(catTabs.includes(focused)){
-      let idx=catTabs.indexOf(focused);
-      if(key==='ArrowRight'||code===39){catTabs[Math.min(catTabs.length-1,idx+1)]?.focus();return;}
-      if(key==='ArrowLeft'||code===37){catTabs[Math.max(0,idx-1)]?.focus();return;}
-      if(key==='ArrowDown'||code===40){groups[0]?.focus();return;}
-      if(key==='ArrowUp'||code===38){mainGear?.focus();return;}
-    }
-    if(focused===mainGear){if(key==='ArrowDown'||code===40){catTabs.find(x=>x.classList.contains('active'))?.focus()||catTabs[0]?.focus();return;}}
-    if(groups.includes(focused)){
-      let idx=groups.indexOf(focused);
-      if(key==='ArrowDown'||code===40){let ni=Math.min(groups.length-1,idx+1);groups[ni]?.focus();groups[ni]?.scrollIntoView({block:'nearest'});return;}
-      if(key==='ArrowUp'||code===38){if(idx===0){catTabs.find(x=>x.classList.contains('active'))?.focus();}else{groups[idx-1]?.focus();}return;}
-      if(key==='ArrowRight'||code===39){list[0]?.focus();return;}
-    }
-    if(isFilm&&films.includes(focused)){
-      const COLS=2;let idx=films.indexOf(focused);
-      if(key==='ArrowRight'||code===39){let ni=idx+1;if(ni<films.length&&Math.floor(ni/COLS)===Math.floor(idx/COLS))films[ni]?.focus();return;}
-      if(key==='ArrowLeft'||code===37){let ni=idx-1;if(ni>=0&&Math.floor(ni/COLS)===Math.floor(idx/COLS))films[ni]?.focus();else groups[0]?.focus();return;}
-      if(key==='ArrowDown'||code===40){let ni=idx+COLS;if(ni<films.length){films[ni]?.focus();films[ni]?.scrollIntoView({block:'nearest'})}return;}
-      if(key==='ArrowUp'||code===38){let ni=idx-COLS;if(ni>=0)films[ni]?.focus();else groups[0]?.focus();return;}
-    }
-    if(!isFilm&&channels.includes(focused)){
-      let idx=channels.indexOf(focused);
-      if(key==='ArrowDown'||code===40){let ni=Math.min(channels.length-1,idx+1);channels[ni]?.focus();channels[ni]?.scrollIntoView({block:'nearest'});return;}
-      if(key==='ArrowUp'||code===38){let ni=idx-1;if(ni<0)groups[0]?.focus();else channels[ni]?.focus();return;}
-      if(key==='ArrowLeft'||code===37){groups[0]?.focus();return;}
-    }
-  }
 });
-window.addEventListener('load', ()=>{setTimeout(()=>{document.querySelector('.catTab.active')?.focus();log('V48.4 - Bar altta sabit, ileri gidiyor');},600);video.volume=1;fsVideo.volume=1;video.muted=true;video.controls=false;fsVideo.controls=false;});
+
+window.addEventListener('load', ()=>{video.volume=1;fsVideo.volume=1;video.muted=true;log('V48.5 - Siyah ekran fixlendi, bar altta sabit');});
 (async()=>{await renderSaved()})()
 </script>
 </body>
