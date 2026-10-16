@@ -104,13 +104,25 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
   <div id="channelList"></div><div id="filmGrid"></div>
 </section>
 
-<main id="playerArea">
+
+
+
+
+  <main id="playerArea">
   <div id="empty">
     <img class="logoBig" src="logo.png" alt="MIRTI">
     <h2>MIRTI V47</h2><p>Google TV Kumanda Hazır</p>
     <p style="font-size:11px;margin-top:8px;color:#555">Yukarı/Aşağı: Kanal • Sağ/Sol: Panel • OK: Oynat • OK x2: Tam Ekran</p>
   </div>
-  <video id="player" playsinline crossorigin="anonymous"></video>
+  <!-- YUKLENIYOR SPINNER - DAİRESEL DÖNEN LOGO -->
+  <div id="loading" style="display:none;position:absolute;inset:0;z-index:15;background:rgba(0,0,0,0.85);flex-direction:column;align-items:center;justify-content:center;gap:18px">
+    <img id="loadingLogo" src="logo.png" style="width:120px;height:120px;border-radius:50%;border:3px solid #e50914;animation:spin 1s linear infinite;box-shadow:0 0 30px rgba(229,9,20,.8)">
+    <div style="font-weight:900;letter-spacing:2px">YÜKLENİYOR...</div>
+    <div id="loadingName" style="color:#e50914;font-size:12px"></div>
+  </div>
+  <style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>
+
+  <video id="player" playsinline crossorigin="anonymous" tabindex="0"></video>
   <div id="bar">
     <div id="barTop"><span id="now">MIRTI V47</span><span id="pType">Hazır</span></div>
     <div id="nowEpg"></div><div id="nowEpgNext"></div>
@@ -134,7 +146,7 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
   <div class="settingsHead"><span>V47 GOOGLE TV FIX</span><button class="gear" onclick="toggleSettings()">KAPAT ✕</button></div>
   <div id="savedLists"></div>
   <div class="tabs"><button class="tab active" onclick="openTab(0)">URL</button><button class="tab" onclick="openTab(1)">DOSYA</button><button class="tab" onclick="openTab(2)">EPG</button><button class="tab" onclick="openTab(3)">MANUEL</button></div>
-  <div class="box active" id="b0"><textarea id="urlInput" rows="3" placeholder="m3u linki"></textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><button class="btn blue" onclick="loadUrl(true)">PROXY İLE DENE</button><div id="urlLog" class="log">V47 - Kumanda + Hız + Tam Ekran</div></div>
+  <div class="box active" id="b0"><textarea id="urlInput" rows="3" placeholder="m3u linki"></textarea><button class="btn" onclick="loadUrl()">URL YÜKLE</button><button class="btn blue" onclick="loadUrl(true)">PROXY İLE DENE</button><div id="urlLog" class="log">V47 FIX - Kumanda + Film + Spinner</div></div>
   <div class="box" id="b1"><input id="fileInput" type="file" accept=".m3u,.m3u8,.txt"><button class="btn" onclick="loadFile()">M3U YÜKLE</button></div>
   <div class="box" id="b2">
     <div style="font-size:10px;color:#aaa;background:#000;padding:8px;border-radius:5px;margin:6px 0">4 EPG gömülü: turkey.xml / TR1 gz / premium1 / premium2</div>
@@ -154,7 +166,7 @@ const EPG_SOURCES=[
 ];
 let proxyBase=localStorage.getItem('mirtiProxyBase')||DEFAULT_PROXY;
 let all=[],hls=null,hlsNext=null,hlsPrev=null,activeGroup='Tümü',activeCat='CANLI',currentChannel=null,lastClickTime=0,lastClickedChannel=null;
-let epgData={},epgChannels={},currentIndex=-1,preloaded={},focusCol=1;
+let epgData={},epgChannels={},currentIndex=-1,focusCol=1;
 const video=document.getElementById('player');
 const fsVideo=document.getElementById('fsVideo');
 const logBox=document.getElementById('urlLog');
@@ -162,24 +174,30 @@ const epgLogBox=document.getElementById('epgLog');
 document.getElementById('proxyInput').value=proxyBase;
 function toggleSettings(){document.getElementById('settings').classList.toggle('open')}
 function openTab(i){document.querySelectorAll('.box').forEach((x,j)=>x.classList.toggle('active',i===j));document.querySelectorAll('.tab').forEach((x,j)=>x.classList.toggle('active',i===j));}
-function log(s){logBox.textContent=s}
-function epgLog(s){epgLogBox.textContent+='\n'+s}
-function setCat(c){activeCat=c;activeGroup='Tümü';document.querySelectorAll('.catTab').forEach(x=>x.classList.toggle('active',x.dataset.cat===c));buildGroups()}
+function log(s){if(logBox)logBox.textContent=s}
+function epgLog(s){if(epgLogBox)epgLogBox.textContent+='\n'+s}
+function setCat(c){activeCat=c;activeGroup='Tümü';document.querySelectorAll('.catTab').forEach(x=>x.classList.toggle('active',x.dataset.cat===c));buildGroups(); setTimeout(()=>{focusCol=1; const first=document.querySelector('#channelList.ch, #filmGrid.filmCard'); if(first)first.focus();},150)}
 function saveProxy(){proxyBase=document.getElementById('proxyInput').value.trim()||DEFAULT_PROXY;localStorage.setItem('mirtiProxyBase',proxyBase);alert('Kaydedildi')}
 function proxyUrl(u,b=proxyBase){return b?b+encodeURIComponent(u):u}
 function cleanUrl(u){return u.trim().split('|')[0].split(';')[0].replace(/\s+/g,'')}
 function cleanGroupName(g){return (g||'Genel').replace(/^[^\wİıŞşĞğÜüÖöÇç]+/,'').trim()}
-function inferCat(n,g){g=(g||'').toLowerCase();n=(n||'').toLowerCase();if(/film|movie|sinema/.test(g)||/\(\s*(19|20)\d{2}\s*\)/.test(n))return 'FILM';if(/dizi|series|sezon/.test(g)||/bölüm|season/.test(n))return 'DIZI';return 'CANLI'}
+// FILM/DIZI AYRIMI DUZELTILDI - daha geniş kelimeler
+function inferCat(name,group){
+  let g=(group||'').toLowerCase(), n=(name||'').toLowerCase();
+  if(g.includes('film')||g.includes('movie')||g.includes('sinema')||g.includes('vod')||n.match(/\(\s*(19|20)\d{2}\s*\)/)||n.includes(' 1080p')||n.includes(' 720p')) return 'FILM';
+  if(g.includes('dizi')||g.includes('series')||g.includes('sezon')||g.includes('bolum')||g.includes('bölüm')||n.includes(' s0')||n.includes(' e0')||n.includes(' sezon')) return 'DIZI';
+  return 'CANLI';
+}
 function parseM3U(t){const lines=t.replace(/^\uFEFF/,'').split(/\r?\n/),out=[];let tmp=null;for(const raw of lines){const l=raw.trim();if(!l)continue;if(l.startsWith('#EXTINF')){const comma=l.indexOf(',');const name=comma>=0?l.slice(comma+1).trim():'Kanal '+(out.length+1);const attr=k=>{const m=l.match(new RegExp('(?:^|\\s)'+k+'=["\']([^"\']*)["\']','i'));return m?m[1].trim():'';};tmp={name:name||'Kanal '+(out.length+1),group:attr('group-title')||'Genel',logo:attr('tvg-logo'),tvgId:attr('tvg-id'),tvgName:attr('tvg-name')};}else if(!l.startsWith('#')&&/^https?:\/\//i.test(l)&&tmp){let logo=tmp.logo;if(logo&&logo.startsWith('http://'))logo=logo.replace(/^http:/,'https:');out.push({...tmp,url:cleanUrl(l),logo,cat:inferCat(tmp.name,tmp.group)});tmp=null;}}return out}
 async function fetchText(url,force=false){const cands=force?[proxyUrl(url),CODETABS+encodeURIComponent(url),ALLORIGINS+encodeURIComponent(url)]:[url,proxyUrl(url),CODETABS+encodeURIComponent(url)];let last='';for(const u of [...new Set(cands)]){try{const r=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(12000)});if(!r.ok){last='HTTP '+r.status;continue;}let txt=await r.text();if(txt.length>20&&(/#EXTM3U|#EXTINF|https?:\/\//i.test(txt)))return txt;last='M3U değil';}catch(e){last=e.message}}throw new Error(last)}
 async function fetchEpgText(u,f=false){const urls=f?[proxyUrl(u),CODETABS+encodeURIComponent(u),ALLORIGINS+encodeURIComponent(u)]:[u,proxyUrl(u),CODETABS+encodeURIComponent(u)];let last='';for(const q of [...new Set(urls)]){try{const r=await fetch(q,{cache:'no-store',signal:AbortSignal.timeout(20000)});if(!r.ok){last='HTTP '+r.status;continue;}const buf=await r.arrayBuffer();const u8=new Uint8Array(buf);let text='';if(u8[0]===0x1f&&u8[1]===0x8b){text=pako.ungzip(u8,{to:'string'})}else{text=new TextDecoder().decode(u8)}if(text.includes('<tv')||text.includes('<programme'))return text;last='XML değil';}catch(e){last=e.message}}throw new Error(last)}
-async function acceptList(text,name='Liste'){const ch=parseM3U(text);if(!ch.length)throw new Error('Kanal yok');all=ch;activeGroup='Tümü';await saveList(name,ch);buildGroups();document.getElementById('empty').style.display='flex';log('✅ '+ch.length+' yayın');await renderSaved()}
+async function acceptList(text,name='Liste'){const ch=parseM3U(text);if(!ch.length)throw new Error('Kanal yok');all=ch;activeGroup='Tümü';await saveList(name,ch);buildGroups();document.getElementById('empty').style.display='flex';log('✅ '+ch.length+' yayın: CANLI='+ch.filter(x=>x.cat==='CANLI').length+' FILM='+ch.filter(x=>x.cat==='FILM').length+' DIZI='+ch.filter(x=>x.cat==='DIZI').length);await renderSaved()}
 async function loadUrl(fp=false){const url=document.getElementById('urlInput').value.trim();if(!url){log('URL boş');return;}log('İndiriliyor…');try{const t=await fetchText(url,fp);await acceptList(t,'LISTE');toggleSettings()}catch(e){log('HATA: '+e.message)}}
 function loadFile(){const f=document.getElementById('fileInput').files[0];if(!f){log('Dosya seç');return;}const r=new FileReader();r.onload=async()=>{try{await acceptList(String(r.result),f.name);toggleSettings()}catch(e){log('HATA: '+e.message)}};r.readAsText(f)}
 async function loadManual(){try{await acceptList(document.getElementById('manualPaste').value,'MANUEL');toggleSettings()}catch(e){log('HATA: '+e.message)}}
 function parseXmltvDate(s){try{const m=s.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4})?/);if(!m)return new Date();let y=+m[1],mo=+m[2]-1,d=+m[3],h=+m[4],mi=+m[5],sec=+(m[6]||0);let dt=new Date(Date.UTC(y,mo,d,h,mi,sec));if(m[7]){let sign=m[7][0]==='+'?1:-1;let offH=+m[7].slice(1,3),offM=+m[7].slice(3,5);let offMin=sign*(offH*60+offM);dt=new Date(dt.getTime()-offMin*60000);}return dt;}catch(e){return new Date()}}
 function parseEpgXml(xmlText){const parser=new DOMParser();const xml=parser.parseFromString(xmlText,'text/xml');const channels=xml.querySelectorAll('channel');const chanMap={};channels.forEach(ch=>{const id=ch.getAttribute('id');if(!id)return;const names=[...ch.querySelectorAll('display-name')].map(n=>n.textContent.trim());chanMap[id]=names;});const progs=xml.querySelectorAll('programme');const data={};progs.forEach(p=>{const chId=p.getAttribute('channel');const start=parseXmltvDate(p.getAttribute('start'));const stop=parseXmltvDate(p.getAttribute('stop'));const titleEl=p.querySelector('title');const title=titleEl?titleEl.textContent.trim():'';if(!data[chId])data[chId]=[];data[chId].push({start,stop,title});});Object.keys(data).forEach(k=>{data[k].sort((a,b)=>a.start-b.start);});return {chanMap,data}}
-function loadEpgMap(xmlText,src='EPG'){try{const {chanMap,data}=parseEpgXml(xmlText);let addedCh=0,addedProg=0;Object.keys(data).forEach(k=>{if(!epgData[k]){epgData[k]=[];addedCh++;}epgData[k]=epgData[k].concat(data[k]);epgData[k].sort((a,b)=>a.start-b.start);addedProg+=data[k].length;});Object.assign(epgChannels,chanMap);epgLog(`✅ ${src}: +${addedCh} kanal`);document.getElementById('pType').textContent=`EPG: ${Object.keys(epgChannels).length} kanal`;render();}catch(e){epgLog(`❌ ${src} Hata`)}}
+function loadEpgMap(xmlText,src='EPG'){try{const {chanMap,data}=parseEpgXml(xmlText);Object.keys(data).forEach(k=>{if(!epgData[k])epgData[k]=[];epgData[k]=epgData[k].concat(data[k]);epgData[k].sort((a,b)=>a.start-b.start);});Object.assign(epgChannels,chanMap);epgLog(`✅ ${src}: ${Object.keys(epgChannels).length} kanal`);document.getElementById('pType').textContent=`EPG: ${Object.keys(epgChannels).length} kanal`;render();}catch(e){epgLog(`❌ ${src} Hata`)}}
 async function loadEpg(fp=false){let url=document.getElementById('epgUrl').value.trim();if(!url){epgLog('URL boş');return;}try{const txt=await fetchEpgText(url,fp);loadEpgMap(txt,'Ek')}catch(e){epgLog('HATA: '+e.message)}}
 function clearEpg(){epgData={};epgChannels={};epgLog('EPG temizlendi');render()}
 async function autoLoadEmbeddedEpg(){epgLog('4 EPG yükleniyor...');for(let i=0;i<EPG_SOURCES.length;i++){let it=EPG_SOURCES[i];try{epgLog(`${i+1}/4 ${it.name}...`);const txt=await fetchEpgText(it.url,true);if(txt.length>1000)loadEpgMap(txt,it.name);await new Promise(r=>setTimeout(r,800))}catch(e){epgLog(`${it.name} atlandı`)}}}
@@ -191,36 +209,80 @@ async function renderSaved(){const box=document.getElementById('savedLists');if(
 async function clearSaved(){if(!confirm('Sil?'))return;const db=await openDB();await new Promise(r=>{const tx=db.transaction('lists','readwrite');tx.objectStore('lists').clear();tx.oncomplete=r});renderSaved()}
 function buildGroups(){const base=activeCat==='TUMU'?all:all.filter(c=>c.cat===activeCat);const raw=[...new Set(base.map(c=>c.group||'Genel'))];const display=['Tümü',...raw];const box=document.getElementById('groupList');box.innerHTML='';display.forEach(g=>{const cnt=g==='Tümü'?base.length:base.filter(c=>(c.group||'Genel')===g||cleanGroupName(c.group)===cleanGroupName(g)).length;if(cnt===0&&g!=='Tümü')return;const b=document.createElement('div');b.className='group'+(activeGroup===g||cleanGroupName(activeGroup)===cleanGroupName(g)?' active':'');b.tabIndex=0;b.innerHTML=`<span>${g==='Tümü'?g:cleanGroupName(g)}</span><span style='background:#000;padding:2px 6px;border-radius:4px;font-size:10px'>${cnt}</span>`;b.onclick=()=>{activeGroup=g;buildGroups()};box.appendChild(b)});render()}
 function safeImg(u){return /^https?:\/\//i.test(u||'')}
-function render(){try{const base=activeCat==='TUMU'?all:all.filter(c=>c.cat===activeCat);const list=base.filter(c=>(activeGroup==='Tümü'||(c.group||'Genel')===activeGroup||cleanGroupName(c.group)===cleanGroupName(activeGroup)));const cl=document.getElementById('channelList'),fg=document.getElementById('filmGrid');if(activeCat==='CANLI'||activeCat==='TUMU'){cl.style.display='flex';fg.style.display='none'}else{cl.style.display='none';fg.style.display='grid'}cl.innerHTML='';fg.innerHTML='';document.getElementById('midCount').textContent=`${activeGroup.toUpperCase()} • ${list.length}`;list.forEach((c,idx)=>{if(activeCat==='FILM'||activeCat==='DIZI'){const d=document.createElement('div');d.className='filmCard';d.tabIndex=0;const wrap=document.createElement('div');wrap.className='posterWrap';if(safeImg(c.logo)){const img=document.createElement('img');img.className='poster';img.src=c.logo;wrap.appendChild(img)}else{const fb=document.createElement('div');fb.className='posterFb';fb.textContent=(c.name||'?').slice(0,1).toUpperCase();wrap.appendChild(fb)}const info=document.createElement('div');info.className='filmInfo';info.innerHTML=`<div class='filmTitle'>${c.name}</div><div class='filmMeta'>${c.group}</div>`;d.append(wrap,info);d.onclick=()=>handleChannelClick(c,idx,list);fg.appendChild(d)}else{const epgMatch=findEpgForChannel(c);let cur=null,nxt=null,prog=0;if(epgMatch){const {cur:cc,nxt:nn}=getNowNext(epgMatch.progs);cur=cc;nxt=nn;if(cur){const tot=cur.stop-cur.start;const el=new Date()-cur.start;prog=Math.max(0,Math.min(100,(el/tot)*100))}}const d=document.createElement('div');d.className='ch'+(currentChannel&&currentChannel.url===c.url?' active':'');d.tabIndex=0;d.dataset.idx=idx;let logoHtml='';if(safeImg(c.logo))logoHtml=`<img class='ch-logo' src='${c.logo}' onerror="this.outerHTML='<div class=ch-fb>${(c.name||'?').slice(0,1).toUpperCase()}</div>'">`;else logoHtml=`<div class='ch-fb'>${(c.name||'?').slice(0,1).toUpperCase()}</div>`;d.innerHTML=`${logoHtml}<div class='ch-info'><div class='ch-name'>${c.name}</div><div class='ch-epg'>${cur?`▶ ${cur.title}`:''}</div><div class='ch-epg-next'>${nxt?`Sonra: ${nxt.title}`:''}</div><div class='ch-progress'><div class='ch-progress-bar' style='width:${prog}%'></div></div></div><span style='font-size:12px;color:#666'>▶</span>`;d.onclick=()=>handleChannelClick(c,idx,list);cl.appendChild(d)}})}catch(e){log('Render hata')}}
+function render(){try{const base=activeCat==='TUMU'?all:all.filter(c=>c.cat===activeCat);const list=base.filter(c=>(activeGroup==='Tümü'||(c.group||'Genel')===activeGroup||cleanGroupName(c.group)===cleanGroupName(activeGroup)));const cl=document.getElementById('channelList'),fg=document.getElementById('filmGrid');if(activeCat==='CANLI'||activeCat==='TUMU'){cl.style.display='flex';fg.style.display='none'}else{cl.style.display='none';fg.style.display='grid'}cl.innerHTML='';fg.innerHTML='';document.getElementById('midCount').textContent=`${activeGroup.toUpperCase()} • ${list.length}`;list.forEach((c,idx)=>{if(activeCat==='FILM'||activeCat==='DIZI'){const d=document.createElement('div');d.className='filmCard';d.tabIndex=0;const wrap=document.createElement('div');wrap.className='posterWrap';if(safeImg(c.logo)){const img=document.createElement('img');img.className='poster';img.src=c.logo;wrap.appendChild(img)}else{const fb=document.createElement('div');fb.className='posterFb';fb.textContent=(c.name||'?').slice(0,1).toUpperCase();wrap.appendChild(fb)}const info=document.createElement('div');info.className='filmInfo';info.innerHTML=`<div class='filmTitle'>${c.name}</div><div class='filmMeta'>${c.group}</div>`;d.append(wrap,info);d.onclick=()=>handleChannelClick(c,idx,list);fg.appendChild(d)}else{const epgMatch=findEpgForChannel(c);let cur=null,nxt=null,prog=0;if(epgMatch){const {cur:cc,nxt:nn}=getNowNext(epgMatch.progs);cur=cc;nxt=nn;if(cur){const tot=cur.stop-cur.start;const el=new Date()-cur.start;prog=Math.max(0,Math.min(100,(el/tot)*100))}}const d=document.createElement('div');d.className='ch'+(currentChannel&&currentChannel.url===c.url?' active':'');d.tabIndex=0;d.dataset.idx=idx;let logoHtml='';if(safeImg(c.logo))logoHtml=`<img class='ch-logo' src='${c.logo}' onerror="this.outerHTML='<div class=ch-fb>${(c.name||'?').slice(0,1).toUpperCase()}</div>'">`;else logoHtml=`<div class='ch-fb'>${(c.name||'?').slice(0,1).toUpperCase()}</div>`;d.innerHTML=`${logoHtml}<div class='ch-info'><div class='ch-name'>${c.name}</div><div class='ch-epg'>${cur?`▶ ${cur.title}`:''}</div><div class='ch-epg-next'>${nxt?`Sonra: ${nxt.title}`:''}</div><div class='ch-progress'><div class='ch-progress-bar' style='width:${prog}%'></div></div></div><span style='font-size:12px;color:#666'>▶</span>`;d.onclick=()=>handleChannelClick(c,idx,list);cl.appendChild(d)}})}catch(e){log('Render hata '+e.message)}}
 let visibleListCache=[]
 function handleChannelClick(c,idx,list){visibleListCache=list;currentIndex=idx;const now=Date.now();if(lastClickedChannel&&lastClickedChannel.url===c.url&&(now-lastClickTime)<600){openFullscreen(c)}else{play(c);preloadNeighbors(idx,list)}lastClickTime=now;lastClickedChannel=c}
 function preloadNeighbors(idx,list){try{if(hlsNext){try{hlsNext.destroy()}catch(_){}hlsNext=null}if(hlsPrev){try{hlsPrev.destroy()}catch(_){}hlsPrev=null}const next=list[idx+1],prev=list[idx-1];if(next&&Hls.isSupported()){hlsNext=new Hls({enableWorker:true,lowLatencyMode:true,maxBufferLength:3});hlsNext.loadSource(next.url)}if(prev&&Hls.isSupported()){hlsPrev=new Hls({enableWorker:true,lowLatencyMode:true,maxBufferLength:3});hlsPrev.loadSource(prev.url)}}catch(e){}}
-function play(c){currentChannel=c;document.getElementById('empty').style.display='none';document.getElementById('now').textContent=c.name;document.getElementById('urlDisplay').textContent='URL: '+c.url.slice(0,90);const epgMatch=findEpgForChannel(c);const nowEpgEl=document.getElementById('nowEpg');const nextEl=document.getElementById('nowEpgNext');const barEl=document.getElementById('epgProgressBar');if(epgMatch){const {cur,nxt}=getNowNext(epgMatch.progs);if(nowEpgEl)nowEpgEl.textContent=cur?`Şimdi: ${cur.title}`:'';if(nextEl)nextEl.textContent=nxt?`Sonra: ${nxt.start.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})} - ${nxt.title}`:'';if(cur&&barEl){const tot=cur.stop-cur.start;const el=new Date()-cur.start;const pct=Math.max(0,Math.min(100,(el/tot)*100));barEl.style.width=pct+'%'}else if(barEl)barEl.style.width='0%'}else{if(nowEpgEl)nowEpgEl.textContent=Object.keys(epgData).length?'EPG eşleşmedi':'EPG yok';if(nextEl)nextEl.textContent=`tvg-id: ${c.tvgId||'yok'}`;if(barEl)barEl.style.width='0%'}tryRoute(c.url,['hls-direct','hls-proxy'],0,video);if(document.getElementById('fsOverlay').classList.contains('active')){tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo)}}
-function stopPlayback(v){if(v===video){if(hls){try{hls.destroy()}catch(_){}hls=null}video.pause();video.removeAttribute('src');video.load()}}
-function tryRoute(o,r,i,target){if(i>=r.length){document.getElementById('pType').textContent='Açılamadı';document.getElementById('empty').style.display='flex';return;}if(target===video)stopPlayback(target);const m=r[i];const prox=m.endsWith('-proxy');const u=prox?proxyUrl(o):o;document.getElementById('pType').textContent=`${i+1}/${r.length} ${m}...`;let done=false;const to=setTimeout(()=>fin(false),9000);function fin(ok){if(done)return;done=true;clearTimeout(to);target.removeEventListener('playing',onP);target.removeEventListener('error',onE);if(ok){document.getElementById('pType').textContent=`▶ ${m} Oynuyor`;if(target===video){setTimeout(()=>{const w=video.videoWidth,h=video.videoHeight;if(w){document.getElementById('fsRes').textContent=`${w}x${h}`;document.getElementById('pType').textContent+=` | ${w}x${h}`}},1500)}}else{tryRoute(o,r,i+1,target)}}function onP(){fin(true)}function onE(){fin(false)}target.addEventListener('playing',onP);target.addEventListener('error',onE);try{if(Hls.isSupported()){if(target===video){hls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:30});hls.loadSource(u);hls.attachMedia(target);hls.on(Hls.Events.MANIFEST_PARSED,()=>{target.play().catch(()=>{})})}else{const tmpHls=new Hls({enableWorker:true});tmpHls.loadSource(u);tmpHls.attachMedia(target);tmpHls.on(Hls.Events.MANIFEST_PARSED,()=>{target.play().catch(()=>{})})}}else{target.src=u;target.load();target.play().catch(()=>{})}}catch(e){fin(false)}}
-function openFullscreen(c){const over=document.getElementById('fsOverlay');over.classList.add('active');document.getElementById('fsName').textContent=c.name;document.getElementById('fsGroup').textContent=c.group||'Genel';document.getElementById('fsLogo').src=c.logo||'logo.png';const epgMatch=findEpgForChannel(c);if(epgMatch){const {cur,nxt}=getNowNext(epgMatch.progs);document.getElementById('fsNow').textContent=cur?`Şimdi: ${cur.title}`:'';document.getElementById('fsNext').textContent=nxt?`Sonra: ${nxt.title}`:''}else{document.getElementById('fsNow').textContent='EPG yok';document.getElementById('fsNext').textContent=''}tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo);video.pause()}
-function closeFullscreen(){const over=document.getElementById('fsOverlay');over.classList.remove('active');fsVideo.pause();fsVideo.removeAttribute('src');fsVideo.load();if(currentChannel){tryRoute(currentChannel.url,['hls-direct','hls-proxy'],0,video)}}
+function showLoading(name){const el=document.getElementById('loading'); const nm=document.getElementById('loadingName'); if(el){el.style.display='flex'; if(nm)nm.textContent=name||''}}
+function hideLoading(){const el=document.getElementById('loading'); if(el)el.style.display='none'}
+function play(c){currentChannel=c; document.getElementById('empty').style.display='none'; showLoading(c.name); document.getElementById('now').textContent=c.name; document.getElementById('urlDisplay').textContent='URL: '+c.url.slice(0,90); const epgMatch=findEpgForChannel(c); const nowEpgEl=document.getElementById('nowEpg'); const nextEl=document.getElementById('nowEpgNext'); const barEl=document.getElementById('epgProgressBar'); if(epgMatch){const {cur,nxt}=getNowNext(epgMatch.progs); if(nowEpgEl)nowEpgEl.textContent=cur?`Şimdi: ${cur.title}`:''; if(nextEl)nextEl.textContent=nxt?`Sonra: ${nxt.start.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})} - ${nxt.title}`:''; if(cur&&barEl){const tot=cur.stop-cur.start; const el2=new Date()-cur.start; const pct=Math.max(0,Math.min(100,(el2/tot)*100)); barEl.style.width=pct+'%'} else if(barEl)barEl.style.width='0%'} else {if(nowEpgEl)nowEpgEl.textContent=Object.keys(epgData).length?'EPG eşleşmedi':'EPG yok'; if(nextEl)nextEl.textContent=`tvg-id: ${c.tvgId||'yok'}`; if(barEl)barEl.style.width='0%'} tryRoute(c.url,['hls-direct','hls-proxy'],0,video); if(document.getElementById('fsOverlay').classList.contains('active')){tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo)}}
+function stopPlayback(v){if(v===video){if(hls){try{hls.destroy()}catch(_){}hls=null} video.pause(); video.removeAttribute('src'); video.load()}}
+function tryRoute(o,r,i,target){if(i>=r.length){document.getElementById('pType').textContent='Açılamadı'; hideLoading(); document.getElementById('empty').style.display='flex'; return;} if(target===video)stopPlayback(target); const m=r[i]; const prox=m.endsWith('-proxy'); const u=prox?proxyUrl(o):o; document.getElementById('pType').textContent=`${i+1}/${r.length} ${m}...`; let done=false; const to=setTimeout(()=>fin(false),9000); function fin(ok){if(done)return; done=true; clearTimeout(to); target.removeEventListener('playing',onP); target.removeEventListener('error',onE); target.removeEventListener('canplay',onP); if(ok){hideLoading(); document.getElementById('pType').textContent=`▶ ${m} Oynuyor`; if(target===video){setTimeout(()=>{const w=video.videoWidth,h=video.videoHeight; if(w){document.getElementById('fsRes').textContent=`${w}x${h}`; document.getElementById('pType').textContent+=` | ${w}x${h}`}},1200)}} else {tryRoute(o,r,i+1,target)}} function onP(){fin(true)} function onE(){fin(false)} target.addEventListener('playing',onP); target.addEventListener('canplay',onP); target.addEventListener('error',onE); try{if(Hls.isSupported()){if(target===video){hls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:30}); hls.loadSource(u); hls.attachMedia(target); hls.on(Hls.Events.MANIFEST_PARSED,()=>{target.play().catch(()=>{})})} else {const tmpHls=new Hls({enableWorker:true}); tmpHls.loadSource(u); tmpHls.attachMedia(target); tmpHls.on(Hls.Events.MANIFEST_PARSED,()=>{target.play().catch(()=>{})})}} else {target.src=u; target.load(); target.play().catch(()=>{})}} catch(e){fin(false)}}
+function openFullscreen(c){const over=document.getElementById('fsOverlay'); over.classList.add('active'); document.getElementById('fsName').textContent=c.name; document.getElementById('fsGroup').textContent=c.group||'Genel'; document.getElementById('fsLogo').src=c.logo||'logo.png'; const epgMatch=findEpgForChannel(c); if(epgMatch){const {cur,nxt}=getNowNext(epgMatch.progs); document.getElementById('fsNow').textContent=cur?`Şimdi: ${cur.title}`:''; document.getElementById('fsNext').textContent=nxt?`Sonra: ${nxt.title}`:''} else {document.getElementById('fsNow').textContent='EPG yok'; document.getElementById('fsNext').textContent=''} tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo); video.pause()}
+function closeFullscreen(){const over=document.getElementById('fsOverlay'); over.classList.remove('active'); fsVideo.pause(); fsVideo.removeAttribute('src'); fsVideo.load(); if(currentChannel){tryRoute(currentChannel.url,['hls-direct','hls-proxy'],0,video)}}
+
+// KUMANDA FIX - BILGISAYARDA DA TV DE DE CALISIR
 document.addEventListener('keydown', e=>{
- const key=e.key;const fsOpen=document.getElementById('fsOverlay').classList.contains('active');
+ const key=e.key;
+ const fsOpen=document.getElementById('fsOverlay').classList.contains('active');
  if(fsOpen){
    if(key==='Escape'||key==='Backspace'||e.keyCode===8||e.keyCode===10009){e.preventDefault();closeFullscreen();return}
    if(key==='Enter'||key===' '){e.preventDefault();document.getElementById('fsInfo').classList.toggle('hide');return}
    if(key==='ArrowUp'||key==='ArrowDown'){e.preventDefault();if(!visibleListCache.length)return;let newIdx=currentIndex+(key==='ArrowUp'?-1:1);if(newIdx<0)newIdx=visibleListCache.length-1;if(newIdx>=visibleListCache.length)newIdx=0;currentIndex=newIdx;const ch=visibleListCache[newIdx];document.getElementById('fsName').textContent=ch.name;document.getElementById('fsLogo').src=ch.logo||'';play(ch);tryRoute(ch.url,['hls-direct','hls-proxy'],0,fsVideo);return}
    return
  }
- if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' '].includes(key)||e.keyCode>=37&&e.keyCode<=40){
+ // NORMAL MOD
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(key) || key===' ' || (e.keyCode>=37&&e.keyCode<=40)){
    const focused=document.activeElement;
    const leftList=[...document.querySelectorAll('#left.group, #left.catTab, #left.gear')];
    const midList=[...document.querySelectorAll('#channelList.ch, #filmGrid.filmCard')];
-   if(key==='ArrowRight'){e.preventDefault();if(focusCol===0){focusCol=1;if(midList[0])midList[0].focus()}else if(focusCol===1){focusCol=2;video.focus()}return}
-   if(key==='ArrowLeft'){e.preventDefault();if(focusCol===2){focusCol=1;if(midList[0])midList[0].focus()}else if(focusCol===1){focusCol=0;if(leftList[0])leftList[0].focus()}return}
-   if(key==='ArrowDown'||key==='ArrowUp'){e.preventDefault();let list=focusCol===0?leftList:midList;let idx=list.indexOf(focused);if(idx===-1)idx=0;else idx+=(key==='ArrowDown'?1:-1);if(idx<0)idx=list.length-1;if(idx>=list.length)idx=0;if(list[idx]){list[idx].focus();list[idx].scrollIntoView({block:'nearest',behavior:'smooth'})}return}
-   if(key==='Enter'||key===' '){e.preventDefault();if(focused)focused.click();return}
+   const allLists=focusCol===0?leftList:midList;
+
+   if(key==='ArrowRight' || e.keyCode===39){
+     e.preventDefault();
+     if(focusCol===0){focusCol=1; if(midList[0]){midList[0].focus(); midList[0].scrollIntoView({block:'nearest'})}}
+     else if(focusCol===1){focusCol=2; video.focus();}
+     return;
+   }
+   if(key==='ArrowLeft' || e.keyCode===37){
+     e.preventDefault();
+     if(focusCol===2){focusCol=1; if(midList[0])midList[0].focus();}
+     else if(focusCol===1){focusCol=0; if(leftList[0])leftList[0].focus();}
+     return;
+   }
+   if(key==='ArrowDown' || e.keyCode===40){
+     e.preventDefault();
+     let list=focusCol===0?leftList:midList;
+     if(list.length===0) return;
+     let idx=list.indexOf(focused);
+     if(idx===-1) idx=-1;
+     idx=Math.min(list.length-1, idx+1);
+     if(list[idx]){list[idx].focus(); list[idx].scrollIntoView({block:'nearest',behavior:'smooth'})}
+     return;
+   }
+   if(key==='ArrowUp' || e.keyCode===38){
+     e.preventDefault();
+     let list=focusCol===0?leftList:midList;
+     if(list.length===0) return;
+     let idx=list.indexOf(focused);
+     if(idx===-1) idx=list.length;
+     idx=Math.max(0, idx-1);
+     if(list[idx]){list[idx].focus(); list[idx].scrollIntoView({block:'nearest',behavior:'smooth'})}
+     return;
+   }
+   if(key==='Enter' || key===' ' || e.keyCode===13){
+     e.preventDefault(); if(focused && focused!==video) focused.click();
+     else if(focused===video && currentChannel){openFullscreen(currentChannel)}
+     return;
+   }
  }
- if(key==='Escape'||key==='Backspace'){if(document.getElementById('settings').classList.contains('open')){toggleSettings();e.preventDefault()}}
+ if(key==='Escape' || e.keyCode===27){
+   if(document.getElementById('settings').classList.contains('open')){toggleSettings(); e.preventDefault()}
+ }
 });
+// Ilk odak
+setTimeout(()=>{focusCol=1; const f=document.querySelector('#channelList.ch'); if(f)f.focus();},800);
 (async()=>{await renderSaved()})()
 </script>
 </body>
 </html>
-  
