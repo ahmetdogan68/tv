@@ -84,24 +84,37 @@ textarea,input{width:100%;margin-top:6px;padding:11px;background:#171717;color:#
 
 
 
-<main id="playerArea">
-  <div id="empty"><img class="logoBig" src="logo.png"><h2>MIRTI V48.3</h2><p>EPG Fix + Hızlı Player</p></div>
-  <div id="loading" style="display:none;position:absolute;inset:0;z-index:30;background:#000;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+<main id="playerArea" style="position:relative;flex:1;display:flex;flex-direction:column;background:#000;overflow:hidden;">
+  <div id="empty" style="position:absolute;inset:0 0 82px 0;z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle at center,#222,#000);text-align:center;padding:20px">
+    <img class="logoBig" src="logo.png" style="width:180px;height:180px;object-fit:contain;background:#000;border-radius:24px;border:3px solid #e50914;box-shadow:0 0 40px rgba(229,9,20,.6)">
+    <h2>MIRTI V48.4</h2><p>Alttaki Bar Fix</p>
+  </div>
+  <div id="loading" style="display:none;position:absolute;inset:0 0 82px 0;z-index:20;background:#000;flex-direction:column;align-items:center;justify-content:center;gap:14px">
     <img src="logo.png" style="width:100px;height:100px;border-radius:50%;border:4px solid #e50914;animation:spin 0.8s linear infinite">
     <div id="loadingName" style="color:#fff;font-size:16px;font-weight:900"></div>
   </div>
-  <video id="player" playsinline tabindex="-1" muted></video>
-  <div id="bar"><div id="barTop"><span id="now">MIRTI V48.3</span><span id="pType">Hazır</span></div><div id="nowEpg"></div><div id="urlDisplay">URL: -</div><div id="epgProgress"><div id="epgProgressBar"></div></div></div>
-  <div id="fsOverlay"><video id="fsVideo" playsinline tabindex="-1"></video>
+  <video id="player" playsinline tabindex="-1" muted controlsList="nodownload noremoteplayback" disablepictureinpicture style="width:100%;flex:1;background:#000;object-fit:contain"></video>
+
+  <!-- ALTTA ÇIKACAK BAR - ESKİDEN GÖZÜKMÜYORDU -->
+  <div id="bar" style="position:absolute;bottom:0;left:0;right:0;height:82px;min-height:82px;background:#111;border-top:2px solid #e50914;z-index:25;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px">
+    <div id="barTop" style="display:flex;gap:8px;align-items:center"><span id="now" style="flex:1;font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">MIRTI V48.4</span><span id="pType" style="font-size:10px;color:#aaa">Hazır</span></div>
+    <div id="nowEpg" style="font-size:11px;color:#ffeb00;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:14px"></div>
+    <div id="urlDisplay" style="font-size:8px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">URL: -</div>
+    <div id="epgProgress" style="height:5px;background:#333;border-radius:3px;overflow:hidden;width:100%;margin-top:2px"><div id="epgProgressBar" style="height:100%;background:#e50914;width:0%;transition:width 1s linear"></div></div>
+  </div>
+
+  <div id="fsOverlay" style="position:absolute;inset:0;z-index:30;display:none;background:#000;flex-direction:column"><video id="fsVideo" playsinline tabindex="-1" controlsList="nodownload" disablepictureinpicture style="width:100%;flex:1;background:#000;object-fit:contain"></video>
     <div id="volumeBar" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.92);padding:20px 30px;border-radius:16px;border:3px solid #e50914;z-index:60;text-align:center"><div style="font-size:36px">🔊</div><div id="volText" style="font-size:22px;font-weight:900;margin-top:8px">100%</div><div style="width:160px;height:10px;background:#333;border-radius:5px;margin-top:10px"><div id="volFill" style="height:100%;background:#e50914;width:100%"></div></div></div>
-    <div id="fsInfo" style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.95));padding:60px 30px 28px;display:flex;gap:20px;align-items:flex-end;transform:translateY(100%);opacity:0;transition:0.45s"><img id="fsLogo" src="" style="width:90px;height:90px;border-radius:14px;border:3px solid #e50914;background:#000;object-fit:contain"><div><div id="fsName" style="font-size:26px;font-weight:900">Kanal</div><div style="color:#aaa;margin-top:4px"><b id="fsGroup">Genel</b> <span id="fsVol">🔊 100%</span></div><div id="fsNow" style="color:#e50914;font-weight:800;margin-top:8px"></div><div id="fsNext" style="color:#ddd"></div></div></div>
+    <div id="fsInfo" style="position:absolute;bottom:82px;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.95));padding:20px 20px 10px;display:flex;gap:18px;align-items:flex-end;transform:translateY(100%);opacity:0;transition:0.4s"><img id="fsLogo" src="" style="width:80px;height:80px;border-radius:12px;border:3px solid #e50914;background:#000;object-fit:contain"><div><div id="fsName" style="font-size:22px;font-weight:900">Kanal</div><div style="color:#aaa;margin-top:4px"><b id="fsGroup">Genel</b> <span id="fsVol">🔊 100%</span></div><div id="fsNow" style="color:#ffeb00;font-weight:800;margin-top:6px;font-size:13px"></div><div id="fsNext" style="color:#ddd;font-size:11px"></div></div></div>
+    <!-- TAM EKRANDA DA ALTTA AYNI BAR -->
+    <div id="fsBar" style="position:absolute;bottom:0;left:0;right:0;height:82px;background:#111;border-top:2px solid #e50914;z-index:35;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px"><div style="display:flex;gap:8px"><span id="fsNowBar" style="flex:1;color:#ffeb00;font-weight:700;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span><span style="font-size:9px;color:#666">CANLI</span></div><div style="height:5px;background:#333;border-radius:3px;overflow:hidden"><div id="fsProgressBar" style="height:100%;background:#e50914;width:0%"></div></div></div>
   </div>
 </main>
 <section id="settings">
-  <div class="settingsHead"><span>V48.3 EPG FIX</span><button class="gear" id="settingsCloseBtn" tabindex="0" onclick="toggleSettings()">KAPAT ✕</button></div>
+  <div class="settingsHead"><span>V48.4 BAR FIX</span><button class="gear" id="settingsCloseBtn" tabindex="0" onclick="toggleSettings()">KAPAT ✕</button></div>
   <div id="savedLists"></div>
   <div class="tabs"><button class="tab active" tabindex="0" onclick="openTab(0)">URL</button><button class="tab" tabindex="0" onclick="openTab(1)">DOSYA</button><button class="tab" tabindex="0" onclick="openTab(2)">EPG</button></div>
-  <div class="box active" id="b0"><textarea id="urlInput" rows="3" tabindex="0"></textarea><button class="btn" tabindex="0" onclick="loadUrl()">YÜKLE</button><button class="btn blue" tabindex="0" onclick="loadUrl(true)">PROXY</button><div id="urlLog" class="log">V48.3 - EPG eski haline döndü</div></div>
+  <div class="box active" id="b0"><textarea id="urlInput" rows="3" tabindex="0"></textarea><button class="btn" tabindex="0" onclick="loadUrl()">YÜKLE</button><button class="btn blue" tabindex="0" onclick="loadUrl(true)">PROXY</button><div id="urlLog" class="log">V48.4 - Altta bar çıkıyor, ileri gidiyor</div></div>
   <div class="box" id="b1"><input id="fileInput" type="file" tabindex="0"><button class="btn" tabindex="0" onclick="loadFile()">M3U</button></div>
   <div class="box" id="b2"><input id="epgUrl" type="url" tabindex="0"><button class="btn green" tabindex="0" onclick="loadEpg()">EPG</button><button class="btn" tabindex="0" onclick="autoLoadEmbeddedEpg()" style="background:#12b85a;color:#000">4 EPG</button><div id="epgLog" class="log"></div></div>
   <input id="proxyInput" type="url" tabindex="0"><button class="btn blue" tabindex="0" onclick="saveProxy()">PROXY</button><button class="btn" style="background:#333" tabindex="0" onclick="clearSaved()">SİL</button>
@@ -128,80 +141,12 @@ async function fetchEpgText(u,f=false){const urls=f?[proxyUrl(u),CODETABS+encode
 async function acceptList(text,name){const ch=parseM3U(text);if(!ch.length)throw new Error('Kanal yok');all=ch;activeGroup='Tümü';await saveList(name,ch);buildGroups();log(`✅ ${ch.length} CANLI=${ch.filter(x=>x.cat==='CANLI').length} FILM=${ch.filter(x=>x.cat==='FILM').length} DIZI=${ch.filter(x=>x.cat==='DIZI').length}`);await renderSaved();const epgUrl=extractEpgUrlFromM3U(text);if(epgUrl){try{const epgTxt=await fetchEpgText(epgUrl,true);loadEpgMap(epgTxt,'M3U-EPG');}catch(e){epgLog('M3U EPG hata:'+e.message)}}}
 async function loadUrl(fp=false){const url=document.getElementById('urlInput').value.trim();if(!url)return;log('İndiriliyor…');try{const t=await fetchText(url,fp);await acceptList(t,'LISTE');toggleSettings()}catch(e){log('HATA: '+e.message)}}
 function loadFile(){const f=document.getElementById('fileInput').files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{await acceptList(String(r.result),f.name);toggleSettings()};r.readAsText(f)}
-
-// EPG ESKİ ÇALIŞAN KOD - V47 ORJINAL
-function parseXmltvDate(s){
-  try{
-    const m=s.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4})?/);
-    if(!m) return new Date();
-    let y=+m[1],mo=+m[2]-1,d=+m[3],h=+m[4],mi=+m[5],sec=+(m[6]||0);
-    let dt=new Date(Date.UTC(y,mo,d,h,mi,sec));
-    if(m[7]){
-      let sign=m[7][0]==='+'?1:-1;
-      let offH=+m[7].slice(1,3),offM=+m[7].slice(3,5);
-      let offMin=sign*(offH*60+offM);
-      dt=new Date(dt.getTime()-offMin*60000);
-    }
-    return dt;
-  }catch(e){return new Date()}
-}
-function parseEpgXml(xmlText){
-  const parser=new DOMParser();
-  const xml=parser.parseFromString(xmlText,'text/xml');
-  const chanMap={};
-  xml.querySelectorAll('channel').forEach(ch=>{
-    const id=ch.getAttribute('id');
-    if(!id) return;
-    chanMap[id]=[...ch.querySelectorAll('display-name')].map(n=>n.textContent.trim());
-  });
-  const data={};
-  xml.querySelectorAll('programme').forEach(p=>{
-    const chId=p.getAttribute('channel');
-    const start=parseXmltvDate(p.getAttribute('start'));
-    const stop=parseXmltvDate(p.getAttribute('stop'));
-    const title=p.querySelector('title')?p.querySelector('title').textContent.trim():'';
-    if(!data[chId]) data[chId]=[];
-    data[chId].push({start,stop,title});
-  });
-  Object.keys(data).forEach(k=>{data[k].sort((a,b)=>a.start-b.start);});
-  return {chanMap,data}
-}
-function loadEpgMap(xmlText,src='EPG'){
-  try{
-    const {chanMap,data}=parseEpgXml(xmlText);
-    Object.keys(data).forEach(k=>{
-      if(!epgData[k]) epgData[k]=[];
-      epgData[k]=epgData[k].concat(data[k]);
-      epgData[k].sort((a,b)=>a.start-b.start);
-    });
-    Object.assign(epgChannels,chanMap);
-    epgLog(`✅ ${src}: ${Object.keys(epgChannels).length} kanal EPG`);
-    render();
-    if(currentChannel) play(currentChannel);
-  }catch(e){epgLog(`❌ ${src} hata`)}
-}
+function parseXmltvDate(s){try{const m=s.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4})?/);if(!m)return new Date();let y=+m[1],mo=+m[2]-1,d=+m[3],h=+m[4],mi=+m[5],sec=+(m[6]||0);let dt=new Date(Date.UTC(y,mo,d,h,mi,sec));if(m[7]){let sign=m[7][0]==='+'?1:-1;let offH=+m[7].slice(1,3),offM=+m[7].slice(3,5);let offMin=sign*(offH*60+offM);dt=new Date(dt.getTime()-offMin*60000);}return dt;}catch(e){return new Date()}}
+function parseEpgXml(xmlText){const parser=new DOMParser();const xml=parser.parseFromString(xmlText,'text/xml');const chanMap={};xml.querySelectorAll('channel').forEach(ch=>{const id=ch.getAttribute('id');if(!id)return;chanMap[id]=[...ch.querySelectorAll('display-name')].map(n=>n.textContent.trim());});const data={};xml.querySelectorAll('programme').forEach(p=>{const chId=p.getAttribute('channel');const start=parseXmltvDate(p.getAttribute('start'));const stop=parseXmltvDate(p.getAttribute('stop'));const title=p.querySelector('title')?p.querySelector('title').textContent.trim():'';if(!data[chId])data[chId]=[];data[chId].push({start,stop,title});});Object.keys(data).forEach(k=>{data[k].sort((a,b)=>a.start-b.start);});return {chanMap,data}}
+function loadEpgMap(xmlText,src='EPG'){try{const {chanMap,data}=parseEpgXml(xmlText);Object.keys(data).forEach(k=>{if(!epgData[k])epgData[k]=[];epgData[k]=epgData[k].concat(data[k]);epgData[k].sort((a,b)=>a.start-b.start);});Object.assign(epgChannels,chanMap);epgLog(`✅ ${src}: ${Object.keys(epgChannels).length} kanal`);render();if(currentChannel)play(currentChannel);}catch(e){epgLog(`❌ ${src}`)}}
 async function loadEpg(){let url=document.getElementById('epgUrl').value.trim();if(!url)return;try{const txt=await fetchEpgText(url,true);loadEpgMap(txt,'Elle')}catch(e){epgLog('HATA:'+e.message)}}
 async function autoLoadEmbeddedEpg(){for(let i=0;i<EPG_SOURCES.length;i++){try{const txt=await fetchEpgText(EPG_SOURCES[i].url,true);if(txt.length>1000)loadEpgMap(txt,EPG_SOURCES[i].name);await new Promise(r=>setTimeout(r,600))}catch(e){}}}
-function findEpgForChannel(ch){
-  if(!ch||!Object.keys(epgData).length) return null;
-  const ids=[ch.tvgId,ch.tvgName,ch.name].filter(Boolean);
-  for(let id of ids){
-    if(epgData[id]) return {id,progs:epgData[id]};
-    let f=Object.keys(epgData).find(k=>k.toLowerCase()===id.toLowerCase());
-    if(f) return {id:f,progs:epgData[f]};
-  }
-  for(let k of Object.keys(epgChannels)){
-    let names=epgChannels[k]||[];
-    if(names.some(n=>ids.some(i=>i&&(
-      n.toLowerCase().includes(i.toLowerCase())||
-      i.toLowerCase().includes(n.toLowerCase())||
-      n.replace(/\s|HD/gi,'').toLowerCase()===i.replace(/\s|HD/gi,'').toLowerCase()
-    )))){
-      if(epgData[k]) return {id:k,progs:epgData[k]};
-    }
-  }
-  return null;
-}
+function findEpgForChannel(ch){if(!ch||!Object.keys(epgData).length)return null;const ids=[ch.tvgId,ch.tvgName,ch.name].filter(Boolean);for(let id of ids){if(epgData[id])return {id,progs:epgData[id]};let f=Object.keys(epgData).find(k=>k.toLowerCase()===id.toLowerCase());if(f)return {id:f,progs:epgData[f]}}for(let k of Object.keys(epgChannels)){let names=epgChannels[k]||[];if(names.some(n=>ids.some(i=>i&&(n.toLowerCase().includes(i.toLowerCase())||i.toLowerCase().includes(n.toLowerCase()))))){if(epgData[k])return {id:k,progs:epgData[k]}}}return null}
 function getNowNext(progs){const now=new Date();let cur=null,nxt=null;for(let i=0;i<progs.length;i++){if(progs[i].start<=now&&progs[i].stop>now){cur=progs[i];nxt=progs[i+1]||null;break;}if(progs[i].start>now){nxt=progs[i];break;}}return {cur,nxt}}
 function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open('MirtiTV_V47',1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('lists'))d.createObjectStore('lists',{keyPath:'name'})};req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error)})}
 async function saveList(n,ch){try{const db=await openDB();await new Promise((res)=>{const tx=db.transaction('lists','readwrite');tx.objectStore('lists').put({name:n,channels:ch,count:ch.length,time:Date.now()});tx.oncomplete=res});}catch(e){}}
@@ -218,16 +163,8 @@ function render(){
   cl.innerHTML='';fg.innerHTML='';
   document.getElementById('midCount').textContent=`${activeGroup.toUpperCase()} • ${list.length}`;
   list.forEach((c,idx)=>{
-    const epgMatch=findEpgForChannel(c);let cur=null,next=null,progress=0;
-    if(epgMatch){
-      const {cur:cc,nxt}=getNowNext(epgMatch.progs);
-      cur=cc;next=nxt;
-      if(cur){
-        const total=cur.stop-cur.start;
-        const elapsed=new Date()-cur.start;
-        progress=Math.max(0,Math.min(100,(elapsed/total)*100));
-      }
-    }
+    const epgMatch=findEpgForChannel(c);let cur=null;
+    if(epgMatch){const {cur:cc}=getNowNext(epgMatch.progs);cur=cc}
     if(activeCat==='FILM'||activeCat==='DIZI'){
       const d=document.createElement('div');d.className='filmCard';d.tabIndex=0;
       const wrap=document.createElement('div');wrap.className='posterWrap';
@@ -236,7 +173,7 @@ function render(){
       d.onclick=()=>handleChannelClick(c,idx);fg.appendChild(d)
     }else{
       const d=document.createElement('div');d.className='ch'+(currentChannel&&currentChannel.url===c.url?' active':'');d.tabIndex=0;
-      d.innerHTML=`${safeImg(c.logo)?`<img class='ch-logo' src='${c.logo}'>`:`<div class='ch-fb'>${(c.name||'?')[0].toUpperCase()}</div>`}<div class='ch-info'><div class='ch-name'>${c.name}</div><div class='ch-epg'>${cur?`▶ ${cur.title}`:''}</div>${cur?`<div class='ch-progress'><div class='ch-progress-bar' style='width:${progress}%'></div></div>`:''}</div><span>▶</span>`;
+      d.innerHTML=`${safeImg(c.logo)?`<img class='ch-logo' src='${c.logo}'>`:`<div class='ch-fb'>${(c.name||'?')[0].toUpperCase()}</div>`}<div class='ch-info'><div class='ch-name'>${c.name}</div><div class='ch-epg'>${cur?`▶ ${cur.title}`:''}</div></div><span>▶</span>`;
       d.onclick=()=>handleChannelClick(c,idx);cl.appendChild(d)
     }
   })
@@ -255,16 +192,23 @@ function play(c){
     document.getElementById('fsNow').textContent=cur?`Şimdi: ${cur.title}`:'';
     document.getElementById('fsNext').textContent=nxt?`Sonra: ${nxt.title}`:'';
     document.getElementById('nowEpg').textContent=cur?`▶ ${cur.title}`:'';
+    document.getElementById('fsNowBar').textContent=cur?`▶ ${cur.title}`:'';
     const bar=document.getElementById('epgProgressBar');
-    if(bar&&cur){
-      const pct=Math.max(0,Math.min(100,((new Date()-cur.start)/(cur.stop-cur.start))*100));
-      bar.style.width=pct+'%';
+    const fsBar=document.getElementById('fsProgressBar');
+    if(cur){
+      const total=cur.stop-cur.start;
+      const elapsed=new Date()-cur.start;
+      const pct=Math.max(0,Math.min(100,(elapsed/total)*100));
+      if(bar) bar.style.width=pct+'%';
+      if(fsBar) fsBar.style.width=pct+'%';
     }
   }else{
     document.getElementById('fsNow').textContent='';
     document.getElementById('fsNext').textContent='';
     document.getElementById('nowEpg').textContent='';
+    document.getElementById('fsNowBar').textContent='';
     document.getElementById('epgProgressBar').style.width='0%';
+    document.getElementById('fsProgressBar').style.width='0%';
   }
   document.getElementById('urlDisplay').textContent='URL: '+c.url.slice(0,80);
   const isFs=document.getElementById('fsOverlay').classList.contains('active');
@@ -279,18 +223,33 @@ function tryRoute(o,r,i,target){
   document.getElementById('pType').textContent=`Bağlanıyor ${i+1}/${r.length}...`;
   let done=false;
   const to=setTimeout(()=>fin(false),3500);
-  function fin(ok){if(done)return;done=true;clearTimeout(to);target.removeEventListener('playing',onP);target.removeEventListener('canplay',onP);target.removeEventListener('error',onE);if(ok){hideLoading();document.getElementById('pType').textContent=`▶ ${m} Oynuyor`;target.muted=false;target.volume=1;}else{tryRoute(o,r,i+1,target)}}
-  function onP(){fin(true)}function onE(){fin(false)}
+  function fin(ok){if(done)return;done=true;clearTimeout(to);target.removeEventListener('playing',onP);target.removeEventListener('canplay',onP);target.removeEventListener('error',onE);if(ok){hideLoading();document.getElementById('pType').textContent=`▶ ${m} Oynuyor`;target.muted=false;target.volume=1;target.controls=false;}else{tryRoute(o,r,i+1,target)}}
+  function onP(){
+    try{
+      if(target.duration && isFinite(target.duration) && target.duration>120){
+        if(target.currentTime < target.duration - 30){
+          target.currentTime = Math.max(0, target.duration - 8);
+        }
+      }
+    }catch(e){}
+    fin(true)
+  }
+  function onE(){fin(false)}
   target.addEventListener('playing',onP);target.addEventListener('canplay',onP);target.addEventListener('error',onE);
+  target.controls=false;
   try{
     if(Hls.isSupported()){
-      const cfg={enableWorker:true,lowLatencyMode:true,maxBufferLength:12,maxMaxBufferLength:20,liveSyncDurationCount:2,maxBufferHole:0.5};
+      const cfg={enableWorker:true,lowLatencyMode:true,liveSyncDurationCount:1,liveMaxLatencyDurationCount:3,liveDurationInfinity:false,maxBufferLength:10,maxMaxBufferLength:18};
       const tmpHls=new Hls(cfg);
       tmpHls.loadSource(u);tmpHls.attachMedia(target);
       if(target===video)hls=tmpHls;
-      tmpHls.on(Hls.Events.MANIFEST_PARSED,()=>{target.play().catch(()=>{})});
+      tmpHls.on(Hls.Events.MANIFEST_PARSED,()=>{
+        target.controls=false;
+        target.play().catch(()=>{});
+        setTimeout(()=>{try{if(target.duration&&target.duration>120){target.currentTime=target.duration-5;}}catch(e){}},600);
+      });
       tmpHls.on(Hls.Events.ERROR,(ev,data)=>{if(data.fatal){fin(false);}});
-    }else{target.src=u;target.load();target.play().catch(()=>{})}
+    }else{target.src=u;target.load();target.controls=false;target.play().catch(()=>{})}
   }catch(e){fin(false)}
 }
 function openFullscreen(c){const over=document.getElementById('fsOverlay');over.classList.add('active');document.getElementById('fsName').textContent=c.name;document.getElementById('fsGroup').textContent=c.group||'Genel';document.getElementById('fsLogo').src=c.logo||'logo.png';stopPlayback(video);tryRoute(c.url,['hls-direct','hls-proxy'],0,fsVideo);showFsInfoTemporarily();}
@@ -369,7 +328,7 @@ document.addEventListener('keydown', e=>{
     }
   }
 });
-window.addEventListener('load', ()=>{setTimeout(()=>{document.querySelector('.catTab.active')?.focus();log('V48.3 - EPG düzeldi, TRT dahil');},600);video.volume=1;fsVideo.volume=1;video.muted=true;});
+window.addEventListener('load', ()=>{setTimeout(()=>{document.querySelector('.catTab.active')?.focus();log('V48.4 - Bar altta sabit, ileri gidiyor');},600);video.volume=1;fsVideo.volume=1;video.muted=true;video.controls=false;fsVideo.controls=false;});
 (async()=>{await renderSaved()})()
 </script>
 </body>
